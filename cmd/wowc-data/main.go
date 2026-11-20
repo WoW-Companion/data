@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/WoW-Companion/data/internal/everloot"
 	"github.com/WoW-Companion/data/internal/fetch"
 	"github.com/WoW-Companion/data/internal/manifest"
 	"github.com/WoW-Companion/data/internal/tables"
@@ -53,7 +54,12 @@ func runFetch(args []string) error {
 	if err != nil {
 		return err
 	}
+	ev, err := everloot.Fetch(everloot.BaseURL, filepath.Join(*cache, "everloot"), time.Now().UTC().Format("2006-01-02T15:04:05Z"))
+	if err != nil {
+		return err
+	}
 	fmt.Printf("cached %d tables for build %s in %s\n", len(prov.Tables), prov.Build, filepath.Join(*cache, *build))
+	fmt.Printf("cached %d Everloot drop rates (data as of %s)\n", len(ev.Rates), ev.DataAsOf)
 	return nil
 }
 
@@ -64,7 +70,7 @@ func runBuild(args []string) error {
 	out := fs.String("out", "dist", "output root; files go to <out>/<build>/")
 	fs.Parse(args)
 	dir := filepath.Join(*out, *build)
-	m, err := tables.BuildDataset(filepath.Join(*cache, *build), dir, time.Now().UTC().Format("2006-01-02T15:04:05Z"))
+	m, err := tables.BuildDataset(filepath.Join(*cache, *build), filepath.Join(*cache, "everloot", everloot.CacheFile), dir, time.Now().UTC().Format("2006-01-02T15:04:05Z"))
 	if err != nil {
 		return err
 	}

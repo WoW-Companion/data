@@ -12,7 +12,7 @@ This repository builds the public WoW: Forever reference dataset (items, quests,
 
 ## Data sources and credit
 
-Game data comes from the WoW: Forever client's own tables. Credit: Blizzard game client data, retrieved via wago.tools. The underlying game data is Blizzard's. Only facts (ids, numbers, flags, slots, names) are published, never long-form text. See `docs/sources.md`.
+Loot sources come from Everloot (https://everloot.app), CC BY-SA 4.0. Game data comes from the WoW: Forever client's own tables. Credit: Blizzard game client data, retrieved via wago.tools. The underlying game data is Blizzard's. Only facts (ids, numbers, flags, slots, names) are published, never long-form text. See `docs/sources.md`.
 
 No game data is committed to the repository; `dist/` is git-ignored.
 
@@ -33,7 +33,7 @@ Requires Go (CGO disabled; the Makefile sets it).
 ```
 make verify    # gofmt check, go vet, go test; offline
 make fmt       # gofmt -w
-make fetch     # download client tables once into dist/cache/
+make fetch     # download client tables and Everloot drop rates once into dist/cache/
 make dataset   # build dist/<build>/ (Parquet tables and manifest.json) and verify the manifest
 make spike     # re-measure the Parquet layout (about a minute)
 ```
@@ -42,6 +42,8 @@ make spike     # re-measure the Parquet layout (about a minute)
 
 - Code is MIT, in `LICENSE`.
 - The dataset is CC BY-SA 4.0, in `LICENSE-DATA`, because it includes Everloot's open data, which is share-alike.
+
+The `loot_sources` table is Everloot's: "Data from Everloot (https://everloot.app), CC BY-SA 4.0." (see `docs/sources.md`).
 
 Never redistributed here:
 

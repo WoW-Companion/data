@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/WoW-Companion/data/internal/everloot"
 	"github.com/WoW-Companion/data/internal/fetch"
 	"github.com/WoW-Companion/data/internal/manifest"
 	"github.com/WoW-Companion/data/internal/parquetio"
@@ -46,6 +47,7 @@ type Cached struct {
 	Prov   fetch.Provenance
 	Items  []Item
 	Quests []Quest
+	Npcs   []Npc
 }
 
 // LoadCache parses the cache directory of one build into table rows.
@@ -66,37 +68,66 @@ func LoadCache(dir string) (Cached, error) {
 	}
 	c.Items = BuildItems(rows["ItemSparse"], rows["Item"])
 	c.Quests = BuildQuests(rows["QuestV2"], rows["QuestLineXQuest"], rows["QuestPOIBlob"])
+	c.Npcs = BuildNpcs(rows["Creature"], rows["CreatureDifficulty"], rows["ContentTuning"])
 	return c, nil
 }
 
 // Layout is the adopted Parquet layout for the dataset's tables.
-func Layout(bloom []string, src manifest.Source) parquetio.Options {
+func Layout(bloom, sort []string, srcs ...manifest.Source) parquetio.Options {
 	return parquetio.Options{
 		RowGroup: parquetio.DefaultRowGroup,
 		Bloom:    bloom,
-		Sort:     []string{"id"},
-		Sources:  []manifest.Source{src},
+		Sort:     sort,
+		Sources:  srcs,
 	}
 }
 
-// BuildDataset writes items.parquet, quests.parquet and manifest.json into outDir.
-func BuildDataset(cacheBuildDir, outDir, created string) (manifest.Manifest, error) {
+// EverlootSource turns a cached Everloot snapshot into a manifest source carrying its
+// attribution.
+func EverlootSource(s everloot.Snapshot) manifest.Source {
+	return manifest.Source{
+		Name:      "Everloot (https://everloot.app), corroborated drop rates",
+		Version:   s.DataAsOf,
+		Retrieved: s.Retrieved,
+		License:   everloot.License + ". " + everloot.Credit,
+	}
+}
+
+func writeTable[T any](outDir, name string, rows []T, opts parquetio.Options) (manifest.Table, error) {
+	n, sum, err := parquetio.WriteFile(filepath.Join(outDir, name), rows, opts)
+	return manifest.Table{Path: name, Rows: n, SHA256: sum, SortKeys: opts.Sort, Sources: opts.Sources}, err
+}
+
+// BuildDataset writes items, quests, npcs and loot_sources Parquet files and
+// manifest.json into outDir. everlootFile is the cached Everloot snapshot.
+func BuildDataset(cacheBuildDir, everlootFile, outDir, created string) (manifest.Manifest, error) {
 	c, err := LoadCache(cacheBuildDir)
 	if err != nil {
 		return manifest.Manifest{}, err
 	}
+	ev, err := everloot.Load(everlootFile)
+	if err != nil {
+		return manifest.Manifest{}, err
+	}
 	src := SourceFrom(c.Prov)
-	opts := Layout(nil, src) // no Bloom filters: see docs/spikes/parquet-layout.md
+	byID := Layout(nil, []string{"id"}, src) // no Bloom filters: see docs/spikes/parquet-layout.md
 	m := manifest.Manifest{DatasetVersion: c.Prov.Build, GameBuild: c.Prov.Build, Created: created}
-	rows, sum, err := parquetio.WriteFile(filepath.Join(outDir, "items.parquet"), c.Items, opts)
-	if err != nil {
+	add := func(t manifest.Table, err error) error {
+		m.Tables = append(m.Tables, t)
+		return err
+	}
+	if err := add(writeTable(outDir, "items.parquet", c.Items, byID)); err != nil {
 		return m, err
 	}
-	m.Tables = append(m.Tables, manifest.Table{Path: "items.parquet", Rows: rows, SHA256: sum, SortKeys: opts.Sort, Sources: opts.Sources})
-	rows, sum, err = parquetio.WriteFile(filepath.Join(outDir, "quests.parquet"), c.Quests, opts)
-	if err != nil {
+	if err := add(writeTable(outDir, "quests.parquet", c.Quests, byID)); err != nil {
 		return m, err
 	}
-	m.Tables = append(m.Tables, manifest.Table{Path: "quests.parquet", Rows: rows, SHA256: sum, SortKeys: opts.Sort, Sources: opts.Sources})
+	if err := add(writeTable(outDir, "npcs.parquet", c.Npcs, byID)); err != nil {
+		return m, err
+	}
+	loot := Layout(nil, []string{"item_id", "source_kind", "source_id"}, EverlootSource(ev))
+	if err := add(writeTable(outDir, "loot_sources.parquet", everloot.BuildLootSources(ev), loot)); err != nil {
+		return m, err
+	}
 	return m, manifest.Write(m, filepath.Join(outDir, "manifest.json"))
 }

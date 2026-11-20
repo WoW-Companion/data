@@ -13,7 +13,7 @@ Ruling and limits:
 - Never publish long-form text: quest descriptions, progress and completion text, item flavour text, book pages or gossip.
 - Extracting the tables from the installed client is the long-term route, so the dataset does not depend on a site without published terms.
 
-Route and pipeline: `/db2/{table}/csv?version={build}`, one request per table, one at a time with a pause between, cached under `dist/cache/{build}/` (git-ignored) with a `provenance.json` (source, product, build, retrieved time, the ruling as the license basis). Tables fetched: `ItemSparse`, `Item`, `QuestV2`, `QuestLineXQuest`, `QuestPOIBlob`.
+Route and pipeline: `/db2/{table}/csv?version={build}`, one request per table, one at a time with a pause between, cached under `dist/cache/{build}/` (git-ignored) with a `provenance.json` (source, product, build, retrieved time, the ruling as the license basis). Tables fetched: `ItemSparse`, `Item`, `QuestV2`, `QuestLineXQuest`, `QuestPOIBlob`, `Creature`, `CreatureDifficulty`, `ContentTuning` (the last three feed `npcs`: name, classification, creature type, family, faction and level range; no title or gossip text, no spawn coordinates).
 
 Product confirmation (2026-11-20): product `wowf` is the WoW: Forever client.
 
@@ -30,3 +30,18 @@ Checked on 2026-11-20:
 - `https://wago.tools/api/builds/latest` lists product `wowf` at version `1.60.1.71037`.
 
 The site states no terms; the ruling above is what permits use.
+
+## Everloot (loot sources)
+
+Status: **usable. Everloot's data is CC BY-SA 4.0, credited, with a paginated JSON API that needs no key.** Checked 2026-11-20.
+
+- Licence: the repository README (https://github.com/Everloot/everloot) says "Published data: CC BY-SA 4.0, credited to Everloot contributors" (code is AGPL-3.0). `docs/DATA_POLICY.md` in that repository says: "Anyone may read it, copy it and build on it under CC BY-SA 4.0. What you build from it stays under the same licence." The site footer (https://everloot.app/docs) says "Everloot data CC BY-SA 4.0".
+- Attribution wording (`docs/DATA_POLICY.md`): "Data from Everloot (https://everloot.app), CC BY-SA 4.0." Republishing without credit breaks the licence. Every answer also carries an `attribution` object and `X-Everloot-Licence`, `X-Everloot-Credit` and `Link` headers.
+- Route: `GET https://everloot.app/api/rollups/drops?offset=&limit=` (OpenAPI 3.1 at https://everloot.app/api/openapi.json; API reference https://everloot.app/docs/api). "Corroborated drop rates with loot-window counts." Lists answer with `total` and `next` (the next page's full URL, `null` on the last); no key is needed to read. Without a key the API allows 30 requests per hour per address and 500 records per page; a free key (made at /docs/api/keys after signing in with Battle.net) raises that to 2,000 requests per hour and 5,000 records per page. A 429 carries `Retry-After`. `docs/DATA_POLICY.md` also names a `corpus.ndjson` open-data file but gives no URL; the pipeline does not use it.
+- Rules (`docs/DATA_POLICY.md`): "No crawlers, no copying another database's rows, guides or text." The machine-readable endpoints are the intended route; the pipeline makes one request per page, 2 s apart, and stops on any error.
+- Update cadence: the corpus snapshot "rebuilt every 10 minutes" (repository README); every answer's `dataAsOf` says when the uploads behind it were current, and the pipeline records it as the table's version.
+- Data model: a rate row carries `sourceNpcId` or `sourceObjectId`, `itemId`, `kills` (loot windows opened, not kills), `drops`, `rate` (drops / kills), `rateLow` and `rateHigh` (95% Wilson range), `reporters` (distinct installs), `public`, and `tier` (`reported`, `verified` or `confirmed`).
+
+Pipeline: `wowc-data fetch` follows `next` through every page and caches the union as `dist/cache/everloot/drops.json` (git-ignored) with the retrieval time, `dataAsOf` and attribution. `loot_sources` keeps rows with `public: true` that name a creature or object source; values are stored as Everloot gives them. The table's Parquet metadata and manifest source carry the credit line and `dataAsOf`.
+
+Not covered: Everloot's drop list has no vendor, crafted or quest-reward sources, and the client tables fetched here carry no quest reward items, so `loot_sources` holds kinds `creature` and `object` only.
