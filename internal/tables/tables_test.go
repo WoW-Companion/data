@@ -98,3 +98,36 @@ func TestBuildQuests(t *testing.T) {
 		t.Errorf("quest 9 should have nulls: %+v", got[1])
 	}
 }
+
+func TestBuildNpcs(t *testing.T) {
+	creatures := []Row{
+		{"ID": "30", "Name_lang": "Boss", "Classification": "3", "CreatureType": "7", "Title_lang": "never kept"},
+		{"ID": "10", "Name_lang": "Wolf", "Classification": "0", "CreatureType": "1", "CreatureFamily": "1"},
+		{"ID": "20", "Name_lang": "Bare"},
+	}
+	diffs := []Row{
+		{"ID": "2", "CreatureID": "10", "ContentTuningID": "6", "FactionID": "14"},
+		{"ID": "1", "CreatureID": "10", "ContentTuningID": "5", "FactionID": "0"},
+		{"ID": "3", "CreatureID": "30", "ContentTuningID": "99"},
+		{"ID": "4", "CreatureID": "20", "ContentTuningID": "7"},
+	}
+	tunings := []Row{
+		{"ID": "5", "MinLevel": "3", "MaxLevel": "5"},
+		{"ID": "6", "MinLevel": "4", "MaxLevel": "8"},
+		{"ID": "7", "MinLevel": "1", "MaxLevel": "0"},
+	}
+	got := BuildNpcs(creatures, diffs, tunings)
+	if len(got) != 3 || got[0].ID != 10 || got[1].ID != 20 || got[2].ID != 30 {
+		t.Fatalf("not sorted by id: %+v", got)
+	}
+	w := got[0]
+	if w.Name != "Wolf" || w.FamilyID != 1 || w.FactionID == nil || *w.FactionID != 14 || *w.MinLevel != 3 || *w.MaxLevel != 8 {
+		t.Errorf("wolf: %+v", w)
+	}
+	if got[1].MinLevel != nil || got[1].FactionID != nil {
+		t.Errorf("max level 0 means no range: %+v", got[1])
+	}
+	if b := got[2]; b.Classification != 3 || b.CreatureType != 7 || b.MinLevel != nil {
+		t.Errorf("boss: %+v", b)
+	}
+}
