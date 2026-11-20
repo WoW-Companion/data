@@ -1,0 +1,195 @@
+// Package tables builds the `items` and `quests` tables from cached client CSVs.
+//
+// Only facts are kept: ids, numbers, flags, slots and names. Long-form text columns
+// (item descriptions, quest text) are never read into the output.
+package tables
+
+import (
+	"encoding/csv"
+	"io"
+	"slices"
+	"strconv"
+)
+
+const statSlots = 10
+
+// Stats status values for Item.StatsStatus.
+const (
+	StatsKnown   = "known"
+	StatsNone    = "none"
+	StatsUnknown = "unknown"
+)
+
+// Gear classes carry stats when equippable: weapons (2) and armor (4); quality 2
+// (uncommon) and up is expected to carry stats.
+const minStattedQuality = 2
+
+func isGearClass(c int) bool { return c == 2 || c == 4 }
+
+// Item is one row of the items table.
+type Item struct {
+	ID                 int32   `parquet:"id"`
+	Name               string  `parquet:"name"`
+	ItemLevel          int16   `parquet:"item_level"`
+	RequiredLevel      int16   `parquet:"required_level"`
+	Quality            int8    `parquet:"quality"`
+	ClassID            int8    `parquet:"class_id"`
+	SubclassID         int8    `parquet:"subclass_id"`
+	Slot               int8    `parquet:"slot"`
+	AllowableClassMask int32   `parquet:"allowable_class_mask"`
+	Bonding            int8    `parquet:"bonding"`
+	StatTypes          []int16 `parquet:"stat_types,list"`
+	StatsStatus        string  `parquet:"stats_status"`
+}
+
+// Quest is one row of the quests table. The client's quest tables carry no name,
+// level, zone text or rewards; only what exists is kept.
+type Quest struct {
+	ID            int32  `parquet:"id"`
+	UniqueBitFlag int32  `parquet:"unique_bit_flag"`
+	UIThemeID     int32  `parquet:"ui_theme_id"`
+	QuestLineID   *int32 `parquet:"quest_line_id,optional"`
+	MapID         *int32 `parquet:"map_id,optional"`
+	UIMapID       *int32 `parquet:"ui_map_id,optional"`
+}
+
+// Row is one CSV record keyed by header name.
+type Row map[string]string
+
+// ReadCSV parses a client CSV export into rows.
+func ReadCSV(r io.Reader) ([]Row, error) {
+	cr := csv.NewReader(r)
+	cr.FieldsPerRecord = -1
+	head, err := cr.Read()
+	if err == io.EOF {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rows []Row
+	for {
+		rec, err := cr.Read()
+		if err == io.EOF {
+			return rows, nil
+		}
+		if err != nil {
+			return nil, err
+		}
+		row := make(Row, len(head))
+		for i, h := range head {
+			if i < len(rec) {
+				row[h] = rec[i]
+			}
+		}
+		rows = append(rows, row)
+	}
+}
+
+func (r Row) int(key string, def int) int {
+	v := r[key]
+	if v == "" {
+		return def
+	}
+	n, err := strconv.Atoi(v)
+	if err != nil {
+		return def
+	}
+	return n
+}
+
+// StatTypes returns the stat type ids the client lists for an item (-1 marks an empty slot).
+func StatTypes(r Row) []int16 {
+	out := []int16{}
+	for i := 0; i < statSlots; i++ {
+		if s := r.int("StatModifier_bonusStat_"+strconv.Itoa(i), -1); s != -1 {
+			out = append(out, int16(s))
+		}
+	}
+	return out
+}
+
+// StatsStatusOf is `known` when stats are listed; `unknown` when a stat-bearing piece
+// lists none; `none` otherwise.
+func StatsStatusOf(stats []int16, classID, slot, quality int) string {
+	if len(stats) > 0 {
+		return StatsKnown
+	}
+	if isGearClass(classID) && slot != 0 && quality >= minStattedQuality {
+		return StatsUnknown
+	}
+	return StatsNone
+}
+
+// BuildItems joins ItemSparse to Item and returns rows sorted by id.
+func BuildItems(sparse, items []Row) []Item {
+	base := make(map[int]Row, len(items))
+	for _, r := range items {
+		base[r.int("ID", 0)] = r
+	}
+	out := make([]Item, 0, len(sparse))
+	for _, r := range sparse {
+		id := r.int("ID", 0)
+		b := base[id]
+		stats := StatTypes(r)
+		classID := b.int("ClassID", 0)
+		slot := r.int("InventoryType", 0)
+		quality := r.int("OverallQualityID", 0)
+		out = append(out, Item{
+			ID:                 int32(id),
+			Name:               r["Display_lang"],
+			ItemLevel:          int16(r.int("ItemLevel", 0)),
+			RequiredLevel:      int16(r.int("RequiredLevel", 0)),
+			Quality:            int8(quality),
+			ClassID:            int8(classID),
+			SubclassID:         int8(b.int("SubclassID", 0)),
+			Slot:               int8(slot),
+			AllowableClassMask: int32(r.int("AllowableClass", -1)),
+			Bonding:            int8(r.int("Bonding", 0)),
+			StatTypes:          stats,
+			StatsStatus:        StatsStatusOf(stats, classID, slot, quality),
+		})
+	}
+	slices.SortStableFunc(out, func(a, b Item) int { return int(a.ID) - int(b.ID) })
+	return out
+}
+
+func firstBy(rows []Row, key string) map[int]Row {
+	sorted := slices.Clone(rows)
+	slices.SortStableFunc(sorted, func(a, b Row) int { return a.int("ID", 0) - b.int("ID", 0) })
+	m := make(map[int]Row, len(rows))
+	for _, r := range sorted {
+		q := r.int(key, 0)
+		if _, ok := m[q]; !ok {
+			m[q] = r
+		}
+	}
+	return m
+}
+
+func ptr(v int) *int32 { x := int32(v); return &x }
+
+// BuildQuests returns quests with their first quest line and first map, sorted by id.
+func BuildQuests(quests, lines, pois []Row) []Quest {
+	lineOf := firstBy(lines, "QuestID")
+	poiOf := firstBy(pois, "QuestID")
+	out := make([]Quest, 0, len(quests))
+	for _, r := range quests {
+		id := r.int("ID", 0)
+		q := Quest{
+			ID:            int32(id),
+			UniqueBitFlag: int32(r.int("UniqueBitFlag", 0)),
+			UIThemeID:     int32(r.int("UiQuestDetailsThemeID", 0)),
+		}
+		if l, ok := lineOf[id]; ok {
+			q.QuestLineID = ptr(l.int("QuestLineID", 0))
+		}
+		if p, ok := poiOf[id]; ok {
+			q.MapID = ptr(p.int("MapID", 0))
+			q.UIMapID = ptr(p.int("UiMapID", 0))
+		}
+		out = append(out, q)
+	}
+	slices.SortStableFunc(out, func(a, b Quest) int { return int(a.ID) - int(b.ID) })
+	return out
+}

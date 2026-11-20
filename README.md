@@ -18,22 +18,24 @@ No game data is committed to the repository; `dist/` is git-ignored.
 
 ## Layout
 
-- `src/wowc_data/`: pipeline code (manifest model and validation, provenance stamping, client table fetch and build)
-- `spikes/`: re-runnable measurements (Parquet layout)
+- `cmd/wowc-data/`: the CLI (`fetch`, `build`, `verify-manifest`)
+- `internal/`: pipeline code (manifest model and schema check, provenance stamping, client table fetch and build, Parquet writer)
+- `spikes/`: re-runnable measurements (Parquet layout, Go benchmarks)
 - `schemas/`: JSON Schemas for the published files
 - `curated/`: hand-maintained YAML
-- `tests/`: tests
 - `dist/`: build output (git-ignored)
 - `docs/`: documentation
 
 ## Development
 
-Requires [uv](https://docs.astral.sh/uv/).
+Requires Go (CGO disabled; the Makefile sets it).
 
 ```
-make verify   # ruff check, ruff format --check, pytest
-make fmt      # apply lint fixes and formatting
-uv run python -m wowc_data.build   # fetch client tables once, build dist/tables/
+make verify    # gofmt check, go vet, go test; offline
+make fmt       # gofmt -w
+make fetch     # download client tables once into dist/cache/
+make dataset   # build dist/<build>/ (Parquet tables and manifest.json) and verify the manifest
+make spike     # re-measure the Parquet layout (about a minute)
 ```
 
 ## Licensing
