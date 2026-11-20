@@ -10,11 +10,16 @@ This repository builds the public WoW: Forever reference dataset (items, quests,
 - A manifest per dataset version with row counts, sha256 hashes, sort keys and per-source provenance.
 - `curated/`: hand-maintained YAML (stat weights, talent builds, profession routes).
 
-No game data is in the repository yet.
+## Data sources and credit
+
+Game data comes from the WoW: Forever client's own tables. Credit: Blizzard game client data, retrieved via wago.tools. The underlying game data is Blizzard's. Only facts (ids, numbers, flags, slots, names) are published, never long-form text. See `docs/sources.md`.
+
+No game data is committed to the repository; `dist/` is git-ignored.
 
 ## Layout
 
-- `src/wowc_data/`: pipeline code (manifest model and validation, provenance stamping)
+- `src/wowc_data/`: pipeline code (manifest model and validation, provenance stamping, client table fetch and build)
+- `spikes/`: re-runnable measurements (Parquet layout)
 - `schemas/`: JSON Schemas for the published files
 - `curated/`: hand-maintained YAML
 - `tests/`: tests
@@ -28,6 +33,7 @@ Requires [uv](https://docs.astral.sh/uv/).
 ```
 make verify   # ruff check, ruff format --check, pytest
 make fmt      # apply lint fixes and formatting
+uv run python -m wowc_data.build   # fetch client tables once, build dist/tables/
 ```
 
 ## Licensing
