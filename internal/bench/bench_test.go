@@ -5,6 +5,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/WoW-Companion/data/internal/names"
 	"github.com/WoW-Companion/data/internal/parquetio"
 )
 
@@ -52,5 +53,23 @@ func TestRunSmoke(t *testing.T) {
 func TestRunNoFiles(t *testing.T) {
 	if _, err := Run(t.TempDir(), Config{}); err == nil {
 		t.Error("an empty directory must be an error")
+	}
+}
+
+func TestNamesSmoke(t *testing.T) {
+	dir := t.TempDir()
+	var e []names.Entry
+	for i := 0; i < 250; i++ {
+		e = append(e, names.Entry{Table: names.Items, ID: int32(i), Name: "Item " + strings.Repeat("x", i%7) + string(rune('a'+i%26))})
+	}
+	if _, _, err := parquetio.WriteFile(filepath.Join(dir, names.File), names.Build(e), parquetio.Options{RowGroup: 100, Bloom: []string{"norm"}, Sort: names.SortKeys}); err != nil {
+		t.Fatal(err)
+	}
+	nc, err := Names(dir, Config{Local: 5, HTTP: 3})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if nc.Rows == 0 || nc.Exact.HTTPCold.Reqs == 0 || nc.Prefix.LocalCold.Bytes == 0 || !strings.Contains(NamesMarkdown(nc, Config{}), "prefix") {
+		t.Errorf("names bench: %+v", nc)
 	}
 }

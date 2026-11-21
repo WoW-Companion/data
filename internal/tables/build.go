@@ -9,6 +9,7 @@ import (
 	"github.com/WoW-Companion/data/internal/everloot"
 	"github.com/WoW-Companion/data/internal/fetch"
 	"github.com/WoW-Companion/data/internal/manifest"
+	"github.com/WoW-Companion/data/internal/names"
 	"github.com/WoW-Companion/data/internal/parquetio"
 )
 
@@ -210,6 +211,12 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, outDir, created strin
 		return m, err
 	}
 	if err := add(writeTable(outDir, "quest_lines.parquet", c.QuestLines, Layout(nil, []string{"line_id", "position", "quest_id"}, src))); err != nil {
+		return m, err
+	}
+	// names.parquet: the prebuilt name index. One row group per DefaultRowGroup rows
+	// (docs/layout.md has the measurements) and a Bloom filter on norm for exact names.
+	nameRows := NameIndex(c)
+	if err := add(writeTable(outDir, names.File, nameRows, Layout([]string{"norm"}, names.SortKeys, src))); err != nil {
 		return m, err
 	}
 	return m, manifest.Write(m, filepath.Join(outDir, "manifest.json"))

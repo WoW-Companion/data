@@ -13,6 +13,7 @@ import (
 	"github.com/WoW-Companion/data/internal/everloot"
 	"github.com/WoW-Companion/data/internal/fetch"
 	"github.com/WoW-Companion/data/internal/manifest"
+	"github.com/WoW-Companion/data/internal/names"
 	"github.com/WoW-Companion/data/internal/release"
 	"github.com/WoW-Companion/data/internal/schema"
 	"github.com/WoW-Companion/data/internal/tables"
@@ -182,6 +183,13 @@ func runBench(args []string) error {
 		return err
 	}
 	fmt.Print(bench.Markdown(filepath.Base(dir), cfg, ts))
+	if _, err := os.Stat(filepath.Join(dir, names.File)); err == nil {
+		nc, err := bench.Names(dir, cfg)
+		if err != nil {
+			return err
+		}
+		fmt.Print(bench.NamesMarkdown(nc, cfg))
+	}
 	return nil
 }
 
