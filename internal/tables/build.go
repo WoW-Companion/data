@@ -48,6 +48,7 @@ type Cached struct {
 	Items  []Item
 	Quests []Quest
 	Npcs   []Npc
+	UiMaps []Row
 
 	TalentTrees []TalentTree
 	TalentNodes []TalentNode
@@ -78,6 +79,7 @@ func LoadCache(dir string) (Cached, error) {
 	c.Items = BuildItems(rows["ItemSparse"], rows["Item"])
 	c.Quests = BuildQuests(rows["QuestV2"], rows["QuestLineXQuest"], rows["QuestPOIBlob"], rows["UiMap"])
 	c.Npcs = BuildNpcs(rows["Creature"], rows["CreatureDifficulty"])
+	c.UiMaps = rows["UiMap"]
 	in := TalentInput{
 		Groups: rows["TraitNodeGroup"], GroupNodes: rows["TraitNodeGroupXTraitNode"], Conds: rows["TraitCond"],
 		SkillTrees: rows["SkillLineXTraitTree"], SkillClasses: rows["SkillRaceClassInfo"], Classes: rows["ChrClasses"],
@@ -144,6 +146,7 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, outDir, created strin
 	if err != nil {
 		return manifest.Manifest{}, err
 	}
+	ApplyNpcZones(c.Npcs, c.UiMaps, everloot.BuildNpcZones(ev.NpcZones))
 	builds, err := LoadTalentBuilds(talentsDir)
 	if err != nil {
 		return manifest.Manifest{}, err
@@ -194,8 +197,17 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, outDir, created strin
 	}
 	loot := Layout(nil, []string{"item_id", "source_kind", "source_id"}, EverlootSource(ev), src)
 	rows := MergeLootSources(everloot.BuildLootSources(ev), BuildCraftedSources(c.Recipes))
+	creatures, inNpcs, withZone := ZoneCoverage(c.Npcs, rows)
+	fmt.Printf("creature loot sources: %d, creature in npcs: %d, with a zone: %d (%.1f%%)\n", creatures, inNpcs, withZone, pctOf(withZone, creatures))
 	if err := add(writeTable(outDir, "loot_sources.parquet", rows, loot)); err != nil {
 		return m, err
 	}
 	return m, manifest.Write(m, filepath.Join(outDir, "manifest.json"))
+}
+
+func pctOf(n, total int) float64 {
+	if total == 0 {
+		return 0
+	}
+	return 100 * float64(n) / float64(total)
 }

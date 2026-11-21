@@ -63,7 +63,7 @@ var Tables = []Table{
 		{"zone_id", "QuestPOIBlob", "UiMap id of the first point of interest when non-zero; null otherwise."},
 		{"zone_name", "UiMap", "Name of that UiMap; null when the UiMap table has no named row."},
 	}},
-	{"npcs", tables.Npc{}, wago + "Creature, CreatureDifficulty", "One row per creature, sorted by id.", []Col{
+	{"npcs", tables.Npc{}, wago + "Creature, CreatureDifficulty, UiMap; Everloot located_in", "One row per creature, sorted by id. Join loot_sources (source_kind creature) on source_id = id for the zone of a drop.", []Col{
 		{"id", "", "Creature id."},
 		{"name", "", "Creature name."},
 		{"classification", "", "Client value: 0 normal, 1 elite, 2 rare elite, 3 boss, 4 rare."},
@@ -72,6 +72,9 @@ var Tables = []Table{
 		{"faction_template_id", "CreatureDifficulty", "Faction template id; null when the creature has no difficulty row."},
 		{"min_level", "CreatureDifficulty", "Lowest level; null when the creature has no difficulty row."},
 		{"max_level", "CreatureDifficulty", "Highest level; null when the creature has no difficulty row."},
+		{"zone_id", "Everloot located_in", "UiMap id of the zone Everloot observed the creature in (most installs, lowest id on a tie); null when Everloot places it nowhere."},
+		{"zone_name", "UiMap", "Name of that UiMap; null with zone_id or when UiMap has no named row."},
+		{"zone_source", "", "\"everloot located_in\" when zone_id is set; null otherwise."},
 	}},
 	{"talent_trees", tables.TalentTree{}, wago + "TraitNodeGroup, TraitCond, SkillLineXTraitTree, SkillRaceClassInfo, ChrClasses", "One row per talent group of a trait tree.", []Col{
 		{"tree_id", "", "Trait tree id."},

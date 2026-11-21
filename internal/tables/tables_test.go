@@ -438,3 +438,22 @@ func TestBuildInstances(t *testing.T) {
 		t.Errorf("creature id only on a unique exact name: %+v", bosses)
 	}
 }
+
+func TestApplyNpcZones(t *testing.T) {
+	npcs := []Npc{{ID: 1}, {ID: 2}, {ID: 3}}
+	uiMaps := []Row{{"ID": "1413", "Name_lang": "The Barrens"}, {"ID": "9", "Name_lang": ""}}
+	ApplyNpcZones(npcs, uiMaps, map[int32]everloot.NpcZone{1: {ZoneID: 1413}, 2: {ZoneID: 9}})
+	if z := npcs[0]; z.ZoneID == nil || *z.ZoneID != 1413 || z.ZoneName == nil || *z.ZoneName != "The Barrens" || z.ZoneSource == nil || *z.ZoneSource != ZoneSourceEverloot {
+		t.Errorf("named zone: %+v", z)
+	}
+	if z := npcs[1]; z.ZoneID == nil || *z.ZoneID != 9 || z.ZoneName != nil || z.ZoneSource == nil {
+		t.Errorf("unnamed UiMap keeps the id and no name: %+v", z)
+	}
+	if z := npcs[2]; z.ZoneID != nil || z.ZoneName != nil || z.ZoneSource != nil {
+		t.Errorf("no source, no zone: %+v", z)
+	}
+	loot := []everloot.LootSource{{SourceKind: everloot.KindCreature, SourceID: 1}, {SourceKind: everloot.KindCreature, SourceID: 3}, {SourceKind: everloot.KindCreature, SourceID: 99}, {SourceKind: everloot.KindObject, SourceID: 1}}
+	if c, in, z := ZoneCoverage(npcs, loot); c != 3 || in != 2 || z != 1 {
+		t.Errorf("coverage %d %d %d", c, in, z)
+	}
+}

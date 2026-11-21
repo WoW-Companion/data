@@ -45,7 +45,11 @@ func TestFetchFollowsNextAndCaches(t *testing.T) {
 	srv = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		hits++
 		if r.URL.Path == EdgesPath {
-			json.NewEncoder(w).Encode(map[string]any{"edges": []Edge{{FromKind: "item", FromID: 1, Rel: RelReward, ToKind: "quest", ToID: 9, Installs: 2}}, "next": nil})
+			e := Edge{FromKind: "item", FromID: 1, Rel: RelReward, ToKind: "quest", ToID: 9, Installs: 2}
+			if r.URL.Query().Get("rel") == RelLocated {
+				e = Edge{FromKind: "npc", FromID: 2, Rel: RelLocated, ToKind: "zone", ToID: 1413, Installs: 3}
+			}
+			json.NewEncoder(w).Encode(map[string]any{"edges": []Edge{e}, "next": nil})
 			return
 		}
 		p := map[string]any{"dataAsOf": "d", "attribution": Attribution{Credit: Credit}}
@@ -61,10 +65,10 @@ func TestFetchFollowsNextAndCaches(t *testing.T) {
 	defer srv.Close()
 	dir := t.TempDir()
 	s, err := Fetch(srv.URL, dir, "now")
-	if err != nil || len(s.Rates) != 2 || len(s.QuestRewards) != 1 || s.DataAsOf != "d" || s.Attribution.Credit != Credit {
+	if err != nil || len(s.Rates) != 2 || len(s.QuestRewards) != 1 || len(s.NpcZones) != 1 || s.DataAsOf != "d" || s.Attribution.Credit != Credit {
 		t.Fatalf("%+v, %v", s, err)
 	}
-	if _, err := Fetch(srv.URL, dir, "later"); err != nil || hits != 3 {
+	if _, err := Fetch(srv.URL, dir, "later"); err != nil || hits != 4 {
 		t.Fatalf("second fetch must use the cache: hits=%d err=%v", hits, err)
 	}
 	if l, err := Load(dir + "/" + CacheFile); err != nil || l.Retrieved != "now" || len(l.Rates) != 2 {
@@ -101,5 +105,20 @@ func TestBuildLootSourcesQuestRewards(t *testing.T) {
 	got := BuildLootSources(s)
 	if len(got) != 1 || got[0].SourceKind != KindQuest || got[0].SourceID != 50 || got[0].ItemID != 7 || got[0].Reporters != 4 || *got[0].Tier != "observed" {
 		t.Fatalf("%+v", got)
+	}
+}
+
+func TestBuildNpcZones(t *testing.T) {
+	loc := func(npc, zone, installs int32) Edge {
+		return Edge{FromKind: "npc", FromID: npc, Rel: RelLocated, ToKind: "zone", ToID: zone, Installs: installs}
+	}
+	bad := loc(9, 5, 1)
+	bad.Rel = "drops_in"
+	obj := loc(8, 5, 1)
+	obj.FromKind = "object"
+	got := BuildNpcZones([]Edge{loc(1, 20, 3), loc(1, 10, 3), loc(1, 30, 2), loc(2, 7, 1), loc(2, 8, 4), loc(3, 0, 1), loc(0, 4, 1), bad, obj})
+	want := map[int32]NpcZone{1: {10, 3}, 2: {8, 4}}
+	if len(got) != len(want) || got[1] != want[1] || got[2] != want[2] {
+		t.Errorf("got %+v want %+v", got, want)
 	}
 }
