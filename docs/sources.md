@@ -45,3 +45,13 @@ Status: **usable. Everloot's data is CC BY-SA 4.0, credited, with a paginated JS
 Pipeline: `wowc-data fetch` follows `next` through every page and caches the union as `dist/cache/everloot/drops.json` (git-ignored) with the retrieval time, `dataAsOf` and attribution. `loot_sources` keeps rows with `public: true` that name a creature or object source; values are stored as Everloot gives them. The table's Parquet metadata and manifest source carry the credit line and `dataAsOf`.
 
 Quest rewards: neither the client tables fetched here (no quest reward items; QuestV2 has three columns, and no QuestPackageItem or QuestObjective table exists for this build) nor the drops route carry them. `loot_sources` takes `quest reward` rows from Everloot's `GET /api/edges?rel=reward_from` (item to quest, `installs` as `reporters`, `evidence` as `tier`; rate fields zero). Checked 2026-11-21: that relation held 0 rows. Not covered: vendor and crafted sources.
+
+## Talent trees (client tables)
+
+Checked 2026-11-21 against build `1.60.1.71037`, same route and ruling as above. This client generation uses the trait-tree family (a classic-style `Talent`/`TalentTab` pair also exists and is not used).
+
+Tables fetched: `TraitNode`, `TraitNodeGroup`, `TraitNodeGroupXTraitNode`, `TraitNodeXTraitNodeEntry`, `TraitNodeEntry`, `TraitDefinition`, `TraitEdge`, `TraitCond`, `SkillLineXTraitTree`, `SkillRaceClassInfo`, `ChrClasses`, `SpellName`.
+
+- `talent_trees`: one row per `TraitNodeGroup` (tree, group, order by group id). `required_points` is `TraitCond.SpentAmountRequired` for the group. The class comes from `SkillLineXTraitTree` (tree to skill line), `SkillRaceClassInfo` (skill line to class mask) and `ChrClasses`; 9 trees resolve to a class, the others (34 groups) have none.
+- `talent_nodes`: one row per `TraitNode`. A node sits in many groups, so `group_ids` is a list. Spell, name and max rank come from the node's first entry by `_Index` (`TraitNodeXTraitNodeEntry`, `TraitNodeEntry`, `TraitDefinition`); the name is the definition's override name or, if empty, the spell's name from `SpellName`. `prerequisite_node_ids` are the `LeftTraitNodeID`s of `TraitEdge` rows pointing at the node, whatever the edge type.
+- Names the tables do not carry: no table holds a tree or group name (`TraitTree.TitleText_lang` and `TraitNodeGroup` have no name), so `group_name` is null. The class's specialisation names exist only as skill lines (priest: "Holy", "Shadow Magic", "Discipline") with no key tying them to a group.
