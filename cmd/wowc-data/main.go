@@ -12,6 +12,7 @@ import (
 	"github.com/WoW-Companion/data/internal/fetch"
 	"github.com/WoW-Companion/data/internal/manifest"
 	"github.com/WoW-Companion/data/internal/release"
+	"github.com/WoW-Companion/data/internal/schema"
 	"github.com/WoW-Companion/data/internal/tables"
 )
 
@@ -21,6 +22,8 @@ commands:
   fetch            download client tables into the cache (once per build)
   build            build Parquet tables and manifest.json into dist/<build>/
   verify-manifest  check manifest.json against the schema and the files it lists
+  schema           write the dataset schema reference (docs/schema.md)
+  coverage         print per-table row counts and null or zero shares of a built dataset
   release-check    print the latest Forever build and whether its dataset release exists
 `
 
@@ -37,6 +40,10 @@ func main() {
 		err = runBuild(os.Args[2:])
 	case "verify-manifest":
 		err = runVerify(os.Args[2:])
+	case "schema":
+		err = runSchema(os.Args[2:])
+	case "coverage":
+		err = runCoverage(os.Args[2:])
 	case "release-check":
 		err = runReleaseCheck(os.Args[2:])
 	default:
@@ -99,6 +106,28 @@ func runVerify(args []string) error {
 		return err
 	}
 	fmt.Println("manifest ok:", path)
+	return nil
+}
+
+func runSchema(args []string) error {
+	fs := flag.NewFlagSet("schema", flag.ExitOnError)
+	out := fs.String("out", "docs/schema.md", "file to write")
+	fs.Parse(args)
+	return os.WriteFile(*out, []byte(schema.Markdown()), 0o644)
+}
+
+func runCoverage(args []string) error {
+	fs := flag.NewFlagSet("coverage", flag.ExitOnError)
+	fs.Parse(args)
+	if fs.NArg() != 1 {
+		return fmt.Errorf("usage: wowc-data coverage <dataset dir>")
+	}
+	dir := filepath.Clean(fs.Arg(0))
+	tcs, err := schema.Coverage(dir)
+	if err != nil {
+		return err
+	}
+	fmt.Print(schema.CoverageMarkdown(filepath.Base(dir), tcs))
 	return nil
 }
 
