@@ -5,13 +5,14 @@ package fetch
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
 	"slices"
 	"time"
+
+	"github.com/WoW-Companion/data/internal/httpget"
 )
 
 const (
@@ -77,7 +78,10 @@ func Build(baseURL, build, cacheDir string, tables []string) (Provenance, error)
 		}
 	}
 	fetched := false
-	client := &http.Client{Timeout: 120 * time.Second}
+	client := &httpget.Getter{
+		Client: &http.Client{Timeout: 120 * time.Second}, UserAgent: UserAgent, Attempts: 4, Base: 15 * time.Second,
+		MaxWait: 10 * time.Minute, Budget: 20 * time.Minute, Sleep: time.Sleep,
+	}
 	for _, t := range tables {
 		dest := filepath.Join(raw, t+".csv")
 		if _, err := os.Stat(dest); err == nil {
@@ -106,21 +110,8 @@ func Build(baseURL, build, cacheDir string, tables []string) (Provenance, error)
 	return *prov, nil
 }
 
-func download(c *http.Client, u, dest string) error {
-	req, err := http.NewRequest(http.MethodGet, u, nil)
-	if err != nil {
-		return err
-	}
-	req.Header.Set("User-Agent", UserAgent)
-	resp, err := c.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("HTTP %d", resp.StatusCode)
-	}
-	body, err := io.ReadAll(resp.Body)
+func download(c *httpget.Getter, u, dest string) error {
+	body, err := c.Get(u)
 	if err != nil {
 		return err
 	}

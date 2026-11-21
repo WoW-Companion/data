@@ -13,7 +13,11 @@ The release notes start with what changed since the previous dataset release, fr
 
 ## When
 
-The `dataset` workflow runs daily (06:17 UTC) and on manual dispatch. It asks wago.tools for the latest `wowf` build (`wowc-data release-check`); if `dataset-<build>` already exists it stops, otherwise it fetches, builds, runs `verify-manifest`, and publishes. A release is never rewritten.
+The `dataset` workflow runs daily (06:17 UTC) and on manual dispatch. It asks wago.tools for the latest `wowf` build (`wowc-data release-check`); if `dataset-<build>` already exists it stops, otherwise it fetches, builds, runs `verify-manifest`, and publishes (`scripts/pack-and-publish.sh`: archive, stats, notes from `wowc-data release-notes`, `gh release create`). A release is never rewritten.
+
+Everloot allows 30 requests an hour per address without a key and answers 429 with `Retry-After` (about 23 minutes). A runner's address is shared, so `fetch` waits out a 429 (one wait of up to 30 minutes, 40 minutes in all); wago.tools downloads retry the same way on 429 and 5xx, up to 20 minutes. The job's timeout is 120 minutes.
+
+`make release-dryrun` runs the whole job on a machine, in the same order, without publishing; it needs the network and `zstd`.
 
 ## Verifying a download
 

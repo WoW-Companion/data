@@ -3,6 +3,7 @@ package release
 import (
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
@@ -62,6 +63,31 @@ func TestExists(t *testing.T) {
 			got, err := Exists(srv.URL, "o/r", Tag("1.2.3.4"), "tok")
 			if (err != nil) != c.wantErr || got != c.want {
 				t.Fatalf("got %v, %v; want %v, err=%v", got, err, c.want, c.wantErr)
+			}
+		})
+	}
+}
+
+func TestNotes(t *testing.T) {
+	cases := []struct {
+		name, prev, changes string
+		has, lacks          []string
+	}{
+		{"first release", "", "", []string{"First release: there is no earlier dataset", "game build 1.2.3.4", "CC BY-SA 4.0", "Everloot", "wago.tools"}, []string{"Changes since"}},
+		{"with a previous release", "dataset-1.2.3.3", "## Tables\n\n- items\n\n", []string{"Changes since dataset-1.2.3.3.\n\n## Tables\n\n- items\n\nWoW: Forever", "Verify:"}, []string{"First release"}},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			got := Notes("1.2.3.4", c.prev, c.changes)
+			for _, s := range c.has {
+				if !strings.Contains(got, s) {
+					t.Errorf("notes lack %q:\n%s", s, got)
+				}
+			}
+			for _, s := range c.lacks {
+				if strings.Contains(got, s) {
+					t.Errorf("notes hold %q:\n%s", s, got)
+				}
 			}
 		})
 	}
