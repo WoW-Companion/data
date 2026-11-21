@@ -122,3 +122,19 @@ func TestBuildNpcZones(t *testing.T) {
 		t.Errorf("got %+v want %+v", got, want)
 	}
 }
+
+func TestBuildNpcNames(t *testing.T) {
+	rates := []Rate{
+		{SourceNpcID: 1, SourceName: "Zed", SourceNameTier: "reported", Public: true},
+		{SourceNpcID: 1, SourceName: "Alf", SourceNameTier: "confirmed", Public: true},
+		{SourceNpcID: 2, SourceName: "Beta", Public: true},
+		{SourceNpcID: 2, SourceName: "Alpha", Public: true},
+		{SourceNpcID: 3, SourceName: "Hidden"},
+		{SourceNpcID: 4, Public: true},
+		{SourceObjectID: 5, SourceName: "Node", Public: true},
+	}
+	got := BuildNpcNames(rates)
+	if len(got) != 2 || got[1] != "Alf" || got[2] != "Alpha" {
+		t.Errorf("best tier, then smallest; public named creature rows only: %v", got)
+	}
+}

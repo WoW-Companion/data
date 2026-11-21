@@ -46,6 +46,10 @@ type Rate struct {
 	Reporters      int32    `json:"reporters"`
 	Public         bool     `json:"public"`
 	Tier           string   `json:"tier,omitempty"`
+	// SourceName is the creature's name on a creature row; SourceNameTier is how well
+	// players corroborate it (reported, verified or confirmed).
+	SourceName     string `json:"sourceName,omitempty"`
+	SourceNameTier string `json:"sourceNameTier,omitempty"`
 }
 
 // Edge is one edges[] row of the relations answer.
@@ -209,6 +213,34 @@ func BuildNpcZones(edges []Edge) map[int32]NpcZone {
 		if !ok || e.Installs > cur.Installs || (e.Installs == cur.Installs && e.ToID < cur.ZoneID) {
 			out[e.FromID] = NpcZone{ZoneID: e.ToID, Installs: e.Installs}
 		}
+	}
+	return out
+}
+
+// nameTierRank orders sourceNameTier values; an unknown tier ranks lowest.
+var nameTierRank = map[string]int{"reported": 1, "verified": 2, "confirmed": 3}
+
+// BuildNpcNames maps creature id to the name of its public creature rows. A creature
+// named differently on several rows takes the best corroborated name, the smallest
+// string on a tie. A creature with no named public row is not in the map.
+func BuildNpcNames(rates []Rate) map[int32]string {
+	type pick struct {
+		name string
+		rank int
+	}
+	best := map[int32]pick{}
+	for _, r := range rates {
+		if !r.Public || r.SourceNpcID <= 0 || r.SourceName == "" {
+			continue
+		}
+		p := pick{r.SourceName, nameTierRank[r.SourceNameTier]}
+		if cur, ok := best[r.SourceNpcID]; !ok || p.rank > cur.rank || (p.rank == cur.rank && p.name < cur.name) {
+			best[r.SourceNpcID] = p
+		}
+	}
+	out := make(map[int32]string, len(best))
+	for id, p := range best {
+		out[id] = p.name
 	}
 	return out
 }

@@ -195,13 +195,13 @@ func TestBuildNpcs(t *testing.T) {
 		t.Fatalf("not sorted by id: %+v", got)
 	}
 	w := got[0]
-	if w.Name != "Wolf" || w.FamilyID != 1 || w.FactionTemplateID == nil || *w.FactionTemplateID != 14 || *w.MinLevel != 3 || *w.MaxLevel != 8 {
+	if w.Name != "Wolf" || *w.FamilyID != 1 || w.FactionTemplateID == nil || *w.FactionTemplateID != 14 || *w.MinLevel != 3 || *w.MaxLevel != 8 {
 		t.Errorf("wolf: %+v", w)
 	}
 	if got[1].MinLevel != nil || got[1].FactionTemplateID != nil {
 		t.Errorf("max level 0 means no range: %+v", got[1])
 	}
-	if b := got[2]; b.Classification != 3 || b.CreatureType != 7 || b.MinLevel != nil {
+	if b := got[2]; *b.Classification != 3 || *b.CreatureType != 7 || b.MinLevel != nil {
 		t.Errorf("boss: %+v", b)
 	}
 }
@@ -414,10 +414,6 @@ func instanceFixture() InstanceInput {
 			{"ID": "3", "MapID": "409", "Name_lang": "Ragnaros", "OrderIndex": "0", "DifficultyID": "0"},
 			{"ID": "4", "MapID": "0", "Name_lang": "Azuregos", "OrderIndex": "0", "DifficultyID": "0"},
 		},
-		Creatures: []Row{
-			{"ID": "100", "Name_lang": "Cookie"}, {"ID": "101", "Name_lang": "Rhahk'Zor"}, {"ID": "102", "Name_lang": "Rhahk'Zor"},
-			{"ID": "103", "Name_lang": "Ragnaros"},
-		},
 	}
 }
 
@@ -441,6 +437,10 @@ func TestBuildInstances(t *testing.T) {
 		t.Errorf("no entrance and no players are null: %+v", n)
 	}
 	bosses := BuildInstanceBosses(got, in)
+	npcs := []Npc{{ID: 100, Name: "Cookie"}, {ID: 101, Name: "Rhahk'Zor"}, {ID: 102, Name: "Rhahk'Zor"}, {ID: 103, Name: "Ragnaros"}}
+	if n := LinkBosses(bosses, npcs); n != 2 {
+		t.Errorf("linked %d", n)
+	}
 	if len(bosses) != 3 || bosses[0].Name != "Rhahk'Zor" || bosses[1].Name != "Cookie" || bosses[2].MapID != 409 {
 		t.Fatalf("bosses (instance maps only, ordered): %+v", bosses)
 	}
@@ -462,9 +462,26 @@ func TestApplyNpcZones(t *testing.T) {
 	if z := npcs[2]; z.ZoneID != nil || z.ZoneName != nil || z.ZoneSource != nil {
 		t.Errorf("no source, no zone: %+v", z)
 	}
-	loot := []everloot.LootSource{{SourceKind: everloot.KindCreature, SourceID: 1}, {SourceKind: everloot.KindCreature, SourceID: 3}, {SourceKind: everloot.KindCreature, SourceID: 99}, {SourceKind: everloot.KindObject, SourceID: 1}}
+	loot := []everloot.LootSource{{SourceKind: everloot.KindCreature, SourceID: 1}, {SourceKind: everloot.KindCreature, SourceID: 1}, {SourceKind: everloot.KindCreature, SourceID: 3}, {SourceKind: everloot.KindCreature, SourceID: 99}, {SourceKind: everloot.KindObject, SourceID: 1}}
 	if c, in, z := ZoneCoverage(npcs, loot); c != 3 || in != 2 || z != 1 {
-		t.Errorf("coverage %d %d %d", c, in, z)
+		t.Errorf("coverage counts distinct creature ids: %d %d %d", c, in, z)
+	}
+}
+
+func TestAddEverlootNpcs(t *testing.T) {
+	npcs := []Npc{{ID: 5, Name: "Client"}}
+	loot := []everloot.LootSource{
+		{SourceKind: everloot.KindCreature, SourceID: 9}, {SourceKind: everloot.KindCreature, SourceID: 9},
+		{SourceKind: everloot.KindCreature, SourceID: 5}, {SourceKind: everloot.KindCreature, SourceID: 7},
+		{SourceKind: everloot.KindObject, SourceID: 3},
+	}
+	names := map[int32]string{9: "Dire Condor", 5: "Other", 3: "Chest"}
+	got := AddEverlootNpcs(npcs, loot, names)
+	if len(got) != 2 || got[0].ID != 5 || got[0].Name != "Client" || got[0].NameSource != nil {
+		t.Fatalf("client row kept, unnamed 7 and object 3 left out: %+v", got)
+	}
+	if n := got[1]; n.ID != 9 || n.Name != "Dire Condor" || *n.NameSource != NameSourceEverloot || n.Classification != nil || n.MinLevel != nil {
+		t.Errorf("everloot row has a name and nothing else: %+v", n)
 	}
 }
 

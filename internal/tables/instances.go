@@ -22,7 +22,7 @@ type Instance struct {
 }
 
 // InstanceBoss is one row of the instance_bosses table: a client dungeon encounter.
-// CreatureID is set only when exactly one creature carries the encounter's exact name.
+// CreatureID is set by LinkBosses, only when exactly one npc carries the encounter's exact name.
 type InstanceBoss struct {
 	MapID        int32  `parquet:"map_id"`
 	EncounterID  int32  `parquet:"encounter_id"`
@@ -34,7 +34,7 @@ type InstanceBoss struct {
 
 // InstanceInput is the client tables the instance builders read.
 type InstanceInput struct {
-	Maps, Encounters, MapDifficulties, ContentTuning, Creatures []Row
+	Maps, Encounters, MapDifficulties, ContentTuning []Row
 }
 
 const (
@@ -110,15 +110,11 @@ func BuildInstances(in InstanceInput) []Instance {
 }
 
 // BuildInstanceBosses makes one row per dungeon encounter of an instance in instances,
-// sorted by map, order index and encounter id.
+// sorted by map, order index and encounter id. CreatureID is left null (see LinkBosses).
 func BuildInstanceBosses(instances []Instance, in InstanceInput) []InstanceBoss {
 	maps := map[int32]bool{}
 	for _, i := range instances {
 		maps[i.MapID] = true
-	}
-	byName := map[string][]int{}
-	for _, c := range in.Creatures {
-		byName[c["Name_lang"]] = append(byName[c["Name_lang"]], c.int("ID", 0))
 	}
 	out := []InstanceBoss{}
 	for _, r := range in.Encounters {
@@ -130,9 +126,6 @@ func BuildInstanceBosses(instances []Instance, in InstanceInput) []InstanceBoss 
 		b := InstanceBoss{
 			MapID: m, EncounterID: int32(r.int("ID", 0)), Name: name,
 			OrderIndex: int32(r.int("OrderIndex", 0)), DifficultyID: int32(r.int("DifficultyID", 0)),
-		}
-		if ids := byName[name]; len(ids) == 1 {
-			b.CreatureID = ptr(ids[0])
 		}
 		out = append(out, b)
 	}
@@ -146,4 +139,22 @@ func BuildInstanceBosses(instances []Instance, in InstanceInput) []InstanceBoss 
 		return int(a.EncounterID - b.EncounterID)
 	})
 	return out
+}
+
+// LinkBosses sets CreatureID on every boss whose exact name is carried by exactly one npc,
+// and returns how many it linked. No client table or Everloot relation ties an encounter to
+// a creature, so the name is the only key and an ambiguous one links nothing.
+func LinkBosses(bosses []InstanceBoss, npcs []Npc) int {
+	byName := map[string][]int32{}
+	for _, n := range npcs {
+		byName[n.Name] = append(byName[n.Name], n.ID)
+	}
+	linked := 0
+	for i := range bosses {
+		if ids := byName[bosses[i].Name]; len(ids) == 1 {
+			bosses[i].CreatureID = &ids[0]
+			linked++
+		}
+	}
+	return linked
 }

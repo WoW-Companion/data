@@ -155,7 +155,7 @@ Tables fetched for this: `Map`, `DungeonEncounter`, `MapDifficulty`, `ContentTun
 
 - `instances`: one row per `Map` with `InstanceType` 1 or 2, leaving out placeholder maps (empty name, a name starting with `<`, or containing "Test"). Columns: `map_id`, `name` (`MapName_lang`), `instance_type` (`dungeon` or `raid`, as the client types it; the client also types a few city and scenario maps as dungeons), `max_players` (`MaxPlayers`, null when 0), `entrance_map_id` (`CorpseMapID`, null when -1), `entrance_x` and `entrance_y` (`Corpse_0`, `Corpse_1`, null when both 0), `min_level` and `max_level` (`ContentTuning.LfgMinLevel` and `LfgMaxLevel` of the map's lowest-id `MapDifficulty` row that has a non-zero pair; null otherwise).
 - Zone of the entrance: no table names it (`AreaTable` holds no map-to-entrance key, and the entrance position is a world coordinate), so there is no zone column; `entrance_map_id` and position are what the client gives. Levels are never inferred from `LFGDungeons`, creature levels or the content tuning squish values.
-- `instance_bosses`: one row per `DungeonEncounter` whose `MapID` is an `instances` map. Columns: `map_id`, `encounter_id` (`ID`), `name`, `order_index`, `difficulty_id`, and `creature_id`. The client has no encounter-to-creature key, so `creature_id` is the one derived column: the `Creature.ID` when exactly one creature carries the encounter's exact name, null otherwise. Join `creature_id` to `loot_sources` (`source_kind` creature) for drops.
+- `instance_bosses`: one row per `DungeonEncounter` whose `MapID` is an `instances` map. Columns: `map_id`, `encounter_id` (`ID`), `name`, `order_index`, `difficulty_id`, and `creature_id`. The client has no encounter-to-creature key, so `creature_id` is the one derived column: the `npcs.id` (client or Everloot-named row) when exactly one npc carries the encounter's exact name, null otherwise. Join `creature_id` to `loot_sources` (`source_kind` creature) for drops.
 - No description text is read.
 
 Live coverage (2026-11-21 run): 52 instances (39 dungeon, 13 raid) and 372 boss rows on 44 of them. Entrance map on 27 instances (position on 25), max players on 31, min and max level on 1. `creature_id` on 0 of 372 bosses: the fetched `Creature` table holds only 189 rows and none matches an encounter name, so no boss links to `loot_sources` (52 creature sources there).
@@ -236,3 +236,19 @@ Outcome: the client tables say which locks need Herbalism or Mining and at what 
 - Zone: no allowed table places a game object in a zone (`OwnerID` is a map; the position is a world coordinate and no table maps it to a `UiMap`), and Everloot has no `located_in` edge for an object. So gathered rows carry no zone column.
 
 Live coverage (2026-11-21 run): 0 gathering nodes found, 0 `gathered` rows; the 50 object rows in `loot_sources` stay `object`. The mapping code is tested on fixtures and will apply if a later build's `GameObjects` carries chests.
+
+## Creature names and boss links (survey)
+
+Surveyed 2026-11-21 against build `1.60.1.71037` and Everloot's API.
+
+Root cause of the `npcs` / `loot_sources` mismatch: the id space is right and the client table is small. `Creature` and `CreatureDifficulty` for this build (product `wowf`) hold 189 rows each in wago.tools' export, and `Creature.ID` is the creature id Everloot uses (`sourceNpcId`); no filter and no difficulty-id join drops rows. None of the 189 ids is a creature that `loot_sources` names, so nothing resolved. A second gap: `loot_sources` keeps `public: true` rows only (57 creature ids), while the 531 creatures Everloot places in a zone (`located_in`) are the ids of its non-public rows, so no located creature is a public loot source either.
+
+Outcome:
+
+- Name: Everloot's drop rows carry `sourceName` (with `sourceNameTier`) on creature rows. `npcs` gets a row, with id and name only, for each `loot_sources` creature id the client lacks and a public row names; `name_source` is `everloot sourceName` there and null on client rows. The best corroborated name wins, the smallest string on a tie. A creature no public row names (42 of 57) stays out of `npcs`: the name column is never empty and a name is never inferred. Everloot's per-entity tooltip route is not used (one entity per request, not a bulk feed).
+- Level, classification, type, family, faction: client facts, and the client has no row for these ids, so `classification`, `creature_type` and `family_id` are now nullable (null on Everloot-only rows) and the level range stays null. Zone: `located_in` covers none of the 15 (see above).
+- `instance_bosses.creature_id`: linked by exact unique name against `npcs` after the Everloot rows are added. No client table or Everloot relation links an encounter to a creature (`JournalEncounterCreature` does not exist for this build). None of the 15 Everloot names equals an encounter name, so 0 of 372 bosses link; no allowed source supports a link.
+- Instance level ranges: tried again. `LFGDungeons` (76 rows, `MapID` 0 on the rows checked, joinable to a map by name only) points at `ContentTuning`, and only 2 of its 102 rows hold `LfgMinLevel`/`LfgMaxLevel`; 1 of 52 instances has a range, as before. No allowed source holds the rest.
+- `make dataset` prints the share of distinct `loot_sources` creature ids resolved in `npcs` (and with client rows alone) and the share of bosses linked.
+
+Live coverage (2026-11-21 run): creature ids in `loot_sources` resolved in `npcs`: before 0 of 57 (0.0%), after 15 of 57 (26.3%); with a zone 0; bosses linked 0 of 372; `npcs` 189 client rows plus 15 from Everloot.
