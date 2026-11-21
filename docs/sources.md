@@ -171,3 +171,26 @@ Live coverage (2026-11-21 run): 52 instances (39 dungeon, 13 raid) and 372 boss 
 `profession` and `learn_skill` are new nullable columns, null on every creature, object and quest reward row; those rows are otherwise unchanged. The table's Parquet metadata and manifest sources list the Everloot credit and the client source. `item_id` is not checked against `items`: a created item the fetched item tables lack still gets a row (329 live).
 
 Live coverage (2026-11-21 run, build 1.60.1.71037): 2,336 crafted rows of 2,667 in `loot_sources`. By profession: Leatherworking 592, Blacksmithing 506, Tailoring 470, Engineering 272, Alchemy 196, Cooking 132, Enchanting 82, First Aid 32, Poisons 26, Mining 18, Fishing 3, Herbalism 3, Skinning 3, Comprehension 1. Existing rows: 294 creature, 37 object, 0 quest reward.
+
+## Creature zones (survey)
+
+Surveyed 2026-11-21 against build `1.60.1.71037` (wago.tools) and Everloot's API.
+
+| Source | Rows | Holds |
+| ------ | ---: | ----- |
+| Everloot `/api/edges?rel=located_in` | 542 | creature (`npc`) to zone, 531 distinct creatures, 33 distinct zones, `evidence` `observed` on every row, `installs` per edge. The zone id is a client `UiMap` id (all 33 are named in `UiMap`: 1413 The Barrens, 1434 Stranglethorn Vale, 1458 Undercity). |
+| wago.tools `CreatureSpawn`, `CreatureXMap`, `SpawnGroup`, `CreatureXContribution` | – | "Table not found": the client tables carry no creature spawn or placement data |
+| `Creature`, `CreatureDifficulty` | 189, – | no map, area or zone column |
+| `UiMap` | 60 | `ID` to `Name_lang` (already fetched for quests) |
+| `instance_bosses.creature_id` (DATA-014) | 0 of 372 | the only instance link for a creature is null on every boss, so no creature gets a zone from its instance |
+
+Outcome, per `npcs` column:
+
+- `zone_id`: the `UiMap` id of the creature's `located_in` edge. A creature with several edges takes the one with the most `installs`, the lowest zone id on a tie. Source: Everloot (CC BY-SA 4.0, credited as for `loot_sources`).
+- `zone_name`: `UiMap.Name_lang` for that id; null when `UiMap` has no named row.
+- `zone_source`: `everloot located_in` on every row that has a zone; null otherwise. Nothing is inferred (not from the creature's level, faction or name, nor from the drop table).
+- No client table or instance link supplies a zone, so Everloot is the only source. The edges are fetched with the drop rates and cached in `dist/cache/everloot/drops.json`; a cache written before this column existed holds no edges and has to be deleted to refetch.
+
+`loot_sources` has no zone column: a creature source's zone is its creature's, so join `loot_sources.source_id` to `npcs.id` where `source_kind` is `creature`, and read `zone_id`, `zone_name` and `zone_source`. A denormalized column would hold the same values and would not reach more rows.
+
+Live coverage (2026-11-21 run): `npcs` has 189 rows and 0 have a zone. Everloot places 531 creatures but none of them is among the 189 client creature rows, and none is among the 52 creatures that `loot_sources` names (294 creature rows). So 0 of 294 creature sources (0.0%) have a zone, by the join or by id. The two Everloot sets (creatures with a drop and creatures with a location) do not overlap, and the client `Creature` table fetched for this build is a small slice of the creatures that exist.
