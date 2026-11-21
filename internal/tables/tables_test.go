@@ -144,3 +144,59 @@ func TestReadTableRequiredColumns(t *testing.T) {
 		}
 	}
 }
+
+func talentFixture() TalentInput {
+	return TalentInput{
+		Groups:       []Row{{"ID": "20", "TraitTreeID": "1"}, {"ID": "10", "TraitTreeID": "1"}, {"ID": "30", "TraitTreeID": "2"}},
+		Conds:        []Row{{"TraitNodeGroupID": "10", "SpentAmountRequired": "30"}, {"TraitNodeGroupID": "0", "SpentAmountRequired": "0"}},
+		SkillTrees:   []Row{{"SkillLineID": "613", "TraitTreeID": "1"}},
+		SkillClasses: []Row{{"SkillID": "613", "ClassMask": "16"}},
+		Classes:      []Row{{"ID": "5", "Name_lang": "Priest"}, {"ID": "1", "Name_lang": "Warrior"}},
+		Nodes: []Row{
+			{"ID": "7", "TraitTreeID": "1"}, {"ID": "5", "TraitTreeID": "1"}, {"ID": "6", "TraitTreeID": "2"},
+		},
+		GroupNodes: []Row{{"TraitNodeGroupID": "20", "TraitNodeID": "5"}, {"TraitNodeGroupID": "10", "TraitNodeID": "5"}},
+		NodeEntries: []Row{
+			{"TraitNodeID": "5", "TraitNodeEntryID": "51", "_Index": "1"}, {"TraitNodeID": "5", "TraitNodeEntryID": "50", "_Index": "0"},
+			{"TraitNodeID": "7", "TraitNodeEntryID": "70", "_Index": "0"},
+		},
+		Entries:     []Row{{"ID": "50", "TraitDefinitionID": "500", "MaxRanks": "2"}, {"ID": "70", "TraitDefinitionID": "700", "MaxRanks": "1"}},
+		Definitions: []Row{{"ID": "500", "SpellID": "15473"}, {"ID": "700", "SpellID": "9", "OverrideName_lang": "Custom"}},
+		Edges:       []Row{{"LeftTraitNodeID": "5", "RightTraitNodeID": "7"}, {"LeftTraitNodeID": "5", "RightTraitNodeID": "7"}},
+		SpellNames:  []Row{{"ID": "15473", "Name_lang": "Shadowform"}},
+	}
+}
+
+func TestBuildTalentTrees(t *testing.T) {
+	got := BuildTalentTrees(talentFixture())
+	if len(got) != 3 || got[0].GroupID != 10 || got[1].GroupID != 20 || got[2].GroupID != 30 {
+		t.Fatalf("order: %+v", got)
+	}
+	g := got[0]
+	if g.ClassID == nil || *g.ClassID != 5 || *g.ClassName != "Priest" || g.GroupOrder != 0 || g.RequiredPoints == nil || *g.RequiredPoints != 30 || g.GroupName != nil {
+		t.Errorf("group 10: %+v", g)
+	}
+	if got[1].GroupOrder != 1 || got[1].RequiredPoints != nil {
+		t.Errorf("group 20: %+v", got[1])
+	}
+	if got[2].ClassID != nil || got[2].GroupOrder != 0 {
+		t.Errorf("tree without class: %+v", got[2])
+	}
+}
+
+func TestBuildTalentNodes(t *testing.T) {
+	got := BuildTalentNodes(talentFixture())
+	if len(got) != 3 || got[0].NodeID != 5 || got[1].NodeID != 6 || got[2].NodeID != 7 {
+		t.Fatalf("order: %+v", got)
+	}
+	n := got[0]
+	if n.SpellID == nil || *n.SpellID != 15473 || *n.Name != "Shadowform" || *n.MaxRank != 2 || !reflect.DeepEqual(n.GroupIDs, []int32{10, 20}) {
+		t.Errorf("node 5 (first entry by index, name from spell): %+v", n)
+	}
+	if got[1].SpellID != nil || got[1].Name != nil || got[1].MaxRank != nil || len(got[1].GroupIDs) != 0 {
+		t.Errorf("node without entry: %+v", got[1])
+	}
+	if *got[2].Name != "Custom" || !reflect.DeepEqual(got[2].PrerequisiteNodeIDs, []int32{5}) {
+		t.Errorf("node 7 (override name, deduped prerequisite): %+v", got[2])
+	}
+}

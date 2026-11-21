@@ -48,6 +48,9 @@ type Cached struct {
 	Items  []Item
 	Quests []Quest
 	Npcs   []Npc
+
+	TalentTrees []TalentTree
+	TalentNodes []TalentNode
 }
 
 // LoadCache parses the cache directory of one build into table rows.
@@ -69,6 +72,14 @@ func LoadCache(dir string) (Cached, error) {
 	c.Items = BuildItems(rows["ItemSparse"], rows["Item"])
 	c.Quests = BuildQuests(rows["QuestV2"], rows["QuestLineXQuest"], rows["QuestPOIBlob"])
 	c.Npcs = BuildNpcs(rows["Creature"], rows["CreatureDifficulty"])
+	in := TalentInput{
+		Groups: rows["TraitNodeGroup"], GroupNodes: rows["TraitNodeGroupXTraitNode"], Conds: rows["TraitCond"],
+		SkillTrees: rows["SkillLineXTraitTree"], SkillClasses: rows["SkillRaceClassInfo"], Classes: rows["ChrClasses"],
+		Nodes: rows["TraitNode"], NodeEntries: rows["TraitNodeXTraitNodeEntry"], Entries: rows["TraitNodeEntry"],
+		Definitions: rows["TraitDefinition"], Edges: rows["TraitEdge"], SpellNames: rows["SpellName"],
+	}
+	c.TalentTrees = BuildTalentTrees(in)
+	c.TalentNodes = BuildTalentNodes(in)
 	return c, nil
 }
 
@@ -123,6 +134,12 @@ func BuildDataset(cacheBuildDir, everlootFile, outDir, created string) (manifest
 		return m, err
 	}
 	if err := add(writeTable(outDir, "npcs.parquet", c.Npcs, byID)); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "talent_trees.parquet", c.TalentTrees, Layout(nil, []string{"tree_id", "group_id"}, src))); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "talent_nodes.parquet", c.TalentNodes, Layout(nil, []string{"node_id"}, src))); err != nil {
 		return m, err
 	}
 	loot := Layout(nil, []string{"item_id", "source_kind", "source_id"}, EverlootSource(ev))

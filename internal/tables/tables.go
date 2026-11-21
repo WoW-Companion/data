@@ -67,6 +67,19 @@ var Required = map[string][]string{
 	"QuestPOIBlob":       {"ID", "QuestID", "MapID", "UiMapID"},
 	"Creature":           {"ID", "Name_lang", "Classification", "CreatureType", "CreatureFamily"},
 	"CreatureDifficulty": {"ID", "CreatureID", "MinLevel", "MaxLevel", "FactionTemplateID"},
+
+	"TraitNode":                {"ID", "TraitTreeID"},
+	"TraitNodeGroup":           {"ID", "TraitTreeID"},
+	"TraitNodeGroupXTraitNode": {"TraitNodeGroupID", "TraitNodeID"},
+	"TraitNodeXTraitNodeEntry": {"TraitNodeID", "TraitNodeEntryID", "_Index"},
+	"TraitNodeEntry":           {"ID", "TraitDefinitionID", "MaxRanks"},
+	"TraitDefinition":          {"ID", "SpellID", "OverrideName_lang"},
+	"TraitEdge":                {"LeftTraitNodeID", "RightTraitNodeID"},
+	"TraitCond":                {"TraitNodeGroupID", "SpentAmountRequired"},
+	"SkillLineXTraitTree":      {"SkillLineID", "TraitTreeID"},
+	"SkillRaceClassInfo":       {"SkillID", "ClassMask"},
+	"ChrClasses":               {"ID", "Name_lang"},
+	"SpellName":                {"ID", "Name_lang"},
 }
 
 // ReadTable parses a client CSV export and checks its header against Required[table].

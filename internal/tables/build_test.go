@@ -35,10 +35,10 @@ func TestBuildDatasetSmoke(t *testing.T) {
 	for _, tb := range m.Tables {
 		paths = append(paths, tb.Path)
 	}
-	if got := strings.Join(paths, ","); got != "items.parquet,quests.parquet,npcs.parquet,loot_sources.parquet" {
+	if got := strings.Join(paths, ","); got != "items.parquet,quests.parquet,npcs.parquet,talent_trees.parquet,talent_nodes.parquet,loot_sources.parquet" {
 		t.Fatalf("tables: %s", got)
 	}
-	if m.Tables[2].Rows != 1 || m.Tables[3].Rows != 1 {
+	if m.Tables[2].Rows != 1 || m.Tables[5].Rows != 1 {
 		t.Errorf("rows: %+v", m.Tables)
 	}
 	if err := manifest.VerifyFile(filepath.Join(out, "manifest.json")); err != nil {
