@@ -50,6 +50,8 @@ var Tables = []Table{
 		{"dmg_min", "", "Always null: the client holds no per-item damage amount."},
 		{"dmg_max", "", "Always null: the client holds no per-item damage amount."},
 		{"speed_ms", "", "Weapon speed in milliseconds (ItemDelay); null for non-weapons or a zero delay."},
+		{"sell_price", "ItemSparse SellPrice", "Vendor sell price in copper; null when the client stores zero."},
+		{"buy_price", "ItemSparse BuyPrice", "Vendor buy price in copper; null when the client stores zero."},
 	}},
 	{"quests", tables.Quest{}, wago + "QuestV2, QuestLineXQuest, QuestPOIBlob, UiMap", "One row per quest the client lists, sorted by id.", []Col{
 		{"id", "", "Quest id."},
@@ -156,5 +158,16 @@ var Tables = []Table{
 		{"everloot_data_as_of", "Everloot", "Everloot's dataAsOf for the snapshot; null on crafted rows."},
 		{"profession", "recipes", "Crafted rows only: the recipe's profession; null otherwise."},
 		{"learn_skill", "recipes", "Crafted rows only: skill rank to learn the recipe; null otherwise."},
+	}},
+	{"item_sets", tables.ItemSetRow{}, wago + "ItemSet", "One row per member item of an item set (ItemID_0 to ItemID_16), sorted by set id and item id.", []Col{
+		{"set_id", "", "Item set id."},
+		{"name", "", "Item set name."},
+		{"item_id", "", "items.id of a member of the set."},
+	}},
+	{"quest_lines", tables.QuestLineRow{}, wago + "QuestLine, QuestLineXQuest", "One row per quest of a quest line, in line order.", []Col{
+		{"line_id", "", "Quest line id (quests.quest_line_id)."},
+		{"name", "QuestLine", "Quest line name; null when QuestLine has no named row."},
+		{"position", "QuestLineXQuest OrderIndex", "Position of the quest in the line, from 0."},
+		{"quest_id", "", "quests.id of the quest at that position."},
 	}},
 }

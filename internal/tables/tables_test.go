@@ -103,7 +103,7 @@ func TestSpeedMS(t *testing.T) {
 
 func TestBuildItems(t *testing.T) {
 	sparse := []Row{
-		{"ID": "20", "Display_lang": "Plain Vest", "InventoryType": "5", "OverallQualityID": "3", "ItemLevel": "40"},
+		{"ID": "20", "Display_lang": "Plain Vest", "InventoryType": "5", "OverallQualityID": "3", "ItemLevel": "40", "SellPrice": "1250", "BuyPrice": "0"},
 		{"ID": "10", "Display_lang": "Ring", "InventoryType": "11", "OverallQualityID": "2", "StatModifier_bonusStat_0": "5", "StatModifier_bonusStat_1": "-1", "Description_lang": "never kept"},
 	}
 	base := []Row{{"ID": "20", "ClassID": "4", "SubclassID": "1"}, {"ID": "10", "ClassID": "4", "SubclassID": "0"}}
@@ -116,6 +116,9 @@ func TestBuildItems(t *testing.T) {
 	}
 	if len(got[0].Stats) != 1 || got[0].Stats[0].Type != 5 || got[0].Stats[0].Value != nil || got[0].Armor != nil || got[0].DmgMin != nil || got[0].DmgMax != nil || got[0].SpeedMS != nil {
 		t.Errorf("ring stats: %+v", got[0])
+	}
+	if got[0].SellPrice != nil || got[0].BuyPrice != nil || got[1].SellPrice == nil || *got[1].SellPrice != 1250 || got[1].BuyPrice != nil {
+		t.Errorf("prices: %+v %+v", got[0], got[1])
 	}
 	if got[1].StatsStatus != StatsUnknown || got[1].AllowableClassMask != -1 || got[1].SubclassID != 1 {
 		t.Errorf("vest: %+v", got[1])
@@ -213,6 +216,10 @@ func TestReadTableRequiredColumns(t *testing.T) {
 		{"missing in header-only file", "QuestV2", "ID,UniqueBitFlag\n", `QuestV2: required column "UiQuestDetailsThemeID" missing`},
 		{"item delay missing", "ItemSparse", "ID,Display_lang,ItemLevel,RequiredLevel,OverallQualityID,InventoryType,AllowableClass,Bonding,StatModifier_bonusStat_0,StatPercentEditor_0\n", `ItemSparse: required column "ItemDelay" missing`},
 		{"stat percent missing", "ItemSparse", "ID,Display_lang,ItemLevel,RequiredLevel,OverallQualityID,InventoryType,AllowableClass,Bonding,StatModifier_bonusStat_0,ItemDelay\n", `ItemSparse: required column "StatPercentEditor_0" missing`},
+		{"sell price missing", "ItemSparse", "ID,Display_lang,ItemLevel,RequiredLevel,OverallQualityID,InventoryType,AllowableClass,Bonding,StatModifier_bonusStat_0,StatPercentEditor_0,ItemDelay,BuyPrice\n", `ItemSparse: required column "SellPrice" missing`},
+		{"item set slot missing", "ItemSet", "ID,Name_lang,ItemID_0\n", `ItemSet: required column "ItemID_16" missing`},
+		{"quest line order missing", "QuestLineXQuest", "ID,QuestID,QuestLineID\n", `QuestLineXQuest: required column "OrderIndex" missing`},
+		{"quest line name missing", "QuestLine", "ID\n", `QuestLine: required column "Name_lang" missing`},
 		{"uimap name missing", "UiMap", "ID,Flags\n", `UiMap: required column "Name_lang" missing`},
 		{"trivial rank missing", "SkillLineAbility", "SkillLine,Spell,MinSkillLineRank,TrivialSkillLineRankHigh\n", `SkillLineAbility: required column "TrivialSkillLineRankLow" missing`},
 		{"reagent count missing", "SpellReagents", "SpellID,Reagent_0,ReagentCount_0,Reagent_7\n", `SpellReagents: required column "ReagentCount_7" missing`},
@@ -455,5 +462,33 @@ func TestApplyNpcZones(t *testing.T) {
 	loot := []everloot.LootSource{{SourceKind: everloot.KindCreature, SourceID: 1}, {SourceKind: everloot.KindCreature, SourceID: 3}, {SourceKind: everloot.KindCreature, SourceID: 99}, {SourceKind: everloot.KindObject, SourceID: 1}}
 	if c, in, z := ZoneCoverage(npcs, loot); c != 3 || in != 2 || z != 1 {
 		t.Errorf("coverage %d %d %d", c, in, z)
+	}
+}
+
+func TestBuildItemSets(t *testing.T) {
+	got := BuildItemSets([]Row{
+		{"ID": "41", "Name_lang": "B Set", "ItemID_0": "9", "ItemID_1": "0", "ItemID_2": "9"},
+		{"ID": "1", "Name_lang": "A Set", "ItemID_0": "30", "ItemID_1": "20", "ItemID_16": "10"},
+		{"ID": "2", "Name_lang": "Empty"},
+	})
+	want := []ItemSetRow{{1, "A Set", 10}, {1, "A Set", 20}, {1, "A Set", 30}, {41, "B Set", 9}}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %+v, want %+v", got, want)
+	}
+}
+
+func TestBuildQuestLines(t *testing.T) {
+	got := BuildQuestLines(
+		[]Row{{"ID": "6", "Name_lang": "Soil"}, {"ID": "7", "Name_lang": ""}},
+		[]Row{
+			{"QuestLineID": "6", "QuestID": "92745", "OrderIndex": "1"},
+			{"QuestLineID": "6", "QuestID": "92744", "OrderIndex": "0"},
+			{"QuestLineID": "7", "QuestID": "5", "OrderIndex": "0"},
+		})
+	if len(got) != 3 || got[0].QuestID != 92744 || got[1].QuestID != 92745 || got[1].Position != 1 {
+		t.Fatalf("order: %+v", got)
+	}
+	if got[0].Name == nil || *got[0].Name != "Soil" || got[2].Name != nil {
+		t.Errorf("names: %+v", got)
 	}
 }

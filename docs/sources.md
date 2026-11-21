@@ -194,3 +194,25 @@ Outcome, per `npcs` column:
 `loot_sources` has no zone column: a creature source's zone is its creature's, so join `loot_sources.source_id` to `npcs.id` where `source_kind` is `creature`, and read `zone_id`, `zone_name` and `zone_source`. A denormalized column would hold the same values and would not reach more rows.
 
 Live coverage (2026-11-21 run): `npcs` has 189 rows and 0 have a zone. Everloot places 531 creatures but none of them is among the 189 client creature rows, and none is among the 52 creatures that `loot_sources` names (294 creature rows). So 0 of 294 creature sources (0.0%) have a zone, by the join or by id. The two Everloot sets (creatures with a drop and creatures with a location) do not overlap, and the client `Creature` table fetched for this build is a small slice of the creatures that exist.
+
+## Item sell and buy prices, item sets and quest lines (survey)
+
+Surveyed 2026-11-21 against build `1.60.1.71037` (wago.tools). Row counts are data rows.
+
+| Source | Rows | Holds |
+| ------ | ---: | ----- |
+| `ItemSparse` | 19,400 | `SellPrice` and `BuyPrice` in copper (non-zero on 12,040 and 12,679 rows); also `PriceVariance`, `PriceRandomValue`, not used |
+| `ItemSet` | 545 | `ID`, `Name_lang`, `ItemID_0..16` (0 for an empty slot); 541 sets list at least one item |
+| `ItemSetSpell` | 1,505 | set bonus spells by threshold; not used (spell text, no item facts) |
+| `QuestLine` | 3 | `ID`, `Name_lang` (`Description_lang` is long-form text and is not read) |
+| `QuestLineXQuest` | 22 | `QuestLineID`, `QuestID`, `OrderIndex` (the position in the line) |
+
+Outcome:
+
+- `items.sell_price`, `items.buy_price`: copper from `ItemSparse`; null when the client stores zero (no price). A zero is not read as "sells for nothing".
+- `item_sets` (`set_id`, `name`, `item_id`): one row per set and member item from `ItemSet.ItemID_0..16`, empty slots dropped, an item repeated in a set kept once. 3,141 rows over 541 sets. Only 895 of the 3,141 member ids are in `items`: `ItemSet` lists ids for pieces this client's `ItemSparse` does not carry.
+- `quest_lines` (`line_id`, `name`, `position`, `quest_id`): 22 rows over 3 lines, ordered by `OrderIndex` from 0. This is every quest line this build has. `quests.quest_line_id` (the first line of a quest) is unchanged.
+
+The tables `ItemSet` and `QuestLine` are fetched with the others, and the columns above are required (a missing column is an error, as for every table).
+
+Live coverage (2026-11-21 run): `sell_price` non-null on 12,040 of 19,400 items (62.1%), `buy_price` on 12,679 (65.4%).

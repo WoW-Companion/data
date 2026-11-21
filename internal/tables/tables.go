@@ -46,6 +46,8 @@ type Item struct {
 	DmgMin             *int32     `parquet:"dmg_min,optional"`
 	DmgMax             *int32     `parquet:"dmg_max,optional"`
 	SpeedMS            *int32     `parquet:"speed_ms,optional"`
+	SellPrice          *int32     `parquet:"sell_price,optional"`
+	BuyPrice           *int32     `parquet:"buy_price,optional"`
 }
 
 // Armor, DmgMin and DmgMax stay null: this build's client tables hold no armor or damage
@@ -73,10 +75,12 @@ type Row map[string]string
 // Required lists the columns each client table must carry in its header. A column the
 // export lacks is an error naming table and column, never a silent null or zero.
 var Required = map[string][]string{
-	"ItemSparse":         {"ID", "Display_lang", "ItemLevel", "RequiredLevel", "OverallQualityID", "InventoryType", "AllowableClass", "Bonding", "StatModifier_bonusStat_0", "StatPercentEditor_0", "ItemDelay"},
+	"ItemSparse":         {"ID", "Display_lang", "ItemLevel", "RequiredLevel", "OverallQualityID", "InventoryType", "AllowableClass", "Bonding", "StatModifier_bonusStat_0", "StatPercentEditor_0", "ItemDelay", "SellPrice", "BuyPrice"},
 	"Item":               {"ID", "ClassID", "SubclassID"},
 	"QuestV2":            {"ID", "UniqueBitFlag", "UiQuestDetailsThemeID"},
-	"QuestLineXQuest":    {"ID", "QuestID", "QuestLineID"},
+	"QuestLineXQuest":    {"ID", "QuestID", "QuestLineID", "OrderIndex"},
+	"QuestLine":          {"ID", "Name_lang"},
+	"ItemSet":            {"ID", "Name_lang", "ItemID_0", "ItemID_16"},
 	"QuestPOIBlob":       {"ID", "QuestID", "MapID", "UiMapID"},
 	"UiMap":              {"ID", "Name_lang"},
 	"Creature":           {"ID", "Name_lang", "Classification", "CreatureType", "CreatureFamily"},
@@ -219,6 +223,8 @@ func BuildItems(sparse, items []Row) []Item {
 			StatsStatus:        StatsStatusOf(stats, classID, slot, quality),
 			Stats:              ItemStats(r),
 			SpeedMS:            SpeedMS(r, classID),
+			SellPrice:          price(r, "SellPrice"),
+			BuyPrice:           price(r, "BuyPrice"),
 		})
 	}
 	slices.SortStableFunc(out, func(a, b Item) int { return int(a.ID) - int(b.ID) })
