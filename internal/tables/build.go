@@ -127,14 +127,28 @@ func writeTable[T any](outDir, name string, rows []T, opts parquetio.Options) (m
 	return manifest.Table{Path: name, Rows: n, SHA256: sum, SortKeys: opts.Sort, Sources: opts.Sources}, err
 }
 
+// CuratedSource is the manifest source of the curated YAML under curated/.
+func CuratedSource(build, created string) manifest.Source {
+	return manifest.Source{Name: BuildSource, Version: build, Retrieved: created, License: "CC BY-SA 4.0 (LICENSE-DATA)"}
+}
+
 // BuildDataset writes items, quests, npcs and loot_sources Parquet files and
-// manifest.json into outDir. everlootFile is the cached Everloot snapshot.
-func BuildDataset(cacheBuildDir, everlootFile, outDir, created string) (manifest.Manifest, error) {
+// manifest.json into outDir. everlootFile is the cached Everloot snapshot; talentsDir holds
+// the curated talent builds, which are validated against the cached talent tables.
+func BuildDataset(cacheBuildDir, everlootFile, talentsDir, outDir, created string) (manifest.Manifest, error) {
 	c, err := LoadCache(cacheBuildDir)
 	if err != nil {
 		return manifest.Manifest{}, err
 	}
 	ev, err := everloot.Load(everlootFile)
+	if err != nil {
+		return manifest.Manifest{}, err
+	}
+	builds, err := LoadTalentBuilds(talentsDir)
+	if err != nil {
+		return manifest.Manifest{}, err
+	}
+	buildRows, err := BuildTalentBuilds(builds, c.TalentTrees, c.TalentNodes)
 	if err != nil {
 		return manifest.Manifest{}, err
 	}
@@ -158,6 +172,9 @@ func BuildDataset(cacheBuildDir, everlootFile, outDir, created string) (manifest
 		return m, err
 	}
 	if err := add(writeTable(outDir, "talent_nodes.parquet", c.TalentNodes, Layout(nil, []string{"node_id"}, src))); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "talent_builds.parquet", buildRows, Layout(nil, []string{"class", "spec", "order"}, CuratedSource(c.Prov.Build, created), src))); err != nil {
 		return m, err
 	}
 	if err := add(writeTable(outDir, "stat_types.parquet", StatTypeTable(), Layout(nil, []string{"id"}, src))); err != nil {

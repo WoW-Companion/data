@@ -1,0 +1,25 @@
+class: Priest
+spec: "Holy"
+group_id: 11615
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Start with cheaper, longer-lasting Renew and a bit of Twilight Focus, then put five points into Divine Fury so casting stays quick."
+    steps:
+      - {node: 105866, name: Improved Renew, points: 3}
+      - {node: 105867, name: Twilight Focus, points: 2}
+      - {node: 105863, name: Divine Fury, points: 5}
+  - levels: 20-29
+    rationale: "Fill out Twilight Focus, take Inspiration and Holy Nova, then Improved Healing and Searing Light, which needs Divine Fury at full rank."
+    steps:
+      - {node: 105867, name: Twilight Focus, points: 1}
+      - {node: 105860, name: Inspiration, points: 3}
+      - {node: 105862, name: Holy Nova, points: 1}
+      - {node: 105858, name: Improved Healing, points: 3}
+      - {node: 105857, name: Searing Light, points: 2}
+  - levels: 30-39
+    rationale: "Five points in Spiritual Guidance for more healing from spell power, plus Blessed Recovery and Holy Reach."
+    steps:
+      - {node: 105853, name: Spiritual Guidance, points: 5}
+      - {node: 105861, name: Blessed Recovery, points: 3}
+      - {node: 105859, name: Holy Reach, points: 2}

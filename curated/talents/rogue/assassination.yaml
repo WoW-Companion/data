@@ -1,0 +1,27 @@
+class: Rogue
+spec: "Assassination"
+group_id: 11580
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Malice for critical strikes first, then Ruthlessness and Improved Slice and Dice for combo point value and uptime."
+    steps:
+      - {node: 105722, name: Malice, points: 5}
+      - {node: 105721, name: Ruthlessness, points: 3}
+      - {node: 105739, name: Improved Slice and Dice, points: 2}
+  - levels: 20-29
+    rationale: "Lethality needs Malice at full rank; add Vigor, Cold Blood and most of Improved Poisons for poison application."
+    steps:
+      - {node: 105739, name: Improved Slice and Dice, points: 1}
+      - {node: 105716, name: Lethality, points: 2}
+      - {node: 105720, name: Vigor, points: 2}
+      - {node: 105713, name: Improved Poisons, points: 4}
+      - {node: 105715, name: Cold Blood, points: 1}
+  - levels: 30-39
+    rationale: "Finish Improved Poisons, take Vile Poisons and Remorseless Attacks, then Venom (the first step towards Mutilate) and Blood Splatter."
+    steps:
+      - {node: 105713, name: Improved Poisons, points: 1}
+      - {node: 105714, name: Vile Poisons, points: 5}
+      - {node: 105723, name: Remorseless Attacks, points: 2}
+      - {node: 105712, name: Venom, points: 1}
+      - {node: 105718, name: Blood Splatter, points: 1}

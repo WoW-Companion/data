@@ -1,0 +1,26 @@
+class: Rogue
+spec: "Combat"
+group_id: 11573
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Lightning Reflexes and Precision raise energy flow and hit chance, with the first points of Coup de Grace."
+    steps:
+      - {node: 113398, name: Lightning Reflexes, points: 5}
+      - {node: 105737, name: Precision, points: 3}
+      - {node: 105708, name: Coup de Grace, points: 2}
+  - levels: 20-29
+    rationale: "Deflection opens Riposte, Precision at full rank opens Weapon Expertise, and Aggression adds attack power."
+    steps:
+      - {node: 105708, name: Coup de Grace, points: 1}
+      - {node: 105738, name: Deflection, points: 3}
+      - {node: 105735, name: Riposte, points: 1}
+      - {node: 105726, name: Weapon Expertise, points: 2}
+      - {node: 105730, name: Aggression, points: 3}
+  - levels: 30-39
+    rationale: "Dual Wield Specialization and Hack and Slash are the offence-heavy picks here, with Improved Kick and Efficient Strikes finishing the band."
+    steps:
+      - {node: 113635, name: Dual Wield Specialization, points: 2}
+      - {node: 105727, name: Hack and Slash, points: 5}
+      - {node: 105733, name: Improved Kick, points: 2}
+      - {node: 105741, name: Efficient Strikes, points: 1}

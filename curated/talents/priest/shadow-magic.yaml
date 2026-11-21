@@ -1,0 +1,26 @@
+class: Priest
+spec: "Shadow Magic"
+group_id: 11622
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Shadow Focus raises the chance to land shadow spells; Improved Mind Blast then makes the main opener hit harder."
+    steps:
+      - {node: 110851, name: Shadow Focus, points: 5}
+      - {node: 105831, name: Improved Mind Blast, points: 5}
+  - levels: 20-29
+    rationale: "Take Mind Flay and its improvement, extend Shadow Word: Pain, and add Shadow Weaving, Vampiric Embrace and a point of Shadow Reach."
+    steps:
+      - {node: 105826, name: Mind Flay, points: 1}
+      - {node: 105825, name: Improved Mind Flay, points: 2}
+      - {node: 105830, name: "Improved Shadow Word: Pain", points: 2}
+      - {node: 105821, name: Shadow Weaving, points: 3}
+      - {node: 105820, name: Vampiric Embrace, points: 1}
+      - {node: 105829, name: Shadow Reach, points: 1}
+  - levels: 30-39
+    rationale: "Silence and Devouring Contagion open up, then Dark Inspiration and Spirit Tap fill the remaining points. Shadowform itself needs 30 points already spent, so it comes later."
+    steps:
+      - {node: 105824, name: Silence, points: 1}
+      - {node: 105819, name: Devouring Contagion, points: 2}
+      - {node: 105823, name: Dark Inspiration, points: 5}
+      - {node: 105833, name: Spirit Tap, points: 2}

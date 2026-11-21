@@ -1,0 +1,28 @@
+class: Rogue
+spec: "Subtlety"
+group_id: 11572
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Opportunity boosts the damage of positional openers, Master of Deception makes the rogue harder to spot, and Camouflage starts."
+    steps:
+      - {node: 105760, name: Opportunity, points: 5}
+      - {node: 105761, name: Master of Deception, points: 3}
+      - {node: 105756, name: Camouflage, points: 2}
+  - levels: 20-29
+    rationale: "Finish Camouflage, take Initiative, Dirty Tricks, Ghostly Strike and Elusiveness, with a point of Setup for combo points."
+    steps:
+      - {node: 105756, name: Camouflage, points: 1}
+      - {node: 105755, name: Initiative, points: 3}
+      - {node: 105757, name: Dirty Tricks, points: 2}
+      - {node: 105754, name: Ghostly Strike, points: 1}
+      - {node: 105753, name: Elusiveness, points: 2}
+      - {node: 105751, name: Setup, points: 1}
+  - levels: 30-39
+    rationale: "Serrated Blades unlocks Hemorrhage, Dirty Tricks at full rank unlocks Quick Getaway, and Heightened Senses and Setup use up the points."
+    steps:
+      - {node: 105751, name: Setup, points: 2}
+      - {node: 105752, name: Serrated Blades, points: 3}
+      - {node: 105748, name: Hemorrhage, points: 1}
+      - {node: 110867, name: Quick Getaway, points: 2}
+      - {node: 105747, name: Heightened Senses, points: 2}
