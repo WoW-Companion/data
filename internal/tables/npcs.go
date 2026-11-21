@@ -3,6 +3,8 @@ package tables
 import (
 	"slices"
 	"strconv"
+
+	"github.com/WoW-Companion/data/internal/everloot"
 )
 
 // Npc is one row of the npcs table: client facts only (no title or gossip text, no
@@ -16,7 +18,15 @@ type Npc struct {
 	FactionTemplateID *int32 `parquet:"faction_template_id,optional"`
 	MinLevel          *int16 `parquet:"min_level,optional"`
 	MaxLevel          *int16 `parquet:"max_level,optional"`
+	// ZoneID is a UiMap id and ZoneName that map's name; ZoneSource says where the zone came
+	// from. All three are null unless an allowed source places the creature (docs/sources.md).
+	ZoneID     *int32  `parquet:"zone_id,optional"`
+	ZoneName   *string `parquet:"zone_name,optional"`
+	ZoneSource *string `parquet:"zone_source,optional"`
 }
+
+// ZoneSourceEverloot is the zone_source of a zone taken from Everloot's located_in relation.
+const ZoneSourceEverloot = "everloot located_in"
 
 // optInt parses a column that may be absent or empty.
 func (r Row) optInt(key string) (int, bool) {
@@ -30,7 +40,7 @@ func (r Row) optInt(key string) (int, bool) {
 
 // BuildNpcs joins Creature to its CreatureDifficulty rows: the level range spans every
 // difficulty of the creature, the faction template is the first difficulty's (by ID) that
-// lists one. Rows are sorted by id.
+// lists one. Zones are left null (see ApplyNpcZones). Rows are sorted by id.
 func BuildNpcs(creatures, difficulties []Row) []Npc {
 	diffs := slices.Clone(difficulties)
 	slices.SortStableFunc(diffs, func(a, b Row) int { return a.int("ID", 0) - b.int("ID", 0) })
@@ -71,4 +81,50 @@ func BuildNpcs(creatures, difficulties []Row) []Npc {
 	}
 	slices.SortStableFunc(out, func(a, b Npc) int { return int(a.ID) - int(b.ID) })
 	return out
+}
+
+// ApplyNpcZones fills the zone of every creature a source places. zones maps creature id to
+// the UiMap id the source gives and uiMaps are the UiMap rows that name it. A creature
+// without an entry keeps a null zone; an id the UiMap table does not name gets no zone_name.
+func ApplyNpcZones(npcs []Npc, uiMaps []Row, zones map[int32]everloot.NpcZone) {
+	names := map[int]string{}
+	for _, m := range uiMaps {
+		if n := m["Name_lang"]; n != "" {
+			names[m.int("ID", 0)] = n
+		}
+	}
+	for i := range npcs {
+		z, ok := zones[npcs[i].ID]
+		if !ok {
+			continue
+		}
+		npcs[i].ZoneID = ptr(int(z.ZoneID))
+		src := ZoneSourceEverloot
+		npcs[i].ZoneSource = &src
+		if name, ok := names[int(z.ZoneID)]; ok {
+			npcs[i].ZoneName = &name
+		}
+	}
+}
+
+// ZoneCoverage counts the creature rows of loot_sources whose creature is in npcs, and how
+// many of those have a zone.
+func ZoneCoverage(npcs []Npc, loot []everloot.LootSource) (creatureRows, inNpcs, withZone int) {
+	zoned := map[int32]bool{}
+	for _, n := range npcs {
+		zoned[n.ID] = n.ZoneID != nil
+	}
+	for _, l := range loot {
+		if l.SourceKind != everloot.KindCreature {
+			continue
+		}
+		creatureRows++
+		if z, ok := zoned[l.SourceID]; ok {
+			inNpcs++
+			if z {
+				withZone++
+			}
+		}
+	}
+	return
 }

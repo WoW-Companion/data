@@ -17,11 +17,12 @@ import (
 )
 
 const (
-	BaseURL   = "https://everloot.app"
-	DropsPath = "/api/rollups/drops"
-	CacheFile = "drops.json"
-	EdgesPath = "/api/edges"
-	RelReward = "reward_from"
+	BaseURL    = "https://everloot.app"
+	DropsPath  = "/api/rollups/drops"
+	CacheFile  = "drops.json"
+	EdgesPath  = "/api/edges"
+	RelReward  = "reward_from"
+	RelLocated = "located_in"
 	// Credit is the attribution wording from Everloot's data policy.
 	Credit  = "Data from Everloot (https://everloot.app), CC BY-SA 4.0."
 	License = "CC BY-SA 4.0"
@@ -119,6 +120,8 @@ type Snapshot struct {
 	Rates       []Rate      `json:"rates"`
 	// QuestRewards are the item-to-quest "reward_from" edges from /api/edges.
 	QuestRewards []Edge `json:"questRewards,omitempty"`
+	// NpcZones are the npc-to-zone "located_in" edges from /api/edges.
+	NpcZones []Edge `json:"npcZones,omitempty"`
 }
 
 type page struct {
@@ -154,24 +157,59 @@ func Fetch(baseURL, cacheDir, retrieved string) (Snapshot, error) {
 			u = *p.Next
 		}
 	}
-	u = fmt.Sprintf("%s%s?rel=%s&offset=0&limit=%d", baseURL, EdgesPath, RelReward, PageLen)
-	for u != "" {
-		time.Sleep(Delay)
-		p, err := getEdges(client, u)
-		if err != nil {
-			return s, err
-		}
-		s.QuestRewards = append(s.QuestRewards, p.Edges...)
-		u = ""
-		if p.Next != nil {
-			u = *p.Next
-		}
+	var err error
+	if s.QuestRewards, err = fetchEdges(client, baseURL, RelReward); err != nil {
+		return s, err
+	}
+	if s.NpcZones, err = fetchEdges(client, baseURL, RelLocated); err != nil {
+		return s, err
 	}
 	if err := os.MkdirAll(cacheDir, 0o755); err != nil {
 		return s, err
 	}
 	b, _ := json.MarshalIndent(s, "", " ")
 	return s, os.WriteFile(path, append(b, '\n'), 0o644)
+}
+
+// fetchEdges follows every page of one relation of /api/edges.
+func fetchEdges(c *http.Client, baseURL, rel string) ([]Edge, error) {
+	var out []Edge
+	u := fmt.Sprintf("%s%s?rel=%s&offset=0&limit=%d", baseURL, EdgesPath, rel, PageLen)
+	for u != "" {
+		time.Sleep(Delay)
+		p, err := getEdges(c, u)
+		if err != nil {
+			return out, err
+		}
+		out = append(out, p.Edges...)
+		u = ""
+		if p.Next != nil {
+			u = *p.Next
+		}
+	}
+	return out, nil
+}
+
+// NpcZone is the zone Everloot places a creature in: a UiMap id.
+type NpcZone struct {
+	ZoneID   int32
+	Installs int32
+}
+
+// BuildNpcZones picks one zone per creature from the located_in edges. A creature with
+// several zones takes the one most installs observed it in, the lowest zone id on a tie.
+func BuildNpcZones(edges []Edge) map[int32]NpcZone {
+	out := map[int32]NpcZone{}
+	for _, e := range edges {
+		if e.Rel != RelLocated || e.FromKind != "npc" || e.ToKind != "zone" || e.FromID <= 0 || e.ToID <= 0 {
+			continue
+		}
+		cur, ok := out[e.FromID]
+		if !ok || e.Installs > cur.Installs || (e.Installs == cur.Installs && e.ToID < cur.ZoneID) {
+			out[e.FromID] = NpcZone{ZoneID: e.ToID, Installs: e.Installs}
+		}
+	}
+	return out
 }
 
 func getBody(c *http.Client, u string) ([]byte, error) {
