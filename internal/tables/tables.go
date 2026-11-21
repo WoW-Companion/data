@@ -99,6 +99,11 @@ var Required = map[string][]string{
 	"SkillLineAbility": {"SkillLine", "Spell", "MinSkillLineRank", "TrivialSkillLineRankHigh", "TrivialSkillLineRankLow"},
 	"SpellReagents":    {"SpellID", "Reagent_0", "ReagentCount_0", "Reagent_7", "ReagentCount_7"},
 	"SpellEffect":      {"SpellID", "EffectIndex", "Effect", "EffectItemType"},
+
+	"Map":              {"ID", "MapName_lang", "InstanceType", "CorpseMapID", "Corpse_0", "Corpse_1", "MaxPlayers"},
+	"DungeonEncounter": {"ID", "Name_lang", "MapID", "DifficultyID", "OrderIndex"},
+	"MapDifficulty":    {"ID", "MapID", "ContentTuningID"},
+	"ContentTuning":    {"ID", "LfgMinLevel", "LfgMaxLevel"},
 }
 
 // ReadTable parses a client CSV export and checks its header against Required[table].
@@ -231,6 +236,14 @@ func firstBy(rows []Row, key string) map[int]Row {
 		}
 	}
 	return m
+}
+
+func parseFloat(s string) float32 {
+	f, err := strconv.ParseFloat(s, 32)
+	if err != nil {
+		return 0
+	}
+	return float32(f)
 }
 
 func ptr(v int) *int32 { x := int32(v); return &x }
