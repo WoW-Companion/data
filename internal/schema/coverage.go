@@ -2,6 +2,7 @@ package schema
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -15,16 +16,18 @@ import (
 // when every value it carries in the column is null (an empty list is null) and zero when
 // it is not null and every value is zero, false or an empty string.
 type ColumnCoverage struct {
-	Name       string
-	Null, Zero int64
+	Name string `json:"name"`
+	Type string `json:"type"`
+	Null int64  `json:"null"`
+	Zero int64  `json:"zero"`
 }
 
 // TableCoverage is the coverage of one Parquet file.
 type TableCoverage struct {
-	Name    string
-	Rows    int64
-	Missing bool // the file is not in the dataset directory
-	Columns []ColumnCoverage
+	Name    string           `json:"name"`
+	Rows    int64            `json:"rows"`
+	Missing bool             `json:"missing,omitempty"` // the file is not in the dataset directory
+	Columns []ColumnCoverage `json:"columns"`
 }
 
 func isZero(v parquet.Value) bool {
@@ -65,7 +68,11 @@ func CoverageOf(name string, b []byte) (TableCoverage, error) {
 	}
 	leaves := f.Schema().Columns()
 	for _, p := range leaves {
-		tc.Columns = append(tc.Columns, ColumnCoverage{Name: columnName(p)})
+		typ := ""
+		if leaf, ok := f.Schema().Lookup(p...); ok {
+			typ = leaf.Node.Type().String()
+		}
+		tc.Columns = append(tc.Columns, ColumnCoverage{Name: columnName(p), Type: typ})
 	}
 	r := parquet.NewReader(f)
 	defer r.Close()
@@ -155,4 +162,13 @@ func CoverageMarkdown(build string, tcs []TableCoverage) string {
 		}
 	}
 	return b.String()
+}
+
+// CoverageJSON renders the per-column stats a later release is diffed against.
+func CoverageJSON(tcs []TableCoverage) ([]byte, error) {
+	b, err := json.MarshalIndent(tcs, "", "  ")
+	if err != nil {
+		return nil, err
+	}
+	return append(b, '\n'), nil
 }

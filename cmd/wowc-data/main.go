@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/WoW-Companion/data/internal/diff"
 	"github.com/WoW-Companion/data/internal/everloot"
 	"github.com/WoW-Companion/data/internal/fetch"
 	"github.com/WoW-Companion/data/internal/manifest"
@@ -24,6 +25,7 @@ commands:
   verify-manifest  check manifest.json against the schema and the files it lists
   schema           write the dataset schema reference (docs/schema.md)
   coverage         print per-table row counts and null or zero shares of a built dataset
+  diff             print what changed between two dataset directories, as Markdown
   release-check    print the latest Forever build and whether its dataset release exists
 `
 
@@ -44,6 +46,8 @@ func main() {
 		err = runSchema(os.Args[2:])
 	case "coverage":
 		err = runCoverage(os.Args[2:])
+	case "diff":
+		err = runDiff(os.Args[2:])
 	case "release-check":
 		err = runReleaseCheck(os.Args[2:])
 	default:
@@ -118,6 +122,7 @@ func runSchema(args []string) error {
 
 func runCoverage(args []string) error {
 	fs := flag.NewFlagSet("coverage", flag.ExitOnError)
+	asJSON := fs.Bool("json", false, "print the stats as JSON, the form diff reads")
 	fs.Parse(args)
 	if fs.NArg() != 1 {
 		return fmt.Errorf("usage: wowc-data coverage <dataset dir>")
@@ -127,7 +132,33 @@ func runCoverage(args []string) error {
 	if err != nil {
 		return err
 	}
+	if *asJSON {
+		b, err := schema.CoverageJSON(tcs)
+		if err != nil {
+			return err
+		}
+		fmt.Print(string(b))
+		return nil
+	}
 	fmt.Print(schema.CoverageMarkdown(filepath.Base(dir), tcs))
+	return nil
+}
+
+func runDiff(args []string) error {
+	fs := flag.NewFlagSet("diff", flag.ExitOnError)
+	fs.Parse(args)
+	if fs.NArg() != 2 {
+		return fmt.Errorf("usage: wowc-data diff <old dir> <new dir>")
+	}
+	old, err := diff.Load(fs.Arg(0))
+	if err != nil {
+		return err
+	}
+	cur, err := diff.Load(fs.Arg(1))
+	if err != nil {
+		return err
+	}
+	fmt.Print(diff.Markdown(old, cur))
 	return nil
 }
 

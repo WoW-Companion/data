@@ -7,8 +7,9 @@ Each WoW: Forever game build gets one GitHub release, tagged `dataset-<build>` (
 - `wowc-dataset-<build>.tar.zst`: the contents of `dist/<build>/` (the Parquet tables and `manifest.json`) in a directory named `<build>`.
 - `manifest-<build>.json`: the same `manifest.json` as a separate download, so a consumer can read hashes without fetching the archive.
 - `coverage-<build>.md`: row counts and the null or zero share of every column (`wowc-data coverage`), so a consumer can see what is filled before downloading.
+- `stats-<build>.json`: the same coverage with each column's type (`wowc-data coverage -json`), which the next release's notes are diffed against.
 
-The release notes carry the licence and credits: the dataset is CC BY-SA 4.0; "Blizzard game client data, retrieved via wago.tools"; "Data from Everloot (https://everloot.app), CC BY-SA 4.0."
+The release notes start with what changed since the previous dataset release, from `wowc-data diff <old dir> <new dir>`: tables added and removed, columns added, removed or type-changed, row counts old and new, null or zero shares that moved more than 5 points, and the dataset version and build on each side. The old directory needs only `manifest.json` and `stats.json` (the previous release's `manifest-<build>.json` and `stats-<build>.json`, renamed); the new one is a built dataset. A previous release that has no stats file is diffed on tables and rows only. The first release says "First release". The notes also carry the licence and credits: the dataset is CC BY-SA 4.0; "Blizzard game client data, retrieved via wago.tools"; "Data from Everloot (https://everloot.app), CC BY-SA 4.0."
 
 ## When
 
