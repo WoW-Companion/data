@@ -94,6 +94,11 @@ var Required = map[string][]string{
 	"SkillRaceClassInfo":       {"SkillID", "ClassMask"},
 	"ChrClasses":               {"ID", "Name_lang"},
 	"SpellName":                {"ID", "Name_lang"},
+
+	"SkillLine":        {"ID", "DisplayName_lang", "CategoryID"},
+	"SkillLineAbility": {"SkillLine", "Spell", "MinSkillLineRank", "TrivialSkillLineRankHigh", "TrivialSkillLineRankLow"},
+	"SpellReagents":    {"SpellID", "Reagent_0", "ReagentCount_0", "Reagent_7", "ReagentCount_7"},
+	"SpellEffect":      {"SpellID", "EffectIndex", "Effect", "EffectItemType"},
 }
 
 // ReadTable parses a client CSV export and checks its header against Required[table].

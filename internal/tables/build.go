@@ -51,6 +51,9 @@ type Cached struct {
 
 	TalentTrees []TalentTree
 	TalentNodes []TalentNode
+
+	Recipes        []Recipe
+	RecipeReagents []RecipeReagent
 }
 
 // LoadCache parses the cache directory of one build into table rows.
@@ -80,6 +83,12 @@ func LoadCache(dir string) (Cached, error) {
 	}
 	c.TalentTrees = BuildTalentTrees(in)
 	c.TalentNodes = BuildTalentNodes(in)
+	rin := RecipeInput{
+		SkillLines: rows["SkillLine"], Abilities: rows["SkillLineAbility"], Reagents: rows["SpellReagents"],
+		Effects: rows["SpellEffect"], SpellNames: rows["SpellName"],
+	}
+	c.Recipes = BuildRecipes(rin)
+	c.RecipeReagents = BuildRecipeReagents(c.Recipes, rin)
 	return c, nil
 }
 
@@ -143,6 +152,12 @@ func BuildDataset(cacheBuildDir, everlootFile, outDir, created string) (manifest
 		return m, err
 	}
 	if err := add(writeTable(outDir, "stat_types.parquet", StatTypeTable(), Layout(nil, []string{"id"}, src))); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "recipes.parquet", c.Recipes, Layout(nil, []string{"skill_line_id", "spell_id"}, src))); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "recipe_reagents.parquet", c.RecipeReagents, Layout(nil, []string{"spell_id", "reagent_item_id"}, src))); err != nil {
 		return m, err
 	}
 	loot := Layout(nil, []string{"item_id", "source_kind", "source_id"}, EverlootSource(ev))

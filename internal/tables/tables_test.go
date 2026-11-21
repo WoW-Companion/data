@@ -212,6 +212,8 @@ func TestReadTableRequiredColumns(t *testing.T) {
 		{"item delay missing", "ItemSparse", "ID,Display_lang,ItemLevel,RequiredLevel,OverallQualityID,InventoryType,AllowableClass,Bonding,StatModifier_bonusStat_0,StatPercentEditor_0\n", `ItemSparse: required column "ItemDelay" missing`},
 		{"stat percent missing", "ItemSparse", "ID,Display_lang,ItemLevel,RequiredLevel,OverallQualityID,InventoryType,AllowableClass,Bonding,StatModifier_bonusStat_0,ItemDelay\n", `ItemSparse: required column "StatPercentEditor_0" missing`},
 		{"uimap name missing", "UiMap", "ID,Flags\n", `UiMap: required column "Name_lang" missing`},
+		{"trivial rank missing", "SkillLineAbility", "SkillLine,Spell,MinSkillLineRank,TrivialSkillLineRankHigh\n", `SkillLineAbility: required column "TrivialSkillLineRankLow" missing`},
+		{"reagent count missing", "SpellReagents", "SpellID,Reagent_0,ReagentCount_0,Reagent_7\n", `SpellReagents: required column "ReagentCount_7" missing`},
 		{"empty file", "Item", "", `Item: required column "ID" missing`},
 	}
 	for _, c := range cases {
@@ -275,5 +277,60 @@ func TestBuildTalentNodes(t *testing.T) {
 	}
 	if *got[2].Name != "Custom" || !reflect.DeepEqual(got[2].PrerequisiteNodeIDs, []int32{5}) {
 		t.Errorf("node 7 (override name, deduped prerequisite): %+v", got[2])
+	}
+}
+
+func recipeFixture() RecipeInput {
+	return RecipeInput{
+		SkillLines: []Row{
+			{"ID": "171", "DisplayName_lang": "Alchemy", "CategoryID": "11"},
+			{"ID": "185", "DisplayName_lang": "Cooking", "CategoryID": "9"},
+			{"ID": "2933", "DisplayName_lang": "Test Profession [DNT]", "CategoryID": "11"},
+			{"ID": "762", "DisplayName_lang": "Riding", "CategoryID": "7"},
+		},
+		Abilities: []Row{
+			{"SkillLine": "185", "Spell": "20", "MinSkillLineRank": "1", "TrivialSkillLineRankHigh": "60", "TrivialSkillLineRankLow": "45"},
+			{"SkillLine": "171", "Spell": "10", "MinSkillLineRank": "1", "TrivialSkillLineRankHigh": "55", "TrivialSkillLineRankLow": "30"},
+			{"SkillLine": "171", "Spell": "10", "MinSkillLineRank": "1"},
+			{"SkillLine": "171", "Spell": "11", "MinSkillLineRank": "0", "TrivialSkillLineRankHigh": "0", "TrivialSkillLineRankLow": "0"},
+			{"SkillLine": "171", "Spell": "12"},
+			{"SkillLine": "2933", "Spell": "10"},
+			{"SkillLine": "762", "Spell": "10"},
+		},
+		Reagents: []Row{
+			{"SpellID": "10", "Reagent_0": "100", "ReagentCount_0": "2", "Reagent_1": "101", "ReagentCount_1": "1", "Reagent_2": "100", "ReagentCount_2": "3", "Reagent_3": "0", "ReagentCount_3": "0"},
+			{"SpellID": "11", "Reagent_7": "102", "ReagentCount_7": "4"},
+			{"SpellID": "12", "Reagent_0": "103", "ReagentCount_0": "0"},
+		},
+		Effects: []Row{
+			{"SpellID": "10", "EffectIndex": "1", "Effect": "24", "EffectItemType": "900"},
+			{"SpellID": "10", "EffectIndex": "0", "Effect": "24", "EffectItemType": "901"},
+			{"SpellID": "20", "EffectIndex": "0", "Effect": "157", "EffectItemType": "902"},
+			{"SpellID": "11", "EffectIndex": "0", "Effect": "6", "EffectItemType": "903"},
+		},
+		SpellNames: []Row{{"ID": "10", "Name_lang": "Elixir"}, {"ID": "20", "Name_lang": ""}},
+	}
+}
+
+func TestBuildRecipes(t *testing.T) {
+	in := recipeFixture()
+	got := BuildRecipes(in)
+	if len(got) != 3 || got[0].SkillLineID != 171 || got[0].SpellID != 10 || got[1].SpellID != 11 || got[2].SkillLineID != 185 {
+		t.Fatalf("rows (profession lines only, reagents or created item, deduped, sorted): %+v", got)
+	}
+	r := got[0]
+	if *r.Name != "Elixir" || r.SkillLineName != "Alchemy" || *r.CreatesItemID != 901 || *r.LearnSkill != 1 || *r.YellowSkill != 30 || *r.GreySkill != 55 {
+		t.Errorf("recipe 10 (first effect index makes the item): %+v", r)
+	}
+	if got[1].CreatesItemID != nil || got[1].Name != nil || got[1].LearnSkill != nil || got[1].YellowSkill != nil || got[1].GreySkill != nil {
+		t.Errorf("recipe 11 (reagents only, zero thresholds are null): %+v", got[1])
+	}
+	if got[2].Name != nil || *got[2].CreatesItemID != 902 {
+		t.Errorf("recipe 20 (random item effect, no reagents): %+v", got[2])
+	}
+	reagents := BuildRecipeReagents(got, in)
+	want := []RecipeReagent{{10, 100, 5}, {10, 101, 1}, {11, 102, 4}}
+	if !reflect.DeepEqual(reagents, want) {
+		t.Errorf("reagents (merged, zero counts dropped): %+v", reagents)
 	}
 }

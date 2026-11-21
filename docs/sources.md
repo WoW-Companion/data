@@ -110,3 +110,24 @@ Finding: this build stores no per-item stat amount, armor value or damage range.
 `ItemSparse` columns `StatPercentEditor_0` and `ItemDelay` are required (a missing column is an error, as for every table).
 
 Live coverage (2026-11-21 run, required level 1 to 30): among armor (`ClassID` 4) and weapon (`ClassID` 2) items, 711 of 2,588 (27.5%) list at least one stat type (armor 591 of 1,663, 35.5%; weapons 120 of 925, 13.0%). With a stat amount (`stats.value`): 0 of 2,588. With armor, `dmg_min` or `dmg_max`: 0. With `speed_ms`: 908 of 925 weapons.
+
+## Profession recipes, reagents and skill-up ranges (survey)
+
+Surveyed 2026-11-21 against build `1.60.1.71037` (wago.tools). Row counts are data rows.
+
+| Source | Rows | Holds |
+| ------ | ---: | ----- |
+| `SkillLine` | 154 | `ID`, `DisplayName_lang`, `CategoryID` (11 = primary profession, 9 = secondary profession and also riding and racial lines), `ParentSkillLineID`. Two "Test Profession [DNT]" lines (2933, 2934) are excluded. |
+| `SkillLineAbility` | 7,853 | `SkillLine` to `Spell`, with `MinSkillLineRank`, `TrivialSkillLineRankLow`, `TrivialSkillLineRankHigh`, `AcquireMethod`, `NumSkillUps` |
+| `SpellReagents` | 3,319 | one row per spell: `Reagent_0..7` (item ids), `ReagentCount_0..7` |
+| `SpellEffect` | 43,538 | `SpellID`, `EffectIndex`, `Effect` (24 CreateItem on 3,351 rows, 157 CreateRandomItem on 18), `EffectItemType` (the item made) |
+| `SpellName` | 32,503 | spell names (already fetched for talents) |
+
+Tables fetched for this: `SkillLine`, `SkillLineAbility`, `SpellReagents`, `SpellEffect`. Their columns used are required (a missing column is an error, as for every table).
+
+- `recipes`: one row per `SkillLineAbility` row whose `SkillLine` is a profession line (`CategoryID` 11 or 9, no `[DNT]` line) and whose spell has at least one reagent or a CreateItem/CreateRandomItem effect, once per (skill line, spell). That filter leaves out racial and riding abilities, gathering abilities with no reagent or item (Find Minerals and the like), and recipes with neither. Columns: `spell_id` (`Spell`), `skill_line_id`, `skill_line_name` (`SkillLine.DisplayName_lang`), `name` (`SpellName.Name_lang`, null when empty), `creates_item_id` (`SpellEffect.EffectItemType` of the lowest `EffectIndex` item-making effect; null when none, e.g. enchants), `learn_skill` (`MinSkillLineRank`), `yellow_skill` (`TrivialSkillLineRankLow`), `grey_skill` (`TrivialSkillLineRankHigh`). A 0 in a rank column means none and is stored as null.
+- Which rank is which colour follows the commonly documented reading of these columns (low = yellow, high = grey); the client's own files do not label them. The client stores no green threshold, so `recipes` has no green column; nothing is derived from the other two.
+- `recipe_reagents`: one row per reagent of each `recipes` spell, from `SpellReagents` slots 0 to 7 where the item id and the count are both positive; a reagent listed in two slots is summed. `ReagentReCraftCount_n` and `ReagentSource_n` are not read.
+- No description text is read.
+
+Live coverage (2026-11-21 run): 2,522 recipes and 8,475 reagent rows. Recipes per skill line: Blacksmithing 506, Leatherworking 592, Tailoring 471, Engineering 275, Enchanting 262, Alchemy 196, Cooking 133, First Aid 32, Poisons 26, Mining 18, Herbalism 3, Fishing 3, Skinning 3, Survival 1, Comprehension 1. All have reagents; 2,440 create an item (Enchanting: 82 of 262); 2,520 carry both yellow and grey ranks.
