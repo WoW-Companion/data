@@ -103,7 +103,7 @@ func LoadCache(dir string) (Cached, error) {
 	c.RecipeReagents = BuildRecipeReagents(c.Recipes, rin)
 	iin := InstanceInput{
 		Maps: rows["Map"], Encounters: rows["DungeonEncounter"], MapDifficulties: rows["MapDifficulty"],
-		ContentTuning: rows["ContentTuning"], Creatures: rows["Creature"],
+		ContentTuning: rows["ContentTuning"],
 	}
 	c.Instances = BuildInstances(iin)
 	c.InstanceBosses = BuildInstanceBosses(c.Instances, iin)
@@ -154,7 +154,12 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, outDir, created strin
 	if err != nil {
 		return manifest.Manifest{}, err
 	}
+	// loot_sources before npcs: the rows decide which Everloot-only creatures npcs adds.
+	rows := MergeLootSources(everloot.BuildLootSources(ev), BuildCraftedSources(c.Recipes))
+	creatures, clientOnly, _ := ZoneCoverage(c.Npcs, rows)
+	c.Npcs = AddEverlootNpcs(c.Npcs, rows, everloot.BuildNpcNames(ev.Rates))
 	ApplyNpcZones(c.Npcs, c.UiMaps, everloot.BuildNpcZones(ev.NpcZones))
+	linked := LinkBosses(c.InstanceBosses, c.Npcs)
 	builds, err := LoadTalentBuilds(talentsDir)
 	if err != nil {
 		return manifest.Manifest{}, err
@@ -176,7 +181,7 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, outDir, created strin
 	if err := add(writeTable(outDir, "quests.parquet", c.Quests, byID)); err != nil {
 		return m, err
 	}
-	if err := add(writeTable(outDir, "npcs.parquet", c.Npcs, byID)); err != nil {
+	if err := add(writeTable(outDir, "npcs.parquet", c.Npcs, Layout(nil, []string{"id"}, src, EverlootSource(ev)))); err != nil {
 		return m, err
 	}
 	if err := add(writeTable(outDir, "talent_trees.parquet", c.TalentTrees, Layout(nil, []string{"tree_id", "group_id"}, src))); err != nil {
@@ -204,11 +209,12 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, outDir, created strin
 		return m, err
 	}
 	loot := Layout(nil, []string{"item_id", "source_kind", "source_id"}, EverlootSource(ev), src)
-	rows := MergeLootSources(everloot.BuildLootSources(ev), BuildCraftedSources(c.Recipes))
 	gathered := ApplyGathered(rows, c.Nodes)
 	fmt.Printf("gathering nodes in the client tables: %d, gathered loot rows: %d\n", len(c.Nodes), gathered)
-	creatures, inNpcs, withZone := ZoneCoverage(c.Npcs, rows)
-	fmt.Printf("creature loot sources: %d, creature in npcs: %d, with a zone: %d (%.1f%%)\n", creatures, inNpcs, withZone, pctOf(withZone, creatures))
+	_, inNpcs, withZone := ZoneCoverage(c.Npcs, rows)
+	fmt.Printf("creature loot sources: %d, resolved in npcs: %d (%.1f%%; client rows alone %d, %.1f%%), with a zone: %d (%.1f%%)\n",
+		creatures, inNpcs, pctOf(inNpcs, creatures), clientOnly, pctOf(clientOnly, creatures), withZone, pctOf(withZone, creatures))
+	fmt.Printf("instance bosses linked to a creature: %d of %d (%.1f%%)\n", linked, len(c.InstanceBosses), pctOf(linked, len(c.InstanceBosses)))
 	if err := add(writeTable(outDir, "loot_sources.parquet", rows, loot)); err != nil {
 		return m, err
 	}

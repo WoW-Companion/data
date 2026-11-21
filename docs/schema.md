@@ -49,21 +49,22 @@ One row per quest the client lists, sorted by id. Source: wago.tools client tabl
 
 ## npcs
 
-One row per creature, sorted by id. Join loot_sources (source_kind creature) on source_id = id for the zone of a drop. Source: wago.tools client table Creature, CreatureDifficulty, UiMap; Everloot located_in. File: `npcs.parquet`.
+One row per client creature plus one per loot_sources creature the client lacks and Everloot names, sorted by id. Join loot_sources (source_kind creature) on source_id = id for the name and zone of a drop. Source: wago.tools client table Creature, CreatureDifficulty, UiMap; Everloot located_in and drop source names. File: `npcs.parquet`.
 
 | Column | Type | Null | Source | Meaning |
 | --- | --- | --- | --- | --- |
 | `id` | `int32` | no | table | Creature id. |
 | `name` | `string` | no | table | Creature name. |
-| `classification` | `int8` | no | table | Client value: 0 normal, 1 elite, 2 rare elite, 3 boss, 4 rare. |
-| `creature_type` | `int8` | no | table | Creature type id. |
-| `family_id` | `int8` | no | table | Creature family id. |
+| `classification` | `int8` | yes | Creature | Client value: 0 normal, 1 elite, 2 rare elite, 3 boss, 4 rare; null on a row from Everloot. |
+| `creature_type` | `int8` | yes | Creature | Creature type id; null on a row from Everloot. |
+| `family_id` | `int8` | yes | Creature | Creature family id; null on a row from Everloot. |
 | `faction_template_id` | `int32` | yes | CreatureDifficulty | Faction template id; null when the creature has no difficulty row. |
 | `min_level` | `int16` | yes | CreatureDifficulty | Lowest level; null when the creature has no difficulty row. |
 | `max_level` | `int16` | yes | CreatureDifficulty | Highest level; null when the creature has no difficulty row. |
 | `zone_id` | `int32` | yes | Everloot located_in | UiMap id of the zone Everloot observed the creature in (most installs, lowest id on a tie); null when Everloot places it nowhere. |
 | `zone_name` | `string` | yes | UiMap | Name of that UiMap; null with zone_id or when UiMap has no named row. |
 | `zone_source` | `string` | yes | table | "everloot located_in" when zone_id is set; null otherwise. |
+| `name_source` | `string` | yes | Everloot | "everloot sourceName" on a creature the client tables lack, named by Everloot's drop rows; null on a client row. |
 
 ## talent_trees
 
@@ -160,7 +161,7 @@ One row per dungeon or raid map. Source: wago.tools client table Map, MapDifficu
 
 ## instance_bosses
 
-One row per dungeon encounter of an instance. Source: wago.tools client table DungeonEncounter, Creature. File: `instance_bosses.parquet`.
+One row per dungeon encounter of an instance. Source: wago.tools client table DungeonEncounter; npcs. File: `instance_bosses.parquet`.
 
 | Column | Type | Null | Source | Meaning |
 | --- | --- | --- | --- | --- |
@@ -169,7 +170,7 @@ One row per dungeon encounter of an instance. Source: wago.tools client table Du
 | `name` | `string` | no | table | Encounter name. |
 | `order_index` | `int32` | no | table | Order of the encounter in the instance. |
 | `difficulty_id` | `int32` | no | table | Difficulty id (0 on nearly all). |
-| `creature_id` | `int32` | yes | derived from Creature | npcs.id when exactly one creature carries the encounter's exact name; null otherwise. |
+| `creature_id` | `int32` | yes | derived from npcs | npcs.id when exactly one npc carries the encounter's exact name; null otherwise. |
 
 ## loot_sources
 

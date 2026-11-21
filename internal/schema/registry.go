@@ -66,18 +66,19 @@ var Tables = []Table{
 		{"zone_id", "QuestPOIBlob", "UiMap id of the first point of interest when non-zero; null otherwise."},
 		{"zone_name", "UiMap", "Name of that UiMap; null when the UiMap table has no named row."},
 	}},
-	{"npcs", tables.Npc{}, wago + "Creature, CreatureDifficulty, UiMap; Everloot located_in", "One row per creature, sorted by id. Join loot_sources (source_kind creature) on source_id = id for the zone of a drop.", []Col{
+	{"npcs", tables.Npc{}, wago + "Creature, CreatureDifficulty, UiMap; Everloot located_in and drop source names", "One row per client creature plus one per loot_sources creature the client lacks and Everloot names, sorted by id. Join loot_sources (source_kind creature) on source_id = id for the name and zone of a drop.", []Col{
 		{"id", "", "Creature id."},
 		{"name", "", "Creature name."},
-		{"classification", "", "Client value: 0 normal, 1 elite, 2 rare elite, 3 boss, 4 rare."},
-		{"creature_type", "", "Creature type id."},
-		{"family_id", "", "Creature family id."},
+		{"classification", "Creature", "Client value: 0 normal, 1 elite, 2 rare elite, 3 boss, 4 rare; null on a row from Everloot."},
+		{"creature_type", "Creature", "Creature type id; null on a row from Everloot."},
+		{"family_id", "Creature", "Creature family id; null on a row from Everloot."},
 		{"faction_template_id", "CreatureDifficulty", "Faction template id; null when the creature has no difficulty row."},
 		{"min_level", "CreatureDifficulty", "Lowest level; null when the creature has no difficulty row."},
 		{"max_level", "CreatureDifficulty", "Highest level; null when the creature has no difficulty row."},
 		{"zone_id", "Everloot located_in", "UiMap id of the zone Everloot observed the creature in (most installs, lowest id on a tie); null when Everloot places it nowhere."},
 		{"zone_name", "UiMap", "Name of that UiMap; null with zone_id or when UiMap has no named row."},
 		{"zone_source", "", "\"everloot located_in\" when zone_id is set; null otherwise."},
+		{"name_source", "Everloot", "\"everloot sourceName\" on a creature the client tables lack, named by Everloot's drop rows; null on a client row."},
 	}},
 	{"talent_trees", tables.TalentTree{}, wago + "TraitNodeGroup, TraitCond, SkillLineXTraitTree, SkillRaceClassInfo, ChrClasses", "One row per talent group of a trait tree.", []Col{
 		{"tree_id", "", "Trait tree id."},
@@ -137,13 +138,13 @@ var Tables = []Table{
 		{"min_level", "ContentTuning", "LFG minimum level; null when the tuning row holds none."},
 		{"max_level", "ContentTuning", "LFG maximum level; null when the tuning row holds none."},
 	}},
-	{"instance_bosses", tables.InstanceBoss{}, wago + "DungeonEncounter, Creature", "One row per dungeon encounter of an instance.", []Col{
+	{"instance_bosses", tables.InstanceBoss{}, wago + "DungeonEncounter; npcs", "One row per dungeon encounter of an instance.", []Col{
 		{"map_id", "", "instances.map_id."},
 		{"encounter_id", "", "Dungeon encounter id."},
 		{"name", "", "Encounter name."},
 		{"order_index", "", "Order of the encounter in the instance."},
 		{"difficulty_id", "", "Difficulty id (0 on nearly all)."},
-		{"creature_id", "derived from Creature", "npcs.id when exactly one creature carries the encounter's exact name; null otherwise."},
+		{"creature_id", "derived from npcs", "npcs.id when exactly one npc carries the encounter's exact name; null otherwise."},
 	}},
 	{"loot_sources", everloot.LootSource{}, "Everloot drop rates (CC BY-SA 4.0) and recipes", "Where an item comes from: creature, object, quest reward, crafted and gathered rows.", []Col{
 		{"item_id", "", "Item id."},
