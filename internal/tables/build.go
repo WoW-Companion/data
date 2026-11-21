@@ -142,6 +142,9 @@ func BuildDataset(cacheBuildDir, everlootFile, outDir, created string) (manifest
 	if err := add(writeTable(outDir, "talent_nodes.parquet", c.TalentNodes, Layout(nil, []string{"node_id"}, src))); err != nil {
 		return m, err
 	}
+	if err := add(writeTable(outDir, "stat_types.parquet", StatTypeTable(), Layout(nil, []string{"id"}, src))); err != nil {
+		return m, err
+	}
 	loot := Layout(nil, []string{"item_id", "source_kind", "source_id"}, EverlootSource(ev))
 	if err := add(writeTable(outDir, "loot_sources.parquet", everloot.BuildLootSources(ev), loot)); err != nil {
 		return m, err
