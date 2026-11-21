@@ -44,6 +44,7 @@ jobs:
           set -euo pipefail
           tar -C dist -cf - "$BUILD" | zstd -19 -T0 -o "wowc-dataset-$BUILD.tar.zst"
           cp "dist/$BUILD/manifest.json" "manifest-$BUILD.json"
+          go run ./cmd/wowc-data coverage "dist/$BUILD" > "coverage-$BUILD.md"
           cat > notes.md <<NOTES
           WoW: Forever dataset for game build $BUILD (Parquet tables plus manifest.json).
 
@@ -55,5 +56,5 @@ jobs:
 
           Verify: \`wowc-data verify-manifest <dir>\`, or compare the sha256 of each file with manifest.json. See docs/releases.md.
           NOTES
-          gh release create "dataset-$BUILD" "wowc-dataset-$BUILD.tar.zst" "manifest-$BUILD.json" \
+          gh release create "dataset-$BUILD" "wowc-dataset-$BUILD.tar.zst" "manifest-$BUILD.json" "coverage-$BUILD.md" \
             --title "Dataset $BUILD" --notes-file notes.md --target "$GITHUB_SHA"

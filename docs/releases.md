@@ -6,6 +6,7 @@ Each WoW: Forever game build gets one GitHub release, tagged `dataset-<build>` (
 
 - `wowc-dataset-<build>.tar.zst`: the contents of `dist/<build>/` (the Parquet tables and `manifest.json`) in a directory named `<build>`.
 - `manifest-<build>.json`: the same `manifest.json` as a separate download, so a consumer can read hashes without fetching the archive.
+- `coverage-<build>.md`: row counts and the null or zero share of every column (`wowc-data coverage`), so a consumer can see what is filled before downloading.
 
 The release notes carry the licence and credits: the dataset is CC BY-SA 4.0; "Blizzard game client data, retrieved via wago.tools"; "Data from Everloot (https://everloot.app), CC BY-SA 4.0."
 
