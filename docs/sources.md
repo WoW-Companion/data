@@ -105,7 +105,7 @@ Finding: this build stores no per-item stat amount, armor value or damage range.
 - `items.armor`, `dmg_min`, `dmg_max`: always null.
 - `items.speed_ms`: `ItemSparse.ItemDelay` for weapon-class items (`Item.ClassID` 2) with a non-zero delay; null otherwise. This is a direct client value.
 - `items.stat_types` (existing, ids only) is kept unchanged.
-- `stat_types` table (id, label): the client's item stat enum (ITEM_MOD_*) ids 0 to 56 with short labels, written as constants in `internal/tables/itemstats.go`; it is not fetched from a table (the build has no table for it). The enum is from the public documentation of that enum, not verified against this client. Stat ids above 56 appear on items (e.g. 83 to 136, 1 to 47 uses each) and have no label.
+- `stat_types` table (id, label): the client's item stat enum (ITEM_MOD_*) ids 0 to 56 with short labels, written as constants in `internal/tables/itemstats.go`; it is not fetched from a table (the build has no table for it). The enum is from the public documentation of that enum, not verified against this client. Stat ids above 56 appear on items (83 to 136, 1 to 87 items each) and have no label.
 
 `ItemSparse` columns `StatPercentEditor_0` and `ItemDelay` are required (a missing column is an error, as for every table).
 
