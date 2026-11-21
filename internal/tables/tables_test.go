@@ -106,28 +106,41 @@ func TestBuildNpcs(t *testing.T) {
 		{"ID": "20", "Name_lang": "Bare"},
 	}
 	diffs := []Row{
-		{"ID": "2", "CreatureID": "10", "ContentTuningID": "6", "FactionID": "14"},
-		{"ID": "1", "CreatureID": "10", "ContentTuningID": "5", "FactionID": "0"},
-		{"ID": "3", "CreatureID": "30", "ContentTuningID": "99"},
-		{"ID": "4", "CreatureID": "20", "ContentTuningID": "7"},
+		{"ID": "2", "CreatureID": "10", "MinLevel": "4", "MaxLevel": "8", "FactionTemplateID": "14"},
+		{"ID": "1", "CreatureID": "10", "MinLevel": "3", "MaxLevel": "5", "FactionTemplateID": "0"},
+		{"ID": "3", "CreatureID": "30"},
+		{"ID": "4", "CreatureID": "20", "MinLevel": "1", "MaxLevel": "0"},
 	}
-	tunings := []Row{
-		{"ID": "5", "MinLevel": "3", "MaxLevel": "5"},
-		{"ID": "6", "MinLevel": "4", "MaxLevel": "8"},
-		{"ID": "7", "MinLevel": "1", "MaxLevel": "0"},
-	}
-	got := BuildNpcs(creatures, diffs, tunings)
+	got := BuildNpcs(creatures, diffs)
 	if len(got) != 3 || got[0].ID != 10 || got[1].ID != 20 || got[2].ID != 30 {
 		t.Fatalf("not sorted by id: %+v", got)
 	}
 	w := got[0]
-	if w.Name != "Wolf" || w.FamilyID != 1 || w.FactionID == nil || *w.FactionID != 14 || *w.MinLevel != 3 || *w.MaxLevel != 8 {
+	if w.Name != "Wolf" || w.FamilyID != 1 || w.FactionTemplateID == nil || *w.FactionTemplateID != 14 || *w.MinLevel != 3 || *w.MaxLevel != 8 {
 		t.Errorf("wolf: %+v", w)
 	}
-	if got[1].MinLevel != nil || got[1].FactionID != nil {
+	if got[1].MinLevel != nil || got[1].FactionTemplateID != nil {
 		t.Errorf("max level 0 means no range: %+v", got[1])
 	}
 	if b := got[2]; b.Classification != 3 || b.CreatureType != 7 || b.MinLevel != nil {
 		t.Errorf("boss: %+v", b)
+	}
+}
+
+func TestReadTableRequiredColumns(t *testing.T) {
+	cases := []struct {
+		name, table, in, wantErr string
+	}{
+		{"all present", "Item", "ID,ClassID,SubclassID\n1,2,3\n", ""},
+		{"extra columns fine", "Item", "ID,ClassID,SubclassID,Other\n", ""},
+		{"renamed column", "Creature", "ID,Name,Classification,CreatureType,CreatureFamily\n", `Creature: required column "Name_lang" missing`},
+		{"missing in header-only file", "QuestV2", "ID,UniqueBitFlag\n", `QuestV2: required column "UiQuestDetailsThemeID" missing`},
+		{"empty file", "Item", "", `Item: required column "ID" missing`},
+	}
+	for _, c := range cases {
+		_, err := ReadTable(c.table, strings.NewReader(c.in))
+		if (err == nil) != (c.wantErr == "") || (err != nil && !strings.Contains(err.Error(), c.wantErr)) {
+			t.Errorf("%s: err %v, want %q", c.name, err, c.wantErr)
+		}
 	}
 }

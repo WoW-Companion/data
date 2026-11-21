@@ -6,6 +6,7 @@ package tables
 
 import (
 	"encoding/csv"
+	"fmt"
 	"io"
 	"slices"
 	"strconv"
@@ -56,25 +57,56 @@ type Quest struct {
 // Row is one CSV record keyed by header name.
 type Row map[string]string
 
+// Required lists the columns each client table must carry in its header. A column the
+// export lacks is an error naming table and column, never a silent null or zero.
+var Required = map[string][]string{
+	"ItemSparse":         {"ID", "Display_lang", "ItemLevel", "RequiredLevel", "OverallQualityID", "InventoryType", "AllowableClass", "Bonding", "StatModifier_bonusStat_0"},
+	"Item":               {"ID", "ClassID", "SubclassID"},
+	"QuestV2":            {"ID", "UniqueBitFlag", "UiQuestDetailsThemeID"},
+	"QuestLineXQuest":    {"ID", "QuestID", "QuestLineID"},
+	"QuestPOIBlob":       {"ID", "QuestID", "MapID", "UiMapID"},
+	"Creature":           {"ID", "Name_lang", "Classification", "CreatureType", "CreatureFamily"},
+	"CreatureDifficulty": {"ID", "CreatureID", "MinLevel", "MaxLevel", "FactionTemplateID"},
+}
+
+// ReadTable parses a client CSV export and checks its header against Required[table].
+func ReadTable(table string, r io.Reader) ([]Row, error) {
+	rows, head, err := readCSV(r)
+	if err != nil {
+		return nil, err
+	}
+	for _, col := range Required[table] {
+		if !slices.Contains(head, col) {
+			return nil, fmt.Errorf("%s: required column %q missing from the header", table, col)
+		}
+	}
+	return rows, nil
+}
+
 // ReadCSV parses a client CSV export into rows.
 func ReadCSV(r io.Reader) ([]Row, error) {
+	rows, _, err := readCSV(r)
+	return rows, err
+}
+
+func readCSV(r io.Reader) ([]Row, []string, error) {
 	cr := csv.NewReader(r)
 	cr.FieldsPerRecord = -1
 	head, err := cr.Read()
 	if err == io.EOF {
-		return nil, nil
+		return nil, nil, nil
 	}
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	var rows []Row
 	for {
 		rec, err := cr.Read()
 		if err == io.EOF {
-			return rows, nil
+			return rows, head, nil
 		}
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 		row := make(Row, len(head))
 		for i, h := range head {

@@ -28,7 +28,7 @@ const (
 var Delay = 2 * time.Second
 
 // Tables are the client tables the pipeline reads.
-var Tables = []string{"ItemSparse", "Item", "QuestV2", "QuestLineXQuest", "QuestPOIBlob", "Creature", "CreatureDifficulty", "ContentTuning"}
+var Tables = []string{"ItemSparse", "Item", "QuestV2", "QuestLineXQuest", "QuestPOIBlob", "Creature", "CreatureDifficulty"}
 
 // Provenance is the record kept beside the cached CSVs and stamped into every built table.
 type Provenance struct {

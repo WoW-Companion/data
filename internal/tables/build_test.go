@@ -17,9 +17,9 @@ func TestBuildDatasetSmoke(t *testing.T) {
 	cache := filepath.Join(dir, "cache", "b1")
 	os.MkdirAll(cache, 0o755)
 	for _, tb := range fetch.Tables {
-		body := "ID\n"
+		body := strings.Join(Required[tb], ",") + "\n"
 		if tb == "Creature" {
-			body = "ID,Name_lang,Classification\n5,Wolf,1\n"
+			body += "5,Wolf,1,0,0\n"
 		}
 		os.WriteFile(filepath.Join(cache, tb+".csv"), []byte(body), 0o644)
 	}

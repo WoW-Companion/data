@@ -20,6 +20,8 @@ const (
 	BaseURL   = "https://everloot.app"
 	DropsPath = "/api/rollups/drops"
 	CacheFile = "drops.json"
+	EdgesPath = "/api/edges"
+	RelReward = "reward_from"
 	// Credit is the attribution wording from Everloot's data policy.
 	Credit  = "Data from Everloot (https://everloot.app), CC BY-SA 4.0."
 	License = "CC BY-SA 4.0"
@@ -44,6 +46,62 @@ type Rate struct {
 	Tier           string   `json:"tier,omitempty"`
 }
 
+// Edge is one edges[] row of the relations answer.
+type Edge struct {
+	FromKind string `json:"fromKind"`
+	FromID   int32  `json:"fromId"`
+	Rel      string `json:"rel"`
+	ToKind   string `json:"toKind"`
+	ToID     int32  `json:"toId"`
+	Evidence string `json:"evidence,omitempty"`
+	Installs int32  `json:"installs"`
+}
+
+type edgePage struct {
+	Edges []Edge  `json:"edges"`
+	Next  *string `json:"next"`
+}
+
+// Required record fields. A field absent from every record of a non-empty page is a
+// renamed field, not data, and stops the fetch.
+var (
+	dropFields = []string{"itemId", "kills", "drops", "rate", "reporters", "public"}
+	edgeFields = []string{"fromKind", "fromId", "rel", "toKind", "toId", "installs"}
+)
+
+// RequireFields checks that each field appears in at least one record of the array
+// body[key]. An empty array passes: there is nothing to check.
+func RequireFields(table, key string, fields []string, body []byte) error {
+	var doc map[string]json.RawMessage
+	if err := json.Unmarshal(body, &doc); err != nil {
+		return fmt.Errorf("%s: %w", table, err)
+	}
+	raw, ok := doc[key]
+	if !ok {
+		return fmt.Errorf("%s: required field %q missing from the answer", table, key)
+	}
+	var recs []map[string]json.RawMessage
+	if err := json.Unmarshal(raw, &recs); err != nil {
+		return fmt.Errorf("%s: %q: %w", table, key, err)
+	}
+	if len(recs) == 0 {
+		return nil
+	}
+	for _, f := range fields {
+		found := false
+		for _, r := range recs {
+			if _, ok := r[f]; ok {
+				found = true
+				break
+			}
+		}
+		if !found {
+			return fmt.Errorf("%s: required field %q missing from every record", table, f)
+		}
+	}
+	return nil
+}
+
 // Attribution is the attribution object every answer carries.
 type Attribution struct {
 	Licence    string `json:"licence"`
@@ -59,6 +117,8 @@ type Snapshot struct {
 	DataAsOf    string      `json:"dataAsOf"`
 	Attribution Attribution `json:"attribution"`
 	Rates       []Rate      `json:"rates"`
+	// QuestRewards are the item-to-quest "reward_from" edges from /api/edges.
+	QuestRewards []Edge `json:"questRewards,omitempty"`
 }
 
 type page struct {
@@ -94,6 +154,19 @@ func Fetch(baseURL, cacheDir, retrieved string) (Snapshot, error) {
 			u = *p.Next
 		}
 	}
+	u = fmt.Sprintf("%s%s?rel=%s&offset=0&limit=%d", baseURL, EdgesPath, RelReward, PageLen)
+	for u != "" {
+		time.Sleep(Delay)
+		p, err := getEdges(client, u)
+		if err != nil {
+			return s, err
+		}
+		s.QuestRewards = append(s.QuestRewards, p.Edges...)
+		u = ""
+		if p.Next != nil {
+			u = *p.Next
+		}
+	}
 	if err := os.MkdirAll(cacheDir, 0o755); err != nil {
 		return s, err
 	}
@@ -101,18 +174,37 @@ func Fetch(baseURL, cacheDir, retrieved string) (Snapshot, error) {
 	return s, os.WriteFile(path, append(b, '\n'), 0o644)
 }
 
-func getPage(c *http.Client, u string) (page, error) {
-	var p page
+func getBody(c *http.Client, u string) ([]byte, error) {
 	resp, err := c.Get(u)
 	if err != nil {
-		return p, err
+		return nil, err
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		return p, fmt.Errorf("%s: HTTP %d (Retry-After %q)", u, resp.StatusCode, resp.Header.Get("Retry-After"))
+		return nil, fmt.Errorf("%s: HTTP %d (Retry-After %q)", u, resp.StatusCode, resp.Header.Get("Retry-After"))
 	}
-	body, err := io.ReadAll(resp.Body)
+	return io.ReadAll(resp.Body)
+}
+
+func getPage(c *http.Client, u string) (page, error) {
+	var p page
+	body, err := getBody(c, u)
 	if err != nil {
+		return p, err
+	}
+	if err := RequireFields("everloot drops", "rates", dropFields, body); err != nil {
+		return p, err
+	}
+	return p, json.Unmarshal(body, &p)
+}
+
+func getEdges(c *http.Client, u string) (edgePage, error) {
+	var p edgePage
+	body, err := getBody(c, u)
+	if err != nil {
+		return p, err
+	}
+	if err := RequireFields("everloot edges", "edges", edgeFields, body); err != nil {
 		return p, err
 	}
 	return p, json.Unmarshal(body, &p)
@@ -132,6 +224,7 @@ func Load(path string) (Snapshot, error) {
 const (
 	KindCreature = "creature"
 	KindObject   = "object"
+	KindQuest    = "quest reward"
 )
 
 // LootSource is one row of the loot_sources table. Counts and rates are Everloot's own.
@@ -149,8 +242,10 @@ type LootSource struct {
 	EverlootDate *string  `parquet:"everloot_data_as_of,optional"`
 }
 
-// BuildLootSources keeps the public rates that name a creature or object source and
-// returns them sorted by item, kind and source.
+// BuildLootSources keeps the public rates that name a creature or object source, plus a
+// `quest reward` row per item-to-quest reward edge (kills, drops and rate are zero there:
+// Everloot counts installs that saw the reward, not loot windows; installs go in
+// reporters, the edge's evidence in tier). Rows are sorted by item, kind and source.
 func BuildLootSources(s Snapshot) []LootSource {
 	out := make([]LootSource, 0, len(s.Rates))
 	var asOf *string
@@ -176,6 +271,17 @@ func BuildLootSources(s Snapshot) []LootSource {
 		if r.Tier != "" {
 			t := r.Tier
 			l.Tier = &t
+		}
+		out = append(out, l)
+	}
+	for _, e := range s.QuestRewards {
+		if e.Rel != RelReward || e.FromKind != "item" || e.ToKind != "quest" || e.FromID <= 0 || e.ToID <= 0 {
+			continue
+		}
+		l := LootSource{ItemID: e.FromID, SourceKind: KindQuest, SourceID: e.ToID, Reporters: e.Installs, EverlootDate: asOf}
+		if e.Evidence != "" {
+			ev := e.Evidence
+			l.Tier = &ev
 		}
 		out = append(out, l)
 	}

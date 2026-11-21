@@ -6,16 +6,16 @@ import (
 )
 
 // Npc is one row of the npcs table: client facts only (no title or gossip text, no
-// spawn coordinates). Level range and faction are null where the client lists none.
+// spawn coordinates). Level range and faction template are null where the client lists none.
 type Npc struct {
-	ID             int32  `parquet:"id"`
-	Name           string `parquet:"name"`
-	Classification int8   `parquet:"classification"` // client value: 0 normal, 1 elite, 2 rare elite, 3 boss, 4 rare
-	CreatureType   int8   `parquet:"creature_type"`
-	FamilyID       int8   `parquet:"family_id"`
-	FactionID      *int32 `parquet:"faction_id,optional"`
-	MinLevel       *int16 `parquet:"min_level,optional"`
-	MaxLevel       *int16 `parquet:"max_level,optional"`
+	ID                int32  `parquet:"id"`
+	Name              string `parquet:"name"`
+	Classification    int8   `parquet:"classification"` // client value: 0 normal, 1 elite, 2 rare elite, 3 boss, 4 rare
+	CreatureType      int8   `parquet:"creature_type"`
+	FamilyID          int8   `parquet:"family_id"`
+	FactionTemplateID *int32 `parquet:"faction_template_id,optional"`
+	MinLevel          *int16 `parquet:"min_level,optional"`
+	MaxLevel          *int16 `parquet:"max_level,optional"`
 }
 
 // optInt parses a column that may be absent or empty.
@@ -28,14 +28,10 @@ func (r Row) optInt(key string) (int, bool) {
 	return n, err == nil
 }
 
-// BuildNpcs joins Creature to its CreatureDifficulty rows and their ContentTuning level
-// ranges: the range spans every difficulty of the creature, the faction is the first
-// difficulty's (by ID) that lists one. Rows are sorted by id.
-func BuildNpcs(creatures, difficulties, tunings []Row) []Npc {
-	tuning := make(map[int]Row, len(tunings))
-	for _, t := range tunings {
-		tuning[t.int("ID", 0)] = t
-	}
+// BuildNpcs joins Creature to its CreatureDifficulty rows: the level range spans every
+// difficulty of the creature, the faction template is the first difficulty's (by ID) that
+// lists one. Rows are sorted by id.
+func BuildNpcs(creatures, difficulties []Row) []Npc {
 	diffs := slices.Clone(difficulties)
 	slices.SortStableFunc(diffs, func(a, b Row) int { return a.int("ID", 0) - b.int("ID", 0) })
 	byCreature := map[int][]Row{}
@@ -54,15 +50,11 @@ func BuildNpcs(creatures, difficulties, tunings []Row) []Npc {
 			FamilyID:       int8(r.int("CreatureFamily", 0)),
 		}
 		for _, d := range byCreature[id] {
-			if f, ok := d.optInt("FactionID"); ok && f != 0 && n.FactionID == nil {
-				n.FactionID = ptr(f)
+			if f, ok := d.optInt("FactionTemplateID"); ok && f != 0 && n.FactionTemplateID == nil {
+				n.FactionTemplateID = ptr(f)
 			}
-			t, ok := tuning[d.int("ContentTuningID", 0)]
-			if !ok {
-				continue
-			}
-			lo, okLo := t.optInt("MinLevel")
-			hi, okHi := t.optInt("MaxLevel")
+			lo, okLo := d.optInt("MinLevel")
+			hi, okHi := d.optInt("MaxLevel")
 			if !okLo || !okHi || hi == 0 {
 				continue
 			}

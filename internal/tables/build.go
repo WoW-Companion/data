@@ -39,7 +39,7 @@ func readCSVFile(dir, table string) ([]Row, error) {
 		return nil, err
 	}
 	defer f.Close()
-	return ReadCSV(f)
+	return ReadTable(table, f)
 }
 
 // Cached holds the parsed client tables of one cached build.
@@ -68,7 +68,7 @@ func LoadCache(dir string) (Cached, error) {
 	}
 	c.Items = BuildItems(rows["ItemSparse"], rows["Item"])
 	c.Quests = BuildQuests(rows["QuestV2"], rows["QuestLineXQuest"], rows["QuestPOIBlob"])
-	c.Npcs = BuildNpcs(rows["Creature"], rows["CreatureDifficulty"], rows["ContentTuning"])
+	c.Npcs = BuildNpcs(rows["Creature"], rows["CreatureDifficulty"])
 	return c, nil
 }
 
