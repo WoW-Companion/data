@@ -84,3 +84,29 @@ Outcome, per `quests` column:
 `UiMap` is fetched with the other client tables and its `ID` and `Name_lang` columns are required (a missing column is an error, as for every table).
 
 Live coverage (2026-11-21 run): see the mission report; zone is non-null for 22 of 6,626 quests (0.33%), level and min_level for none.
+
+## Item stat values, armor, damage and speed (survey)
+
+Surveyed 2026-11-21 against build `1.60.1.71037` (wago.tools). Row counts are data rows.
+
+| Source | Rows | Holds |
+| ------ | ---: | ----- |
+| `ItemSparse` | 19,400 | `StatModifier_bonusStat_0..9` (stat type ids, -1 for an empty slot), `StatPercentEditor_0..9` (a share of a level budget in 1/10000, e.g. 10000, 8000; not an amount), `ItemDelay` (weapon speed in ms; non-zero on 1,926 rows), `ItemLevel`, `DmgVariance`. No stat amount, armor or damage column. |
+| `Item` | 32,009 | `ClassID`, `SubclassID`, `InventoryType`; no stats |
+| `RandPropPoints` | 300 | per-item-level budget tables (`Epic_*`, `Superior_*`, `Good_*`) |
+| `ItemArmorTotal` | 100 | armor by item level for cloth, leather, mail, plate |
+| `ItemArmorQuality`, `ItemArmorShield` | 100, 100 | armor quality multipliers; shield armor by item level |
+| `ItemDamageOneHand`, `ItemDamageTwoHand` (and `...Caster`), `ItemDamageAmmo` | 100 (ammo 1,000) | damage per second by item level and quality |
+| `ItemStatEffect`, `ItemSparseStat`, `ItemStat`, `ItemScalingTable` | – | "Table not found" |
+
+Finding: this build stores no per-item stat amount, armor value or damage range. The amounts are computed by the client from the budget tables above, the item's level, quality and slot, and `StatPercentEditor`. Reproducing that is a derivation, not a read of client data, and the rule is that no value is inferred. So the budget tables are not fetched and:
+
+- `items.stats`: one `{type, value}` per listed stat, in slot order. `type` is `StatModifier_bonusStat_n` (ItemSparse). `value` is always null.
+- `items.armor`, `dmg_min`, `dmg_max`: always null.
+- `items.speed_ms`: `ItemSparse.ItemDelay` for weapon-class items (`Item.ClassID` 2) with a non-zero delay; null otherwise. This is a direct client value.
+- `items.stat_types` (existing, ids only) is kept unchanged.
+- `stat_types` table (id, label): the client's item stat enum (ITEM_MOD_*) ids 0 to 56 with short labels, written as constants in `internal/tables/itemstats.go`; it is not fetched from a table (the build has no table for it). The enum is from the public documentation of that enum, not verified against this client. Stat ids above 56 appear on items (83 to 136, 1 to 87 items each) and have no label.
+
+`ItemSparse` columns `StatPercentEditor_0` and `ItemDelay` are required (a missing column is an error, as for every table).
+
+Live coverage (2026-11-21 run, required level 1 to 30): among armor (`ClassID` 4) and weapon (`ClassID` 2) items, 711 of 2,588 (27.5%) list at least one stat type (armor 591 of 1,663, 35.5%; weapons 120 of 925, 13.0%). With a stat amount (`stats.value`): 0 of 2,588. With armor, `dmg_min` or `dmg_max`: 0. With `speed_ms`: 908 of 925 weapons.

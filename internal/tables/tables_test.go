@@ -64,6 +64,41 @@ func TestStatsStatusOf(t *testing.T) {
 	}
 }
 
+func TestItemStats(t *testing.T) {
+	cases := []struct {
+		name string
+		row  Row
+		want []ItemStat
+	}{
+		{"none", Row{}, []ItemStat{}},
+		{"order kept, empty slots skipped, value never inferred", Row{"StatModifier_bonusStat_0": "7", "StatModifier_bonusStat_1": "-1", "StatModifier_bonusStat_2": "3", "StatPercentEditor_0": "10000"}, []ItemStat{{Type: 7}, {Type: 3}}},
+	}
+	for _, c := range cases {
+		if got := ItemStats(c.row); !reflect.DeepEqual(got, c.want) {
+			t.Errorf("%s: got %v want %v", c.name, got, c.want)
+		}
+	}
+}
+
+func TestSpeedMS(t *testing.T) {
+	cases := []struct {
+		name  string
+		row   Row
+		class int
+		want  *int32
+	}{
+		{"weapon", Row{"ItemDelay": "2600"}, 2, ptr(2600)},
+		{"weapon zero delay", Row{"ItemDelay": "0"}, 2, nil},
+		{"weapon column absent", Row{}, 2, nil},
+		{"armor ignores delay", Row{"ItemDelay": "2600"}, 4, nil},
+	}
+	for _, c := range cases {
+		if got := SpeedMS(c.row, c.class); !reflect.DeepEqual(got, c.want) {
+			t.Errorf("%s: got %v want %v", c.name, got, c.want)
+		}
+	}
+}
+
 func TestBuildItems(t *testing.T) {
 	sparse := []Row{
 		{"ID": "20", "Display_lang": "Plain Vest", "InventoryType": "5", "OverallQualityID": "3", "ItemLevel": "40"},
@@ -76,6 +111,9 @@ func TestBuildItems(t *testing.T) {
 	}
 	if got[0].StatsStatus != StatsKnown || !reflect.DeepEqual(got[0].StatTypes, []int16{5}) {
 		t.Errorf("ring: %+v", got[0])
+	}
+	if len(got[0].Stats) != 1 || got[0].Stats[0].Type != 5 || got[0].Stats[0].Value != nil || got[0].Armor != nil || got[0].DmgMin != nil || got[0].DmgMax != nil || got[0].SpeedMS != nil {
+		t.Errorf("ring stats: %+v", got[0])
 	}
 	if got[1].StatsStatus != StatsUnknown || got[1].AllowableClassMask != -1 || got[1].SubclassID != 1 {
 		t.Errorf("vest: %+v", got[1])
@@ -171,6 +209,8 @@ func TestReadTableRequiredColumns(t *testing.T) {
 		{"extra columns fine", "Item", "ID,ClassID,SubclassID,Other\n", ""},
 		{"renamed column", "Creature", "ID,Name,Classification,CreatureType,CreatureFamily\n", `Creature: required column "Name_lang" missing`},
 		{"missing in header-only file", "QuestV2", "ID,UniqueBitFlag\n", `QuestV2: required column "UiQuestDetailsThemeID" missing`},
+		{"item delay missing", "ItemSparse", "ID,Display_lang,ItemLevel,RequiredLevel,OverallQualityID,InventoryType,AllowableClass,Bonding,StatModifier_bonusStat_0,StatPercentEditor_0\n", `ItemSparse: required column "ItemDelay" missing`},
+		{"stat percent missing", "ItemSparse", "ID,Display_lang,ItemLevel,RequiredLevel,OverallQualityID,InventoryType,AllowableClass,Bonding,StatModifier_bonusStat_0,ItemDelay\n", `ItemSparse: required column "StatPercentEditor_0" missing`},
 		{"uimap name missing", "UiMap", "ID,Flags\n", `UiMap: required column "Name_lang" missing`},
 		{"empty file", "Item", "", `Item: required column "ID" missing`},
 	}

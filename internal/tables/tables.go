@@ -29,19 +29,27 @@ func isGearClass(c int) bool { return c == 2 || c == 4 }
 
 // Item is one row of the items table.
 type Item struct {
-	ID                 int32   `parquet:"id"`
-	Name               string  `parquet:"name"`
-	ItemLevel          int16   `parquet:"item_level"`
-	RequiredLevel      int16   `parquet:"required_level"`
-	Quality            int8    `parquet:"quality"`
-	ClassID            int8    `parquet:"class_id"`
-	SubclassID         int8    `parquet:"subclass_id"`
-	Slot               int8    `parquet:"slot"`
-	AllowableClassMask int32   `parquet:"allowable_class_mask"`
-	Bonding            int8    `parquet:"bonding"`
-	StatTypes          []int16 `parquet:"stat_types,list"`
-	StatsStatus        string  `parquet:"stats_status"`
+	ID                 int32      `parquet:"id"`
+	Name               string     `parquet:"name"`
+	ItemLevel          int16      `parquet:"item_level"`
+	RequiredLevel      int16      `parquet:"required_level"`
+	Quality            int8       `parquet:"quality"`
+	ClassID            int8       `parquet:"class_id"`
+	SubclassID         int8       `parquet:"subclass_id"`
+	Slot               int8       `parquet:"slot"`
+	AllowableClassMask int32      `parquet:"allowable_class_mask"`
+	Bonding            int8       `parquet:"bonding"`
+	StatTypes          []int16    `parquet:"stat_types,list"`
+	StatsStatus        string     `parquet:"stats_status"`
+	Stats              []ItemStat `parquet:"stats,list"`
+	Armor              *int32     `parquet:"armor,optional"`
+	DmgMin             *int32     `parquet:"dmg_min,optional"`
+	DmgMax             *int32     `parquet:"dmg_max,optional"`
+	SpeedMS            *int32     `parquet:"speed_ms,optional"`
 }
+
+// Armor, DmgMin and DmgMax stay null: this build's client tables hold no armor or damage
+// amount for an item, only per-level budget tables (docs/sources.md), and nothing is inferred.
 
 // Quest is one row of the quests table. The client's quest tables carry no name,
 // level or rewards; only what exists is kept. Level and MinLevel stay null: no allowed
@@ -65,7 +73,7 @@ type Row map[string]string
 // Required lists the columns each client table must carry in its header. A column the
 // export lacks is an error naming table and column, never a silent null or zero.
 var Required = map[string][]string{
-	"ItemSparse":         {"ID", "Display_lang", "ItemLevel", "RequiredLevel", "OverallQualityID", "InventoryType", "AllowableClass", "Bonding", "StatModifier_bonusStat_0"},
+	"ItemSparse":         {"ID", "Display_lang", "ItemLevel", "RequiredLevel", "OverallQualityID", "InventoryType", "AllowableClass", "Bonding", "StatModifier_bonusStat_0", "StatPercentEditor_0", "ItemDelay"},
 	"Item":               {"ID", "ClassID", "SubclassID"},
 	"QuestV2":            {"ID", "UniqueBitFlag", "UiQuestDetailsThemeID"},
 	"QuestLineXQuest":    {"ID", "QuestID", "QuestLineID"},
@@ -199,6 +207,8 @@ func BuildItems(sparse, items []Row) []Item {
 			Bonding:            int8(r.int("Bonding", 0)),
 			StatTypes:          stats,
 			StatsStatus:        StatsStatusOf(stats, classID, slot, quality),
+			Stats:              ItemStats(r),
+			SpeedMS:            SpeedMS(r, classID),
 		})
 	}
 	slices.SortStableFunc(out, func(a, b Item) int { return int(a.ID) - int(b.ID) })
