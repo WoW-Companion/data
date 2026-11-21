@@ -173,13 +173,13 @@ One row per dungeon encounter of an instance. Source: wago.tools client table Du
 
 ## loot_sources
 
-Where an item comes from: creature, object, quest reward and crafted rows. Source: Everloot drop rates (CC BY-SA 4.0) and recipes. File: `loot_sources.parquet`.
+Where an item comes from: creature, object, quest reward, crafted and gathered rows. Source: Everloot drop rates (CC BY-SA 4.0) and recipes. File: `loot_sources.parquet`.
 
 | Column | Type | Null | Source | Meaning |
 | --- | --- | --- | --- | --- |
 | `item_id` | `int32` | no | table | Item id. |
-| `source_kind` | `string` | no | table | creature, object, quest reward or crafted. |
-| `source_id` | `int32` | no | table | Creature id, object id, quest id, or the recipe spell id for crafted rows. |
+| `source_kind` | `string` | no | table | creature, object, quest reward, crafted or gathered. |
+| `source_id` | `int32` | no | table | Creature id, object id (the node id on gathered rows), quest id, or the recipe spell id for crafted rows. |
 | `kills` | `int32` | no | Everloot | Loot windows opened (not kills); 0 on quest reward and crafted rows. |
 | `drops` | `int32` | no | Everloot | Times the item dropped; 0 on quest reward and crafted rows. |
 | `rate` | `float64` | no | Everloot | drops / kills; 0 where there is no drop chance. |
@@ -188,8 +188,11 @@ Where an item comes from: creature, object, quest reward and crafted rows. Sourc
 | `reporters` | `int32` | no | Everloot | Distinct installs that reported it; 0 on crafted rows. |
 | `tier` | `string` | yes | Everloot | reported, verified or confirmed; null on crafted rows. |
 | `everloot_data_as_of` | `string` | yes | Everloot | Everloot's dataAsOf for the snapshot; null on crafted rows. |
-| `profession` | `string` | yes | recipes | Crafted rows only: the recipe's profession; null otherwise. |
+| `profession` | `string` | yes | recipes, GameObjects, Lock, LockType | Crafted rows: the recipe's profession. Gathered rows: Herbalism or Mining. Null otherwise. |
 | `learn_skill` | `int16` | yes | recipes | Crafted rows only: skill rank to learn the recipe; null otherwise. |
+| `node_id` | `int32` | yes | GameObjects | Gathered rows only: the node's game object id (equals source_id); null otherwise. |
+| `node_name` | `string` | yes | GameObjects | Gathered rows only: the node's name; null when the client holds none. |
+| `skill_required` | `int16` | yes | Lock | Gathered rows only: the skill rank the node's lock needs; null otherwise. |
 
 ## item_sets
 

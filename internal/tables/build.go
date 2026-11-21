@@ -61,6 +61,8 @@ type Cached struct {
 
 	Instances      []Instance
 	InstanceBosses []InstanceBoss
+
+	Nodes map[int32]Node
 }
 
 // LoadCache parses the cache directory of one build into table rows.
@@ -105,6 +107,7 @@ func LoadCache(dir string) (Cached, error) {
 	}
 	c.Instances = BuildInstances(iin)
 	c.InstanceBosses = BuildInstanceBosses(c.Instances, iin)
+	c.Nodes = BuildNodes(GatherInput{GameObjects: rows["GameObjects"], Locks: rows["Lock"], LockTypes: rows["LockType"]})
 	return c, nil
 }
 
@@ -202,6 +205,8 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, outDir, created strin
 	}
 	loot := Layout(nil, []string{"item_id", "source_kind", "source_id"}, EverlootSource(ev), src)
 	rows := MergeLootSources(everloot.BuildLootSources(ev), BuildCraftedSources(c.Recipes))
+	gathered := ApplyGathered(rows, c.Nodes)
+	fmt.Printf("gathering nodes in the client tables: %d, gathered loot rows: %d\n", len(c.Nodes), gathered)
 	creatures, inNpcs, withZone := ZoneCoverage(c.Npcs, rows)
 	fmt.Printf("creature loot sources: %d, creature in npcs: %d, with a zone: %d (%.1f%%)\n", creatures, inNpcs, withZone, pctOf(withZone, creatures))
 	if err := add(writeTable(outDir, "loot_sources.parquet", rows, loot)); err != nil {

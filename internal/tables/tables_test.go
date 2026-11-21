@@ -223,6 +223,9 @@ func TestReadTableRequiredColumns(t *testing.T) {
 		{"uimap name missing", "UiMap", "ID,Flags\n", `UiMap: required column "Name_lang" missing`},
 		{"trivial rank missing", "SkillLineAbility", "SkillLine,Spell,MinSkillLineRank,TrivialSkillLineRankHigh\n", `SkillLineAbility: required column "TrivialSkillLineRankLow" missing`},
 		{"reagent count missing", "SpellReagents", "SpellID,Reagent_0,ReagentCount_0,Reagent_7\n", `SpellReagents: required column "ReagentCount_7" missing`},
+		{"lock skill missing", "Lock", "ID,_Index_0,_Index_7,Skill_0,Type_0,Type_7\n", `Lock: required column "Skill_7" missing`},
+		{"game object lock prop missing", "GameObjects", "ID,Name_lang,TypeID\n", `GameObjects: required column "PropValue_0" missing`},
+		{"lock type name missing", "LockType", "ID\n", `LockType: required column "Name_lang" missing`},
 		{"empty file", "Item", "", `Item: required column "ID" missing`},
 	}
 	for _, c := range cases {

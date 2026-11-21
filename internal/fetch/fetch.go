@@ -32,7 +32,8 @@ var Tables = []string{"ItemSparse", "Item", "QuestV2", "QuestLineXQuest", "Quest
 	"TraitNode", "TraitNodeGroup", "TraitNodeGroupXTraitNode", "TraitNodeXTraitNodeEntry", "TraitNodeEntry", "TraitDefinition", "TraitEdge", "TraitCond", "SkillLineXTraitTree", "SkillRaceClassInfo", "ChrClasses", "SpellName",
 	"SkillLine", "SkillLineAbility", "SpellReagents", "SpellEffect",
 	"Map", "DungeonEncounter", "MapDifficulty", "ContentTuning",
-	"ItemSet", "QuestLine"}
+	"ItemSet", "QuestLine",
+	"GameObjects", "Lock", "LockType"}
 
 // Provenance is the record kept beside the cached CSVs and stamped into every built table.
 type Provenance struct {

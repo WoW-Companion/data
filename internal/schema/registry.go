@@ -145,10 +145,10 @@ var Tables = []Table{
 		{"difficulty_id", "", "Difficulty id (0 on nearly all)."},
 		{"creature_id", "derived from Creature", "npcs.id when exactly one creature carries the encounter's exact name; null otherwise."},
 	}},
-	{"loot_sources", everloot.LootSource{}, "Everloot drop rates (CC BY-SA 4.0) and recipes", "Where an item comes from: creature, object, quest reward and crafted rows.", []Col{
+	{"loot_sources", everloot.LootSource{}, "Everloot drop rates (CC BY-SA 4.0) and recipes", "Where an item comes from: creature, object, quest reward, crafted and gathered rows.", []Col{
 		{"item_id", "", "Item id."},
-		{"source_kind", "", "creature, object, quest reward or crafted."},
-		{"source_id", "", "Creature id, object id, quest id, or the recipe spell id for crafted rows."},
+		{"source_kind", "", "creature, object, quest reward, crafted or gathered."},
+		{"source_id", "", "Creature id, object id (the node id on gathered rows), quest id, or the recipe spell id for crafted rows."},
 		{"kills", "Everloot", "Loot windows opened (not kills); 0 on quest reward and crafted rows."},
 		{"drops", "Everloot", "Times the item dropped; 0 on quest reward and crafted rows."},
 		{"rate", "Everloot", "drops / kills; 0 where there is no drop chance."},
@@ -157,8 +157,11 @@ var Tables = []Table{
 		{"reporters", "Everloot", "Distinct installs that reported it; 0 on crafted rows."},
 		{"tier", "Everloot", "reported, verified or confirmed; null on crafted rows."},
 		{"everloot_data_as_of", "Everloot", "Everloot's dataAsOf for the snapshot; null on crafted rows."},
-		{"profession", "recipes", "Crafted rows only: the recipe's profession; null otherwise."},
+		{"profession", "recipes, GameObjects, Lock, LockType", "Crafted rows: the recipe's profession. Gathered rows: Herbalism or Mining. Null otherwise."},
 		{"learn_skill", "recipes", "Crafted rows only: skill rank to learn the recipe; null otherwise."},
+		{"node_id", "GameObjects", "Gathered rows only: the node's game object id (equals source_id); null otherwise."},
+		{"node_name", "GameObjects", "Gathered rows only: the node's name; null when the client holds none."},
+		{"skill_required", "Lock", "Gathered rows only: the skill rank the node's lock needs; null otherwise."},
 	}},
 	{"item_sets", tables.ItemSetRow{}, wago + "ItemSet", "One row per member item of an item set (ItemID_0 to ItemID_16), sorted by set id and item id.", []Col{
 		{"set_id", "", "Item set id."},

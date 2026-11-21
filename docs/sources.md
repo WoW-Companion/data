@@ -216,3 +216,23 @@ Outcome:
 The tables `ItemSet` and `QuestLine` are fetched with the others, and the columns above are required (a missing column is an error, as for every table).
 
 Live coverage (2026-11-21 run): `sell_price` non-null on 12,040 of 19,400 items (62.1%), `buy_price` on 12,679 (65.4%).
+
+## Gathering nodes (survey)
+
+Surveyed 2026-11-21 against build `1.60.1.71037` (wago.tools) and Everloot's API. Row counts are data rows.
+
+| Source | Rows | Holds |
+| ------ | ---: | ----- |
+| `GameObjects` | 1,526 | `ID`, `Name_lang`, `TypeID`, `OwnerID` (map), position, `PropValue_0..7`. `TypeID` is 5 (decor) on 1,521 rows, 48 on 3, 38 on 2: **no chest-type (3) object**, so no node row carries a lock id. None of the Everloot object ids is in it. |
+| `Lock` | 315 | per slot `Type_n` (2 = skill), `_Index_n` (the `LockType`), `Skill_n` (rank). 34 locks have a Herbalism slot and 19 a Mining slot. |
+| `LockType` | 23 | `ID`, `Name_lang`: 2 Herbalism, 3 Mining, 19 Fishing. |
+| Everloot `/api/rollups/drops` | 50 public object rows, 9 objects | object ids with items (e.g. 1731 drops Copper Ore, 1735 Iron Ore and 20920 Blueleaf Tuber); no name, profession, skill or zone. |
+| Everloot `/api/edges`, `/api/edges/client-layer` | – | no object edge except `dropped_by` (item to object); the client layer has only item and spell relations. |
+
+Outcome: the client tables say which locks need Herbalism or Mining and at what rank, but nothing links an object to a lock, and Everloot adds no profession or skill. A node's profession is not read from its loot (Copper Ore, Blueleaf Tuber), its name or its id: that would be an inference.
+
+- Pipeline: `GameObjects`, `Lock` and `LockType` are fetched (columns required). A node is a `GameObjects` row of `TypeID` 3 whose `PropValue_0` is a `Lock` with a skill slot (`Type_n` 2) whose `LockType.Name_lang` is Herbalism or Mining; the first such slot's `Skill_n` is `skill_required`.
+- An Everloot object row whose `source_id` is such a node becomes `source_kind` `gathered` (same counts and rates), with `node_id` (the object id), `node_name` (`GameObjects.Name_lang`, null when empty), `profession` and `skill_required`. Object rows for any other object stay `object`.
+- Zone: no allowed table places a game object in a zone (`OwnerID` is a map; the position is a world coordinate and no table maps it to a `UiMap`), and Everloot has no `located_in` edge for an object. So gathered rows carry no zone column.
+
+Live coverage (2026-11-21 run): 0 gathering nodes found, 0 `gathered` rows; the 50 object rows in `loot_sources` stay `object`. The mapping code is tested on fixtures and will apply if a later build's `GameObjects` carries chests.

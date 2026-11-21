@@ -108,6 +108,10 @@ var Required = map[string][]string{
 	"DungeonEncounter": {"ID", "Name_lang", "MapID", "DifficultyID", "OrderIndex"},
 	"MapDifficulty":    {"ID", "MapID", "ContentTuningID"},
 	"ContentTuning":    {"ID", "LfgMinLevel", "LfgMaxLevel"},
+
+	"GameObjects": {"ID", "Name_lang", "TypeID", "PropValue_0"},
+	"Lock":        {"ID", "_Index_0", "_Index_7", "Skill_0", "Skill_7", "Type_0", "Type_7"},
+	"LockType":    {"ID", "Name_lang"},
 }
 
 // ReadTable parses a client CSV export and checks its header against Required[table].
