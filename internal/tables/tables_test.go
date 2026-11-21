@@ -131,3 +131,21 @@ func TestBuildNpcs(t *testing.T) {
 		t.Errorf("boss: %+v", b)
 	}
 }
+
+func TestReadTableRequiredColumns(t *testing.T) {
+	cases := []struct {
+		name, table, in, wantErr string
+	}{
+		{"all present", "ContentTuning", "ID,MinLevel,MaxLevel\n1,2,3\n", ""},
+		{"extra columns fine", "ContentTuning", "ID,MinLevel,MaxLevel,Other\n", ""},
+		{"renamed column", "Creature", "ID,Name,Classification,CreatureType,CreatureFamily\n", `Creature: required column "Name_lang" missing`},
+		{"missing in header-only file", "QuestV2", "ID,UniqueBitFlag\n", `QuestV2: required column "UiQuestDetailsThemeID" missing`},
+		{"empty file", "Item", "", `Item: required column "ID" missing`},
+	}
+	for _, c := range cases {
+		_, err := ReadTable(c.table, strings.NewReader(c.in))
+		if (err == nil) != (c.wantErr == "") || (err != nil && !strings.Contains(err.Error(), c.wantErr)) {
+			t.Errorf("%s: err %v, want %q", c.name, err, c.wantErr)
+		}
+	}
+}

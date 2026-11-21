@@ -39,7 +39,7 @@ func readCSVFile(dir, table string) ([]Row, error) {
 		return nil, err
 	}
 	defer f.Close()
-	return ReadCSV(f)
+	return ReadTable(table, f)
 }
 
 // Cached holds the parsed client tables of one cached build.

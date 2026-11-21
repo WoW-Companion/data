@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"reflect"
+	"strings"
 	"testing"
 	"time"
 )
@@ -43,6 +44,10 @@ func TestFetchFollowsNextAndCaches(t *testing.T) {
 	hits := 0
 	srv = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		hits++
+		if r.URL.Path == EdgesPath {
+			json.NewEncoder(w).Encode(map[string]any{"edges": []Edge{{FromKind: "item", FromID: 1, Rel: RelReward, ToKind: "quest", ToID: 9, Installs: 2}}, "next": nil})
+			return
+		}
 		p := map[string]any{"dataAsOf": "d", "attribution": Attribution{Credit: Credit}}
 		if r.URL.Query().Get("offset") == "0" {
 			p["rates"] = []Rate{{ItemID: 1, SourceNpcID: 2, Public: true}}
@@ -56,13 +61,45 @@ func TestFetchFollowsNextAndCaches(t *testing.T) {
 	defer srv.Close()
 	dir := t.TempDir()
 	s, err := Fetch(srv.URL, dir, "now")
-	if err != nil || len(s.Rates) != 2 || s.DataAsOf != "d" || s.Attribution.Credit != Credit {
+	if err != nil || len(s.Rates) != 2 || len(s.QuestRewards) != 1 || s.DataAsOf != "d" || s.Attribution.Credit != Credit {
 		t.Fatalf("%+v, %v", s, err)
 	}
-	if _, err := Fetch(srv.URL, dir, "later"); err != nil || hits != 2 {
+	if _, err := Fetch(srv.URL, dir, "later"); err != nil || hits != 3 {
 		t.Fatalf("second fetch must use the cache: hits=%d err=%v", hits, err)
 	}
 	if l, err := Load(dir + "/" + CacheFile); err != nil || l.Retrieved != "now" || len(l.Rates) != 2 {
 		t.Fatalf("%+v %v", l, err)
+	}
+}
+
+func TestRequireFields(t *testing.T) {
+	cases := []struct {
+		name, body, wantErr string
+	}{
+		{"present in some records", `{"rates":[{"itemId":1,"kills":0,"drops":0,"rate":0,"reporters":0,"public":true},{"itemId":2}]}`, ""},
+		{"empty page", `{"rates":[]}`, ""},
+		{"renamed field", `{"rates":[{"itemId":1,"kills":0,"drops":0,"rate":0,"reporters":0,"isPublic":true}]}`, `everloot drops: required field "public" missing from every record`},
+		{"no array", `{"edges":[]}`, `required field "rates" missing`},
+	}
+	for _, c := range cases {
+		err := RequireFields("everloot drops", "rates", dropFields, []byte(c.body))
+		if (err == nil) != (c.wantErr == "") || (err != nil && !strings.Contains(err.Error(), c.wantErr)) {
+			t.Errorf("%s: err %v, want %q", c.name, err, c.wantErr)
+		}
+	}
+	if err := RequireFields("everloot edges", "edges", edgeFields, []byte(`{"edges":[{"fromKind":"item"}]}`)); err == nil || !strings.Contains(err.Error(), `"fromId"`) {
+		t.Errorf("edges: %v", err)
+	}
+}
+
+func TestBuildLootSourcesQuestRewards(t *testing.T) {
+	s := Snapshot{DataAsOf: "d", QuestRewards: []Edge{
+		{FromKind: "item", FromID: 7, Rel: RelReward, ToKind: "quest", ToID: 50, Evidence: "observed", Installs: 4},
+		{FromKind: "item", FromID: 7, Rel: "dropped_by", ToKind: "quest", ToID: 51},
+		{FromKind: "item", FromID: 0, Rel: RelReward, ToKind: "quest", ToID: 52},
+	}}
+	got := BuildLootSources(s)
+	if len(got) != 1 || got[0].SourceKind != KindQuest || got[0].SourceID != 50 || got[0].ItemID != 7 || got[0].Reporters != 4 || *got[0].Tier != "observed" {
+		t.Fatalf("%+v", got)
 	}
 }
