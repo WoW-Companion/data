@@ -54,6 +54,9 @@ type Cached struct {
 
 	Recipes        []Recipe
 	RecipeReagents []RecipeReagent
+
+	Instances      []Instance
+	InstanceBosses []InstanceBoss
 }
 
 // LoadCache parses the cache directory of one build into table rows.
@@ -89,6 +92,12 @@ func LoadCache(dir string) (Cached, error) {
 	}
 	c.Recipes = BuildRecipes(rin)
 	c.RecipeReagents = BuildRecipeReagents(c.Recipes, rin)
+	iin := InstanceInput{
+		Maps: rows["Map"], Encounters: rows["DungeonEncounter"], MapDifficulties: rows["MapDifficulty"],
+		ContentTuning: rows["ContentTuning"], Creatures: rows["Creature"],
+	}
+	c.Instances = BuildInstances(iin)
+	c.InstanceBosses = BuildInstanceBosses(c.Instances, iin)
 	return c, nil
 }
 
@@ -158,6 +167,12 @@ func BuildDataset(cacheBuildDir, everlootFile, outDir, created string) (manifest
 		return m, err
 	}
 	if err := add(writeTable(outDir, "recipe_reagents.parquet", c.RecipeReagents, Layout(nil, []string{"spell_id", "reagent_item_id"}, src))); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "instances.parquet", c.Instances, Layout(nil, []string{"map_id"}, src))); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "instance_bosses.parquet", c.InstanceBosses, Layout(nil, []string{"map_id", "order_index", "encounter_id"}, src))); err != nil {
 		return m, err
 	}
 	loot := Layout(nil, []string{"item_id", "source_kind", "source_id"}, EverlootSource(ev))

@@ -131,3 +131,27 @@ Tables fetched for this: `SkillLine`, `SkillLineAbility`, `SpellReagents`, `Spel
 - No description text is read.
 
 Live coverage (2026-11-21 run): 2,522 recipes and 8,475 reagent rows. Recipes per skill line: Blacksmithing 506, Leatherworking 592, Tailoring 471, Engineering 275, Enchanting 262, Alchemy 196, Cooking 133, First Aid 32, Poisons 26, Mining 18, Herbalism 3, Fishing 3, Skinning 3, Survival 1, Comprehension 1. All have reagents; 2,337 create an item (Enchanting: 82 of 262); 2,520 carry both yellow and grey ranks.
+
+## Dungeons, raids and their bosses (survey)
+
+Surveyed 2026-11-21 against build `1.60.1.71037` (wago.tools). Row counts are data rows.
+
+| Source | Rows | Holds |
+| ------ | ---: | ----- |
+| `Map` | 78 | `ID`, `MapName_lang`, `InstanceType` (0 open world, 1 dungeon, 2 raid, 3 battleground), `CorpseMapID` (the map of the entrance, -1 when none), `Corpse_0` and `Corpse_1` (entrance position, 0 when none), `MaxPlayers`, `AreaTableID` (0 on most instance maps) |
+| `DungeonEncounter` | 376 | `ID`, `Name_lang`, `MapID`, `DifficultyID` (0 on nearly all), `OrderIndex`; no creature id |
+| `MapDifficulty` | 142 | `MapID` to `ContentTuningID` |
+| `ContentTuning` | 102 | `LfgMinLevel`, `LfgMaxLevel` (non-zero on 2 rows; the other level columns are squish and scaling values, not a level range) |
+| `LFGDungeons` | 76 | names and `ContentTuningID`; `MapID` is 0 on every row, so it cannot be tied to a map except by name |
+| `AreaTable` | 1,404 | area names; no key from an instance map to its entrance zone |
+| `JournalInstance`, `JournalEncounter`, `JournalEncounterCreature`, `JournalEncounterItem` | – | "Table not found": no encounter-to-creature or encounter-to-loot link in the client tables |
+| Everloot `/api/edges` | – | `located_in` is npc to zone; nothing ties an npc to an instance or encounter |
+
+Tables fetched for this: `Map`, `DungeonEncounter`, `MapDifficulty`, `ContentTuning`. Their columns used are required (a missing column is an error, as for every table). `Creature` (already fetched) is read for the boss link.
+
+- `instances`: one row per `Map` with `InstanceType` 1 or 2, leaving out placeholder maps (empty name, a name starting with `<`, or containing "Test"). Columns: `map_id`, `name` (`MapName_lang`), `instance_type` (`dungeon` or `raid`, as the client types it; the client also types a few city and scenario maps as dungeons), `max_players` (`MaxPlayers`, null when 0), `entrance_map_id` (`CorpseMapID`, null when -1), `entrance_x` and `entrance_y` (`Corpse_0`, `Corpse_1`, null when both 0), `min_level` and `max_level` (`ContentTuning.LfgMinLevel` and `LfgMaxLevel` of the map's lowest-id `MapDifficulty` row that has a non-zero pair; null otherwise).
+- Zone of the entrance: no table names it (`AreaTable` holds no map-to-entrance key, and the entrance position is a world coordinate), so there is no zone column; `entrance_map_id` and position are what the client gives. Levels are never inferred from `LFGDungeons`, creature levels or the content tuning squish values.
+- `instance_bosses`: one row per `DungeonEncounter` whose `MapID` is an `instances` map. Columns: `map_id`, `encounter_id` (`ID`), `name`, `order_index`, `difficulty_id`, and `creature_id`. The client has no encounter-to-creature key, so `creature_id` is the one derived column: the `Creature.ID` when exactly one creature carries the encounter's exact name, null otherwise. Join `creature_id` to `loot_sources` (`source_kind` creature) for drops.
+- No description text is read.
+
+Live coverage (2026-11-21 run): 52 instances (39 dungeon, 13 raid) and 372 boss rows on 44 of them. Entrance map on 27 instances (position on 25), max players on 31, min and max level on 1. `creature_id` on 0 of 372 bosses: the fetched `Creature` table holds only 189 rows and none matches an encounter name, so no boss links to `loot_sources` (52 creature sources there).

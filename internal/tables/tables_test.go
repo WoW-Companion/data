@@ -334,3 +334,63 @@ func TestBuildRecipes(t *testing.T) {
 		t.Errorf("reagents (merged, zero counts dropped): %+v", reagents)
 	}
 }
+
+func instanceFixture() InstanceInput {
+	return InstanceInput{
+		Maps: []Row{
+			{"ID": "36", "MapName_lang": "Deadmines", "InstanceType": "1", "CorpseMapID": "0", "Corpse_0": "-11207.5", "Corpse_1": "1681", "MaxPlayers": "10"},
+			{"ID": "409", "MapName_lang": "Molten Core", "InstanceType": "2", "CorpseMapID": "0", "Corpse_0": "-7510", "Corpse_1": "-1036", "MaxPlayers": "40"},
+			{"ID": "2921", "MapName_lang": "Naxxramas", "InstanceType": "1", "CorpseMapID": "-1", "Corpse_0": "0", "Corpse_1": "0", "MaxPlayers": "0"},
+			{"ID": "13", "MapName_lang": "Test Dungeon", "InstanceType": "1"},
+			{"ID": "44", "MapName_lang": "<unused> Monastery", "InstanceType": "1"},
+			{"ID": "0", "MapName_lang": "Eastern Kingdoms", "InstanceType": "0"},
+		},
+		MapDifficulties: []Row{
+			{"ID": "9", "MapID": "36", "ContentTuningID": "2"},
+			{"ID": "8", "MapID": "36", "ContentTuningID": "1"},
+			{"ID": "7", "MapID": "409", "ContentTuningID": "1"},
+		},
+		ContentTuning: []Row{
+			{"ID": "1", "LfgMinLevel": "0", "LfgMaxLevel": "0"},
+			{"ID": "2", "LfgMinLevel": "13", "LfgMaxLevel": "18"},
+		},
+		Encounters: []Row{
+			{"ID": "2", "MapID": "36", "Name_lang": "Cookie", "OrderIndex": "1000", "DifficultyID": "0"},
+			{"ID": "1", "MapID": "36", "Name_lang": "Rhahk'Zor", "OrderIndex": "0", "DifficultyID": "0"},
+			{"ID": "3", "MapID": "409", "Name_lang": "Ragnaros", "OrderIndex": "0", "DifficultyID": "0"},
+			{"ID": "4", "MapID": "0", "Name_lang": "Azuregos", "OrderIndex": "0", "DifficultyID": "0"},
+		},
+		Creatures: []Row{
+			{"ID": "100", "Name_lang": "Cookie"}, {"ID": "101", "Name_lang": "Rhahk'Zor"}, {"ID": "102", "Name_lang": "Rhahk'Zor"},
+			{"ID": "103", "Name_lang": "Ragnaros"},
+		},
+	}
+}
+
+func TestBuildInstances(t *testing.T) {
+	in := instanceFixture()
+	got := BuildInstances(in)
+	if len(got) != 3 || got[0].MapID != 36 || got[1].MapID != 409 || got[2].MapID != 2921 {
+		t.Fatalf("rows (dungeon and raid maps, no test or unused maps, sorted): %+v", got)
+	}
+	d := got[0]
+	if d.InstanceType != "dungeon" || got[1].InstanceType != "raid" || *d.MaxPlayers != 10 || *d.EntranceMapID != 0 || *d.EntranceX != -11207.5 || *d.EntranceY != 1681 {
+		t.Errorf("deadmines: %+v", d)
+	}
+	if *d.MinLevel != 13 || *d.MaxLevel != 18 {
+		t.Errorf("level from the lowest-id difficulty with a non-zero tuning: %+v", d)
+	}
+	if got[1].MinLevel != nil || got[1].MaxLevel != nil {
+		t.Errorf("zero tuning levels are null: %+v", got[1])
+	}
+	if n := got[2]; n.EntranceMapID != nil || n.EntranceX != nil || n.MaxPlayers != nil {
+		t.Errorf("no entrance and no players are null: %+v", n)
+	}
+	bosses := BuildInstanceBosses(got, in)
+	if len(bosses) != 3 || bosses[0].Name != "Rhahk'Zor" || bosses[1].Name != "Cookie" || bosses[2].MapID != 409 {
+		t.Fatalf("bosses (instance maps only, ordered): %+v", bosses)
+	}
+	if bosses[0].CreatureID != nil || *bosses[1].CreatureID != 100 || *bosses[2].CreatureID != 103 {
+		t.Errorf("creature id only on a unique exact name: %+v", bosses)
+	}
+}
