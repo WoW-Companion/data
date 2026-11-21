@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/WoW-Companion/data/internal/bench"
 	"github.com/WoW-Companion/data/internal/diff"
 	"github.com/WoW-Companion/data/internal/everloot"
 	"github.com/WoW-Companion/data/internal/fetch"
@@ -26,6 +27,7 @@ commands:
   schema           write the dataset schema reference (docs/schema.md)
   coverage         print per-table row counts and null or zero shares of a built dataset
   diff             print what changed between two dataset directories, as Markdown
+  bench            measure each table of a built dataset: size, layout, lookup time and bytes read
   release-check    print the latest Forever build and whether its dataset release exists
 `
 
@@ -48,6 +50,8 @@ func main() {
 		err = runCoverage(os.Args[2:])
 	case "diff":
 		err = runDiff(os.Args[2:])
+	case "bench":
+		err = runBench(os.Args[2:])
 	case "release-check":
 		err = runReleaseCheck(os.Args[2:])
 	default:
@@ -159,6 +163,25 @@ func runDiff(args []string) error {
 		return err
 	}
 	fmt.Print(diff.Markdown(old, cur))
+	return nil
+}
+
+func runBench(args []string) error {
+	fs := flag.NewFlagSet("bench", flag.ExitOnError)
+	cfg := bench.Config{}
+	fs.IntVar(&cfg.Local, "n", 200, "lookups per local case")
+	fs.IntVar(&cfg.HTTP, "http-n", 20, "lookups per HTTP case")
+	fs.DurationVar(&cfg.Latency, "latency", 20*time.Millisecond, "delay added to every HTTP request")
+	fs.Parse(args)
+	if fs.NArg() != 1 {
+		return fmt.Errorf("usage: wowc-data bench [-n N] [-http-n N] [-latency D] <dataset dir>")
+	}
+	dir := filepath.Clean(fs.Arg(0))
+	ts, err := bench.Run(dir, cfg)
+	if err != nil {
+		return err
+	}
+	fmt.Print(bench.Markdown(filepath.Base(dir), cfg, ts))
 	return nil
 }
 

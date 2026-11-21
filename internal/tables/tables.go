@@ -32,15 +32,15 @@ type Item struct {
 	ID                 int32      `parquet:"id"`
 	Name               string     `parquet:"name"`
 	ItemLevel          int16      `parquet:"item_level"`
-	RequiredLevel      int16      `parquet:"required_level"`
-	Quality            int8       `parquet:"quality"`
-	ClassID            int8       `parquet:"class_id"`
-	SubclassID         int8       `parquet:"subclass_id"`
-	Slot               int8       `parquet:"slot"`
-	AllowableClassMask int32      `parquet:"allowable_class_mask"`
-	Bonding            int8       `parquet:"bonding"`
+	RequiredLevel      int16      `parquet:"required_level,dict"`
+	Quality            int8       `parquet:"quality,dict"`
+	ClassID            int8       `parquet:"class_id,dict"`
+	SubclassID         int8       `parquet:"subclass_id,dict"`
+	Slot               int8       `parquet:"slot,dict"`
+	AllowableClassMask int32      `parquet:"allowable_class_mask,dict"`
+	Bonding            int8       `parquet:"bonding,dict"`
 	StatTypes          []int16    `parquet:"stat_types,list"`
-	StatsStatus        string     `parquet:"stats_status"`
+	StatsStatus        string     `parquet:"stats_status,dict"`
 	Stats              []ItemStat `parquet:"stats,list"`
 	Armor              *int32     `parquet:"armor,optional"`
 	DmgMin             *int32     `parquet:"dmg_min,optional"`
