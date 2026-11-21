@@ -264,6 +264,7 @@ const (
 	KindObject   = "object"
 	KindQuest    = "quest reward"
 	KindCrafted  = "crafted"
+	KindGathered = "gathered"
 )
 
 // LootSource is one row of the loot_sources table. Counts and rates are Everloot's own.
@@ -283,6 +284,11 @@ type LootSource struct {
 	// name and the skill needed to learn it. SourceID is the recipe spell id there.
 	Profession *string `parquet:"profession,optional,dict"`
 	LearnSkill *int16  `parquet:"learn_skill,optional"`
+	// NodeID, NodeName and SkillRequired are set on gathered rows only (Profession too):
+	// the node's game object id and name and the skill rank its lock needs.
+	NodeID        *int32  `parquet:"node_id,optional"`
+	NodeName      *string `parquet:"node_name,optional,dict"`
+	SkillRequired *int16  `parquet:"skill_required,optional"`
 }
 
 // BuildLootSources keeps the public rates that name a creature or object source, plus a
