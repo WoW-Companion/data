@@ -1,0 +1,26 @@
+class: Priest
+spec: "Discipline"
+group_id: 11608
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Early points go to Twin Disciplines for a steady boost to shields and healing, then Improved Power Word: Shield, which also unlocks a later node."
+    steps:
+      - {node: 105849, name: Twin Disciplines, points: 5}
+      - {node: 105846, name: "Improved Power Word: Shield", points: 3}
+      - {node: 105837, name: Mental Strength, points: 2}
+  - levels: 20-29
+    rationale: "Finish the mana pool node, add Meditation for regeneration while casting and Inner Focus, and open Soul Warding once its prerequisite is full."
+    steps:
+      - {node: 105837, name: Mental Strength, points: 3}
+      - {node: 105843, name: Meditation, points: 3}
+      - {node: 105844, name: Inner Focus, points: 1}
+      - {node: 105839, name: Soul Warding, points: 1}
+      - {node: 105841, name: Improved Inner Fire, points: 2}
+  - levels: 30-39
+    rationale: "Reach Penance, the first strong spell in the tree, then Renewed Hope, which needs Soul Warding, and round out Inner Fire and Mental Agility."
+    steps:
+      - {node: 105841, name: Improved Inner Fire, points: 1}
+      - {node: 105842, name: Mental Agility, points: 3}
+      - {node: 105834, name: Penance, points: 1}
+      - {node: 105835, name: Renewed Hope, points: 5}

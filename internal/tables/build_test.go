@@ -27,7 +27,7 @@ func TestBuildDatasetSmoke(t *testing.T) {
 	ev := filepath.Join(dir, "drops.json")
 	os.WriteFile(ev, []byte(`{"retrieved":"2026-11-20T00:00:00Z","dataAsOf":"2026-11-19","rates":[{"itemId":1,"sourceNpcId":5,"kills":4,"drops":1,"rate":0.25,"reporters":3,"public":true}]}`), 0o644)
 	out := filepath.Join(dir, "out")
-	m, err := BuildDataset(cache, ev, out, "2026-11-20T00:00:00Z")
+	m, err := BuildDataset(cache, ev, filepath.Join(dir, "no-builds"), out, "2026-11-20T00:00:00Z")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -35,10 +35,10 @@ func TestBuildDatasetSmoke(t *testing.T) {
 	for _, tb := range m.Tables {
 		paths = append(paths, tb.Path)
 	}
-	if got := strings.Join(paths, ","); got != "items.parquet,quests.parquet,npcs.parquet,talent_trees.parquet,talent_nodes.parquet,stat_types.parquet,recipes.parquet,recipe_reagents.parquet,instances.parquet,instance_bosses.parquet,loot_sources.parquet" {
+	if got := strings.Join(paths, ","); got != "items.parquet,quests.parquet,npcs.parquet,talent_trees.parquet,talent_nodes.parquet,talent_builds.parquet,stat_types.parquet,recipes.parquet,recipe_reagents.parquet,instances.parquet,instance_bosses.parquet,loot_sources.parquet" {
 		t.Fatalf("tables: %s", got)
 	}
-	if m.Tables[2].Rows != 1 || m.Tables[10].Rows != 1 || m.Tables[5].Rows != int64(len(StatTypeLabels)) {
+	if m.Tables[2].Rows != 1 || m.Tables[11].Rows != 1 || m.Tables[6].Rows != int64(len(StatTypeLabels)) {
 		t.Errorf("rows: %+v", m.Tables)
 	}
 	if err := manifest.VerifyFile(filepath.Join(out, "manifest.json")); err != nil {

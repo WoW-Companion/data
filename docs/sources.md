@@ -56,6 +56,10 @@ Tables fetched: `TraitNode`, `TraitNodeGroup`, `TraitNodeGroupXTraitNode`, `Trai
 - `talent_nodes`: one row per `TraitNode`. A node sits in many groups, so `group_ids` is a list. Spell, name and max rank come from the node's first entry by `_Index` (`TraitNodeXTraitNodeEntry`, `TraitNodeEntry`, `TraitDefinition`); the name is the definition's override name or, if empty, the spell's name from `SpellName`. `prerequisite_node_ids` are the `LeftTraitNodeID`s of `TraitEdge` rows pointing at the node, whatever the edge type.
 - Names the tables do not carry: no table holds a tree or group name (`TraitTree.TitleText_lang` and `TraitNodeGroup` have no name), so `group_name` is null. The class's specialisation names exist only as skill lines (priest: "Holy", "Shadow Magic", "Discipline") with no key tying them to a group.
 
+## Curated talent builds
+
+`curated/talents/` is hand-written for this project (no guide-site text) and published as `talent_builds`, with the source "curated (advisor defaults)". Node ids, names and max ranks are checked against the talent tables above at every `make dataset`. See `curated/README.md`.
+
 ## Quest level, minimum level and zone (survey)
 
 Surveyed 2026-11-21 against build `1.60.1.71037` (wago.tools) and Everloot's API. Row counts are data rows.
