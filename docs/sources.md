@@ -44,7 +44,7 @@ Status: **usable. Everloot's data is CC BY-SA 4.0, credited, with a paginated JS
 
 Pipeline: `wowc-data fetch` follows `next` through every page and caches the union as `dist/cache/everloot/drops.json` (git-ignored) with the retrieval time, `dataAsOf` and attribution. `loot_sources` keeps rows with `public: true` that name a creature or object source; values are stored as Everloot gives them. The table's Parquet metadata and manifest source carry the credit line and `dataAsOf`.
 
-Quest rewards: neither the client tables fetched here (no quest reward items; QuestV2 has three columns, and no QuestPackageItem or QuestObjective table exists for this build) nor the drops route carry them. `loot_sources` takes `quest reward` rows from Everloot's `GET /api/edges?rel=reward_from` (item to quest, `installs` as `reporters`, `evidence` as `tier`; rate fields zero). Checked 2026-11-21: that relation held 0 rows. Not covered: vendor and crafted sources.
+Quest rewards: neither the client tables fetched here (no quest reward items; QuestV2 has three columns, and no QuestPackageItem or QuestObjective table exists for this build) nor the drops route carry them. `loot_sources` takes `quest reward` rows from Everloot's `GET /api/edges?rel=reward_from` (item to quest, `installs` as `reporters`, `evidence` as `tier`; rate fields zero). Checked 2026-11-21: that relation held 0 rows. Not covered: vendor sources.
 
 ## Talent trees (client tables)
 
@@ -155,3 +155,15 @@ Tables fetched for this: `Map`, `DungeonEncounter`, `MapDifficulty`, `ContentTun
 - No description text is read.
 
 Live coverage (2026-11-21 run): 52 instances (39 dungeon, 13 raid) and 372 boss rows on 44 of them. Entrance map on 27 instances (position on 25), max players on 31, min and max level on 1. `creature_id` on 0 of 372 bosses: the fetched `Creature` table holds only 189 rows and none matches an encounter name, so no boss links to `loot_sources` (52 creature sources there).
+
+## Crafted sources in `loot_sources`
+
+`loot_sources` also holds `source_kind` `crafted` rows, derived only from the client `recipes` table (no Everloot data, no network beyond the recipe fetch). One row per recipe whose `creates_item_id` is set (a spell listed under two skill lines gives one row, the lower skill line id):
+
+- `item_id`: the recipe's `creates_item_id`; `source_id`: the recipe spell id (`recipes.spell_id`).
+- `profession`: the recipe's skill line name (`skill_line_name`); `learn_skill`: its `learn_skill` (minimum skill rank to learn it), null when the client stores zero.
+- `kills`, `drops`, `rate` and `reporters` are 0 and `rate_low`, `rate_high`, `tier` and `everloot_data_as_of` are null: there is no drop chance.
+
+`profession` and `learn_skill` are new nullable columns, null on every creature, object and quest reward row; those rows are otherwise unchanged. The table's Parquet metadata and manifest sources list the Everloot credit and the client source. `item_id` is not checked against `items`: a created item the fetched item tables lack still gets a row (329 live).
+
+Live coverage (2026-11-21 run, build 1.60.1.71037): 2,336 crafted rows of 2,667 in `loot_sources`. By profession: Leatherworking 592, Blacksmithing 506, Tailoring 470, Engineering 272, Alchemy 196, Cooking 132, Enchanting 82, First Aid 32, Poisons 26, Mining 18, Fishing 3, Herbalism 3, Skinning 3, Comprehension 1. Existing rows: 294 creature, 37 object, 0 quest reward.

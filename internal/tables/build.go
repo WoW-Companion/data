@@ -175,8 +175,9 @@ func BuildDataset(cacheBuildDir, everlootFile, outDir, created string) (manifest
 	if err := add(writeTable(outDir, "instance_bosses.parquet", c.InstanceBosses, Layout(nil, []string{"map_id", "order_index", "encounter_id"}, src))); err != nil {
 		return m, err
 	}
-	loot := Layout(nil, []string{"item_id", "source_kind", "source_id"}, EverlootSource(ev))
-	if err := add(writeTable(outDir, "loot_sources.parquet", everloot.BuildLootSources(ev), loot)); err != nil {
+	loot := Layout(nil, []string{"item_id", "source_kind", "source_id"}, EverlootSource(ev), src)
+	rows := MergeLootSources(everloot.BuildLootSources(ev), BuildCraftedSources(c.Recipes))
+	if err := add(writeTable(outDir, "loot_sources.parquet", rows, loot)); err != nil {
 		return m, err
 	}
 	return m, manifest.Write(m, filepath.Join(outDir, "manifest.json"))

@@ -46,7 +46,7 @@ func TestBuildDatasetSmoke(t *testing.T) {
 	}
 	b, _ := os.ReadFile(filepath.Join(out, "loot_sources.parquet"))
 	srcs, err := parquetio.ReadSources(b)
-	if err != nil || len(srcs) != 1 || !strings.Contains(srcs[0].License, "Data from Everloot (https://everloot.app), CC BY-SA 4.0.") || srcs[0].Version != "2026-11-19" {
+	if err != nil || len(srcs) != 2 || !strings.Contains(srcs[0].License, "Data from Everloot (https://everloot.app), CC BY-SA 4.0.") || srcs[0].Version != "2026-11-19" {
 		t.Errorf("attribution missing from Parquet metadata: %+v %v", srcs, err)
 	}
 }
