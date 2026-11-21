@@ -31,7 +31,8 @@ var Delay = 2 * time.Second
 var Tables = []string{"ItemSparse", "Item", "QuestV2", "QuestLineXQuest", "QuestPOIBlob", "UiMap", "Creature", "CreatureDifficulty",
 	"TraitNode", "TraitNodeGroup", "TraitNodeGroupXTraitNode", "TraitNodeXTraitNodeEntry", "TraitNodeEntry", "TraitDefinition", "TraitEdge", "TraitCond", "SkillLineXTraitTree", "SkillRaceClassInfo", "ChrClasses", "SpellName",
 	"SkillLine", "SkillLineAbility", "SpellReagents", "SpellEffect",
-	"Map", "DungeonEncounter", "MapDifficulty", "ContentTuning"}
+	"Map", "DungeonEncounter", "MapDifficulty", "ContentTuning",
+	"ItemSet", "QuestLine"}
 
 // Provenance is the record kept beside the cached CSVs and stamped into every built table.
 type Provenance struct {

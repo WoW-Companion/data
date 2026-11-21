@@ -44,11 +44,13 @@ func readCSVFile(dir, table string) ([]Row, error) {
 
 // Cached holds the parsed client tables of one cached build.
 type Cached struct {
-	Prov   fetch.Provenance
-	Items  []Item
-	Quests []Quest
-	Npcs   []Npc
-	UiMaps []Row
+	Prov       fetch.Provenance
+	Items      []Item
+	Quests     []Quest
+	ItemSets   []ItemSetRow
+	QuestLines []QuestLineRow
+	Npcs       []Npc
+	UiMaps     []Row
 
 	TalentTrees []TalentTree
 	TalentNodes []TalentNode
@@ -78,6 +80,8 @@ func LoadCache(dir string) (Cached, error) {
 	}
 	c.Items = BuildItems(rows["ItemSparse"], rows["Item"])
 	c.Quests = BuildQuests(rows["QuestV2"], rows["QuestLineXQuest"], rows["QuestPOIBlob"], rows["UiMap"])
+	c.ItemSets = BuildItemSets(rows["ItemSet"])
+	c.QuestLines = BuildQuestLines(rows["QuestLine"], rows["QuestLineXQuest"])
 	c.Npcs = BuildNpcs(rows["Creature"], rows["CreatureDifficulty"])
 	c.UiMaps = rows["UiMap"]
 	in := TalentInput{
@@ -200,6 +204,12 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, outDir, created strin
 	creatures, inNpcs, withZone := ZoneCoverage(c.Npcs, rows)
 	fmt.Printf("creature loot sources: %d, creature in npcs: %d, with a zone: %d (%.1f%%)\n", creatures, inNpcs, withZone, pctOf(withZone, creatures))
 	if err := add(writeTable(outDir, "loot_sources.parquet", rows, loot)); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "item_sets.parquet", c.ItemSets, Layout(nil, []string{"set_id", "item_id"}, src))); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "quest_lines.parquet", c.QuestLines, Layout(nil, []string{"line_id", "position", "quest_id"}, src))); err != nil {
 		return m, err
 	}
 	return m, manifest.Write(m, filepath.Join(outDir, "manifest.json"))

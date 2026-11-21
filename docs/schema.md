@@ -27,6 +27,8 @@ One row per item the client lists, sorted by id. Source: wago.tools client table
 | `dmg_min` | `int32` | yes | table | Always null: the client holds no per-item damage amount. |
 | `dmg_max` | `int32` | yes | table | Always null: the client holds no per-item damage amount. |
 | `speed_ms` | `int32` | yes | table | Weapon speed in milliseconds (ItemDelay); null for non-weapons or a zero delay. |
+| `sell_price` | `int32` | yes | ItemSparse SellPrice | Vendor sell price in copper; null when the client stores zero. |
+| `buy_price` | `int32` | yes | ItemSparse BuyPrice | Vendor buy price in copper; null when the client stores zero. |
 
 ## quests
 
@@ -188,3 +190,24 @@ Where an item comes from: creature, object, quest reward and crafted rows. Sourc
 | `everloot_data_as_of` | `string` | yes | Everloot | Everloot's dataAsOf for the snapshot; null on crafted rows. |
 | `profession` | `string` | yes | recipes | Crafted rows only: the recipe's profession; null otherwise. |
 | `learn_skill` | `int16` | yes | recipes | Crafted rows only: skill rank to learn the recipe; null otherwise. |
+
+## item_sets
+
+One row per member item of an item set (ItemID_0 to ItemID_16), sorted by set id and item id. Source: wago.tools client table ItemSet. File: `item_sets.parquet`.
+
+| Column | Type | Null | Source | Meaning |
+| --- | --- | --- | --- | --- |
+| `set_id` | `int32` | no | table | Item set id. |
+| `name` | `string` | no | table | Item set name. |
+| `item_id` | `int32` | no | table | items.id of a member of the set. |
+
+## quest_lines
+
+One row per quest of a quest line, in line order. Source: wago.tools client table QuestLine, QuestLineXQuest. File: `quest_lines.parquet`.
+
+| Column | Type | Null | Source | Meaning |
+| --- | --- | --- | --- | --- |
+| `line_id` | `int32` | no | table | Quest line id (quests.quest_line_id). |
+| `name` | `string` | yes | QuestLine | Quest line name; null when QuestLine has no named row. |
+| `position` | `int32` | no | QuestLineXQuest OrderIndex | Position of the quest in the line, from 0. |
+| `quest_id` | `int32` | no | table | quests.id of the quest at that position. |
