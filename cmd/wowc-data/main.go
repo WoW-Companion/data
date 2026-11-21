@@ -11,6 +11,7 @@ import (
 	"github.com/WoW-Companion/data/internal/everloot"
 	"github.com/WoW-Companion/data/internal/fetch"
 	"github.com/WoW-Companion/data/internal/manifest"
+	"github.com/WoW-Companion/data/internal/release"
 	"github.com/WoW-Companion/data/internal/tables"
 )
 
@@ -20,6 +21,7 @@ commands:
   fetch            download client tables into the cache (once per build)
   build            build Parquet tables and manifest.json into dist/<build>/
   verify-manifest  check manifest.json against the schema and the files it lists
+  release-check    print the latest Forever build and whether its dataset release exists
 `
 
 func main() {
@@ -35,6 +37,8 @@ func main() {
 		err = runBuild(os.Args[2:])
 	case "verify-manifest":
 		err = runVerify(os.Args[2:])
+	case "release-check":
+		err = runReleaseCheck(os.Args[2:])
 	default:
 		fmt.Fprint(os.Stderr, usage)
 		os.Exit(2)
@@ -94,5 +98,39 @@ func runVerify(args []string) error {
 		return err
 	}
 	fmt.Println("manifest ok:", path)
+	return nil
+}
+
+// runReleaseCheck prints build=<build> and exists=<true|false> lines, the format of
+// $GITHUB_OUTPUT, and appends them there when it is set. GITHUB_TOKEN and
+// GITHUB_REPOSITORY come from the environment.
+func runReleaseCheck(args []string) error {
+	fs := flag.NewFlagSet("release-check", flag.ExitOnError)
+	repo := fs.String("repo", os.Getenv("GITHUB_REPOSITORY"), "owner/name of the releasing repository")
+	api := fs.String("api", "https://api.github.com", "GitHub API base URL")
+	fs.Parse(args)
+	if *repo == "" {
+		return fmt.Errorf("release-check: -repo or GITHUB_REPOSITORY required")
+	}
+	build, err := release.LatestBuild(fetch.BaseURL, fetch.Product, fetch.UserAgent)
+	if err != nil {
+		return err
+	}
+	exists, err := release.Exists(*api, *repo, release.Tag(build), os.Getenv("GITHUB_TOKEN"))
+	if err != nil {
+		return err
+	}
+	out := fmt.Sprintf("build=%s\nexists=%t\n", build, exists)
+	fmt.Print(out)
+	if p := os.Getenv("GITHUB_OUTPUT"); p != "" {
+		f, err := os.OpenFile(p, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0o644)
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+		if _, err := f.WriteString(out); err != nil {
+			return err
+		}
+	}
 	return nil
 }

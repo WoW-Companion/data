@@ -24,7 +24,7 @@ No game data is committed to the repository; `dist/` is git-ignored.
 - `schemas/`: JSON Schemas for the published files
 - `curated/`: hand-maintained YAML
 - `dist/`: build output (git-ignored)
-- `docs/`: documentation
+- `docs/`: documentation; dataset releases are described in `docs/releases.md`
 
 ## Development
 
