@@ -13,7 +13,7 @@ Ruling and limits:
 - Never publish long-form text: quest descriptions, progress and completion text, item flavour text, book pages or gossip.
 - Extracting the tables from the installed client is the long-term route, so the dataset does not depend on a site without published terms.
 
-Route and pipeline: `/db2/{table}/csv?version={build}`, one request per table, one at a time with a pause between, cached under `dist/cache/{build}/` (git-ignored) with a `provenance.json` (source, product, build, retrieved time, the ruling as the license basis). Tables fetched: `ItemSparse`, `Item`, `QuestV2`, `QuestLineXQuest`, `QuestPOIBlob`, `Creature`, `CreatureDifficulty`, `ContentTuning` (the last three feed `npcs`: name, classification, creature type, family, faction and level range; no title or gossip text, no spawn coordinates).
+Route and pipeline: `/db2/{table}/csv?version={build}`, one request per table, one at a time with a pause between, cached under `dist/cache/{build}/` (git-ignored) with a `provenance.json` (source, product, build, retrieved time, the ruling as the license basis). Tables fetched: `ItemSparse`, `Item`, `QuestV2`, `QuestLineXQuest`, `QuestPOIBlob`, `Creature`, `CreatureDifficulty` (the last two feed `npcs`: name, classification, creature type, family, faction template and level range; no title or gossip text, no spawn coordinates).
 
 Product confirmation (2026-11-20): product `wowf` is the WoW: Forever client.
 
@@ -44,4 +44,4 @@ Status: **usable. Everloot's data is CC BY-SA 4.0, credited, with a paginated JS
 
 Pipeline: `wowc-data fetch` follows `next` through every page and caches the union as `dist/cache/everloot/drops.json` (git-ignored) with the retrieval time, `dataAsOf` and attribution. `loot_sources` keeps rows with `public: true` that name a creature or object source; values are stored as Everloot gives them. The table's Parquet metadata and manifest source carry the credit line and `dataAsOf`.
 
-Not covered: Everloot's drop list has no vendor, crafted or quest-reward sources, and the client tables fetched here carry no quest reward items, so `loot_sources` holds kinds `creature` and `object` only.
+Quest rewards: neither the client tables fetched here (no quest reward items; QuestV2 has three columns, and no QuestPackageItem or QuestObjective table exists for this build) nor the drops route carry them. `loot_sources` takes `quest reward` rows from Everloot's `GET /api/edges?rel=reward_from` (item to quest, `installs` as `reporters`, `evidence` as `tier`; rate fields zero). Checked 2026-11-21: that relation held 0 rows. Not covered: vendor and crafted sources.

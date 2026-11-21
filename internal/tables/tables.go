@@ -66,8 +66,7 @@ var Required = map[string][]string{
 	"QuestLineXQuest":    {"ID", "QuestID", "QuestLineID"},
 	"QuestPOIBlob":       {"ID", "QuestID", "MapID", "UiMapID"},
 	"Creature":           {"ID", "Name_lang", "Classification", "CreatureType", "CreatureFamily"},
-	"CreatureDifficulty": {"ID", "CreatureID", "ContentTuningID", "FactionID"},
-	"ContentTuning":      {"ID", "MinLevel", "MaxLevel"},
+	"CreatureDifficulty": {"ID", "CreatureID", "MinLevel", "MaxLevel", "FactionTemplateID"},
 }
 
 // ReadTable parses a client CSV export and checks its header against Required[table].
