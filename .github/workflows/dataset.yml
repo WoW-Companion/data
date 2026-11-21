@@ -1,0 +1,59 @@
+name: dataset
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dataset
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
+        with:
+          go-version-file: go.mod
+      - name: Latest build and release state
+        id: check
+        run: go run ./cmd/wowc-data release-check
+      - name: Fetch client tables and Everloot rates
+        if: steps.check.outputs.exists == 'false'
+        run: go run ./cmd/wowc-data fetch -build "${{ steps.check.outputs.build }}"
+      - name: Build the dataset
+        if: steps.check.outputs.exists == 'false'
+        run: go run ./cmd/wowc-data build -build "${{ steps.check.outputs.build }}"
+      - name: Verify the manifest
+        if: steps.check.outputs.exists == 'false'
+        run: go run ./cmd/wowc-data verify-manifest "dist/${{ steps.check.outputs.build }}"
+      - name: Pack and publish
+        if: steps.check.outputs.exists == 'false'
+        env:
+          BUILD: ${{ steps.check.outputs.build }}
+        run: |
+          set -euo pipefail
+          tar -C dist -cf - "$BUILD" | zstd -19 -T0 -o "wowc-dataset-$BUILD.tar.zst"
+          cp "dist/$BUILD/manifest.json" "manifest-$BUILD.json"
+          cat > notes.md <<NOTES
+          WoW: Forever dataset for game build $BUILD (Parquet tables plus manifest.json).
+
+          Licence: the dataset is CC BY-SA 4.0 (LICENSE-DATA in the repository).
+
+          Credits:
+          - Game data: Blizzard game client data, retrieved via wago.tools. The underlying game data is Blizzard's; only facts are published.
+          - Loot sources: Data from Everloot (https://everloot.app), CC BY-SA 4.0.
+
+          Verify: \`wowc-data verify-manifest <dir>\`, or compare the sha256 of each file with manifest.json. See docs/releases.md.
+          NOTES
+          gh release create "dataset-$BUILD" "wowc-dataset-$BUILD.tar.zst" "manifest-$BUILD.json" \
+            --title "Dataset $BUILD" --notes-file notes.md --target "$GITHUB_SHA"
