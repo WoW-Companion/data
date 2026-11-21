@@ -213,8 +213,8 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, outDir, created strin
 	if err := add(writeTable(outDir, "quest_lines.parquet", c.QuestLines, Layout(nil, []string{"line_id", "position", "quest_id"}, src))); err != nil {
 		return m, err
 	}
-	// names.parquet: the prebuilt name index. One row group per DefaultRowGroup rows (DATA-021:
-	// groups of 4,096 keep a lookup to one small read) and a Bloom filter on norm for exact names.
+	// names.parquet: the prebuilt name index. One row group per DefaultRowGroup rows
+	// (docs/layout.md has the measurements) and a Bloom filter on norm for exact names.
 	nameRows := NameIndex(c)
 	if err := add(writeTable(outDir, names.File, nameRows, Layout([]string{"norm"}, names.SortKeys, src))); err != nil {
 		return m, err
