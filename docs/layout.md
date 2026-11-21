@@ -9,7 +9,7 @@ on build `1.60.1.71037`, all 14 tables, 44,601 rows. It replaces the "Layout to 
 - One file per table per build. zstd. Sorted by the table's key columns (recorded in the file).
 - Row group of 4,096 rows (`parquetio.DefaultRowGroup`). Only items (5 groups), quests (2) and
   recipe_reagents (3) have more than one.
-- No Bloom filters.
+- No Bloom filters, except `names.parquet` (below).
 - Dictionary encoding (`,dict` struct tag) on the low-cardinality columns of `items` (8 columns:
   required_level, quality, class_id, subclass_id, slot, allowable_class_mask, bonding,
   stats_status) and `loot_sources` (source_kind, tier, profession, everloot_data_as_of). Every
@@ -55,3 +55,48 @@ table is its lookup key, and every point lookup reads one page of it.
 - Bloom filters would pay off only for equality lookups on a column that is not the sort key
   (for example `items.name`). The bench looks up by sort key, so it does not measure that case.
 - Page size was left at the library default.
+
+## names.parquet: the name index
+
+`names.parquet` maps a normalised name to the row that carries it, so a reader finds a name without
+scanning a table. Columns: `norm` (lowercased, accents folded, apostrophes dropped, other punctuation
+a single space), `name` (as spelled), `table` (`items`, `npcs`, `instances`, `recipes`, `item_sets`) and
+`id` (items.id, npcs.id, instances.map_id, recipes.spell_id, item_sets.set_id). Quests have no name in
+the client tables and are not listed. Rows are sorted by `(norm, table, id)`; row groups hold 4,096 rows
+and `norm` has a Bloom filter. Build 1.60.1.71037: 22,703 rows, 435,135 bytes, 6 row groups, 28,384
+bytes of Bloom filter.
+
+Row-group size was chosen by measuring 1,024, 2,048, 4,096 and 8,192 (HTTP, 20 ms per request, cold):
+
+| row group | file bytes | exact lookup bytes | requests | HTTP p50 |
+|---|---|---|---|---|
+| 1,024 | 471,341 | 127,098 | 35.7 | 801 ms |
+| 2,048 | 449,866 | 91,276 | 24.7 | 549 ms |
+| 4,096 | 435,135 | 96,728 | 19.0 | 422 ms |
+| 8,192 | 422,828 | 146,639 | 16.0 | 355 ms |
+
+4,096 is the layout of every other table and the best balance of bytes and requests; 8,192 saves
+requests but reads half as much again.
+
+### Prefix and exact lookup
+
+Read the footer, then walk the row groups using each `norm` column chunk's min and max
+(`row_groups[i].columns[0].meta_data.statistics`, in the footer, so no extra request):
+
+1. Prefix `p`: skip a group when `max < p`, or when `min > p` and `min` does not start with `p`. Read
+   the rest in order from the first and stop at the first row that is greater than `p` and does not
+   start with it. Matching names are adjacent because the file is sorted.
+2. Exact `q`: the same min/max test, then check the group's Bloom filter on `norm` and skip the group
+   when it says no.
+3. `names.Lookup` in `internal/names` does both; `wowc-data bench` measures it.
+
+Cost on 1.60.1.71037, file opened per lookup, 200 local and 20 HTTP lookups, 20 ms per request, prefix
+of 4 characters returning at most 20 rows (14.7 on average):
+
+| lookup | local p50 / p95 | HTTP p50 / p95 | local bytes | HTTP bytes | HTTP requests |
+|---|---|---|---|---|---|
+| exact | 0.35 / 0.78 ms | 421.57 / 446.10 ms | 97,838 | 96,728 | 19.0 |
+| prefix | 0.38 / 1.02 ms | 399.65 / 464.10 ms | 97,805 | 96,696 | 18.0 |
+
+The file is 435 kB, so a client that expects more than one lookup should download it once (one
+request) and search it in memory.

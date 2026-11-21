@@ -93,19 +93,15 @@ func Lookup(r io.ReaderAt, size int64, q string, prefix bool, limit int) ([]Row,
 		return nil, err
 	}
 	var out []Row
-	for _, rg := range f.RowGroups() {
-		ch := rg.ColumnChunks()[0] // norm
-		ci, err := ch.ColumnIndex()
-		if err != nil {
-			return nil, err
-		}
-		if ci.NumPages() == 0 {
-			continue
-		}
-		lo, hi := string(ci.MinValue(0).ByteArray()), string(ci.MaxValue(ci.NumPages()-1).ByteArray())
+	meta := f.Metadata().RowGroups
+	for i, rg := range f.RowGroups() {
+		// The chunk statistics live in the footer, so ruling a group out costs no extra read.
+		st := meta[i].Columns[0].MetaData.Statistics
+		lo, hi := string(st.MinValue), string(st.MaxValue)
 		if hi < q || (lo > q && !strings.HasPrefix(lo, q)) { // [lo, hi] cannot hold q or anything starting with q
 			continue
 		}
+		ch := rg.ColumnChunks()[0] // norm
 		if !prefix {
 			if bf := ch.BloomFilter(); bf != nil {
 				if hit, err := bf.Check(parquet.ByteArrayValue([]byte(q))); err != nil {
