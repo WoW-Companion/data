@@ -269,7 +269,7 @@ const (
 // LootSource is one row of the loot_sources table. Counts and rates are Everloot's own.
 type LootSource struct {
 	ItemID       int32    `parquet:"item_id"`
-	SourceKind   string   `parquet:"source_kind"`
+	SourceKind   string   `parquet:"source_kind,dict"`
 	SourceID     int32    `parquet:"source_id"`
 	Kills        int32    `parquet:"kills"`
 	Drops        int32    `parquet:"drops"`
@@ -277,11 +277,11 @@ type LootSource struct {
 	RateLow      *float64 `parquet:"rate_low,optional"`
 	RateHigh     *float64 `parquet:"rate_high,optional"`
 	Reporters    int32    `parquet:"reporters"`
-	Tier         *string  `parquet:"tier,optional"`
-	EverlootDate *string  `parquet:"everloot_data_as_of,optional"`
+	Tier         *string  `parquet:"tier,optional,dict"`
+	EverlootDate *string  `parquet:"everloot_data_as_of,optional,dict"`
 	// Profession and LearnSkill are set on crafted rows only: the recipe's skill line
 	// name and the skill needed to learn it. SourceID is the recipe spell id there.
-	Profession *string `parquet:"profession,optional"`
+	Profession *string `parquet:"profession,optional,dict"`
 	LearnSkill *int16  `parquet:"learn_skill,optional"`
 }
 
