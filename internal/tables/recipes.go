@@ -3,6 +3,8 @@ package tables
 import (
 	"slices"
 	"strings"
+
+	"github.com/WoW-Companion/data/internal/everloot"
 )
 
 // Recipe is one row of the recipes table: a profession spell. YellowSkill and GreySkill are
@@ -158,5 +160,38 @@ func BuildRecipeReagents(recipes []Recipe, in RecipeInput) []RecipeReagent {
 		}
 		return int(a.ReagentItemID - b.ReagentItemID)
 	})
+	return out
+}
+
+// BuildCraftedSources makes one `crafted` loot_sources row per recipe with a created item:
+// source_id is the recipe spell, profession the skill line name and learn_skill the recipe's
+// minimum rank. A spell listed under two skill lines yields one row (the lower line id).
+// Counts and rates stay zero: there is no drop chance. recipes must be in BuildRecipes order.
+func BuildCraftedSources(recipes []Recipe) []everloot.LootSource {
+	out := []everloot.LootSource{}
+	seen := map[[2]int32]bool{}
+	for _, r := range recipes {
+		if r.CreatesItemID == nil || *r.CreatesItemID <= 0 {
+			continue
+		}
+		k := [2]int32{*r.CreatesItemID, r.SpellID}
+		if seen[k] {
+			continue
+		}
+		seen[k] = true
+		name := r.SkillLineName
+		out = append(out, everloot.LootSource{
+			ItemID: *r.CreatesItemID, SourceKind: everloot.KindCrafted, SourceID: r.SpellID,
+			Profession: &name, LearnSkill: r.LearnSkill,
+		})
+	}
+	return out
+}
+
+// MergeLootSources appends the crafted rows to the Everloot rows and sorts the union. Rows
+// already in base keep their values.
+func MergeLootSources(base, crafted []everloot.LootSource) []everloot.LootSource {
+	out := append(slices.Clone(base), crafted...)
+	everloot.SortLootSources(out)
 	return out
 }

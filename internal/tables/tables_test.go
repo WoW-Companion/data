@@ -4,6 +4,8 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/WoW-Companion/data/internal/everloot"
 )
 
 func TestReadCSV(t *testing.T) {
@@ -332,6 +334,48 @@ func TestBuildRecipes(t *testing.T) {
 	want := []RecipeReagent{{10, 100, 5}, {10, 101, 1}, {11, 102, 4}}
 	if !reflect.DeepEqual(reagents, want) {
 		t.Errorf("reagents (merged, zero counts dropped): %+v", reagents)
+	}
+}
+
+func TestBuildCraftedSources(t *testing.T) {
+	item := func(v int32) *int32 { return &v }
+	skill := int16(75)
+	recipes := []Recipe{
+		{SpellID: 10, SkillLineID: 171, SkillLineName: "Alchemy", CreatesItemID: item(901), LearnSkill: &skill},
+		{SpellID: 11, SkillLineID: 171, SkillLineName: "Alchemy"},
+		{SpellID: 12, SkillLineID: 171, SkillLineName: "Alchemy", CreatesItemID: item(0)},
+		{SpellID: 10, SkillLineID: 185, SkillLineName: "Cooking", CreatesItemID: item(901)},
+		{SpellID: 20, SkillLineID: 185, SkillLineName: "Cooking", CreatesItemID: item(902)},
+	}
+	got := BuildCraftedSources(recipes)
+	if len(got) != 2 {
+		t.Fatalf("rows (no item, zero item and repeated spell skipped): %+v", got)
+	}
+	r := got[0]
+	if r.ItemID != 901 || r.SourceKind != "crafted" || r.SourceID != 10 || *r.Profession != "Alchemy" || *r.LearnSkill != 75 ||
+		r.Kills != 0 || r.Rate != 0 || r.RateLow != nil || r.Tier != nil || r.EverlootDate != nil {
+		t.Errorf("crafted row: %+v", r)
+	}
+	if got[1].LearnSkill != nil || *got[1].Profession != "Cooking" {
+		t.Errorf("null learn skill kept null: %+v", got[1])
+	}
+}
+
+func TestMergeLootSourcesKeepsExistingRows(t *testing.T) {
+	d := "2026-11-20"
+	lo := 0.1
+	base := []everloot.LootSource{
+		{ItemID: 5, SourceKind: everloot.KindCreature, SourceID: 8, Kills: 4, Drops: 1, Rate: 0.25, RateLow: &lo, Reporters: 3, EverlootDate: &d},
+		{ItemID: 901, SourceKind: everloot.KindObject, SourceID: 2, Rate: 1},
+	}
+	prof := "Alchemy"
+	crafted := []everloot.LootSource{{ItemID: 901, SourceKind: everloot.KindCrafted, SourceID: 10, Profession: &prof}}
+	got := MergeLootSources(base, crafted)
+	if len(got) != 3 || got[0] != base[0] || got[1].SourceKind != "crafted" || got[2] != base[1] {
+		t.Fatalf("merge (existing rows unchanged, sorted by item then kind): %+v", got)
+	}
+	if len(base) != 2 {
+		t.Errorf("base slice modified")
 	}
 }
 

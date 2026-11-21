@@ -225,6 +225,7 @@ const (
 	KindCreature = "creature"
 	KindObject   = "object"
 	KindQuest    = "quest reward"
+	KindCrafted  = "crafted"
 )
 
 // LootSource is one row of the loot_sources table. Counts and rates are Everloot's own.
@@ -240,6 +241,10 @@ type LootSource struct {
 	Reporters    int32    `parquet:"reporters"`
 	Tier         *string  `parquet:"tier,optional"`
 	EverlootDate *string  `parquet:"everloot_data_as_of,optional"`
+	// Profession and LearnSkill are set on crafted rows only: the recipe's skill line
+	// name and the skill needed to learn it. SourceID is the recipe spell id there.
+	Profession *string `parquet:"profession,optional"`
+	LearnSkill *int16  `parquet:"learn_skill,optional"`
 }
 
 // BuildLootSources keeps the public rates that name a creature or object source, plus a
@@ -285,6 +290,12 @@ func BuildLootSources(s Snapshot) []LootSource {
 		}
 		out = append(out, l)
 	}
+	SortLootSources(out)
+	return out
+}
+
+// SortLootSources orders rows by item, kind and source id.
+func SortLootSources(out []LootSource) {
 	slices.SortStableFunc(out, func(a, b LootSource) int {
 		if a.ItemID != b.ItemID {
 			return int(a.ItemID - b.ItemID)
@@ -294,5 +305,4 @@ func BuildLootSources(s Snapshot) []LootSource {
 		}
 		return int(a.SourceID - b.SourceID)
 	})
-	return out
 }
