@@ -86,7 +86,8 @@ func TestBuildQuests(t *testing.T) {
 	quests := []Row{{"ID": "9", "UniqueBitFlag": "2"}, {"ID": "3", "UiQuestDetailsThemeID": "4"}}
 	lines := []Row{{"ID": "2", "QuestID": "3", "QuestLineID": "88"}, {"ID": "1", "QuestID": "3", "QuestLineID": "77"}}
 	pois := []Row{{"ID": "5", "QuestID": "3", "MapID": "1", "UiMapID": "1411"}}
-	got := BuildQuests(quests, lines, pois)
+	uiMaps := []Row{{"ID": "1411", "Name_lang": "Durotar"}, {"ID": "1412", "Name_lang": ""}}
+	got := BuildQuests(quests, lines, pois, uiMaps)
 	if len(got) != 2 || got[0].ID != 3 || got[1].ID != 9 {
 		t.Fatalf("not sorted by id: %+v", got)
 	}
@@ -96,6 +97,41 @@ func TestBuildQuests(t *testing.T) {
 	}
 	if got[1].UniqueBitFlag != 2 || got[1].QuestLineID != nil || got[1].MapID != nil {
 		t.Errorf("quest 9 should have nulls: %+v", got[1])
+	}
+}
+
+func TestQuestZone(t *testing.T) {
+	quests := []Row{{"ID": "1"}, {"ID": "2"}, {"ID": "3"}, {"ID": "4"}}
+	pois := []Row{
+		{"ID": "1", "QuestID": "1", "UiMapID": "1411"},
+		{"ID": "2", "QuestID": "2", "UiMapID": "1412"},
+		{"ID": "3", "QuestID": "3", "UiMapID": "0"},
+	}
+	uiMaps := []Row{{"ID": "1411", "Name_lang": "Durotar"}, {"ID": "1412", "Name_lang": ""}}
+	cases := []struct {
+		name     string
+		i        int
+		id       int32
+		hasID    bool
+		wantName string
+	}{
+		{"named zone", 0, 1411, true, "Durotar"},
+		{"map without a name", 1, 1412, true, ""},
+		{"POI with no UiMap", 2, 0, false, ""},
+		{"no POI", 3, 0, false, ""},
+	}
+	got := BuildQuests(quests, nil, pois, uiMaps)
+	for _, c := range cases {
+		q := got[c.i]
+		if (q.ZoneID != nil) != c.hasID || (c.hasID && *q.ZoneID != c.id) {
+			t.Errorf("%s: zone id %v", c.name, q.ZoneID)
+		}
+		if (q.ZoneName != nil) != (c.wantName != "") || (c.wantName != "" && *q.ZoneName != c.wantName) {
+			t.Errorf("%s: zone name %v", c.name, q.ZoneName)
+		}
+		if q.Level != nil || q.MinLevel != nil {
+			t.Errorf("%s: level must stay null: %+v", c.name, q)
+		}
 	}
 }
 
@@ -135,6 +171,7 @@ func TestReadTableRequiredColumns(t *testing.T) {
 		{"extra columns fine", "Item", "ID,ClassID,SubclassID,Other\n", ""},
 		{"renamed column", "Creature", "ID,Name,Classification,CreatureType,CreatureFamily\n", `Creature: required column "Name_lang" missing`},
 		{"missing in header-only file", "QuestV2", "ID,UniqueBitFlag\n", `QuestV2: required column "UiQuestDetailsThemeID" missing`},
+		{"uimap name missing", "UiMap", "ID,Flags\n", `UiMap: required column "Name_lang" missing`},
 		{"empty file", "Item", "", `Item: required column "ID" missing`},
 	}
 	for _, c := range cases {

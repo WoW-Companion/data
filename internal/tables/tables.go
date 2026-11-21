@@ -44,14 +44,19 @@ type Item struct {
 }
 
 // Quest is one row of the quests table. The client's quest tables carry no name,
-// level, zone text or rewards; only what exists is kept.
+// level or rewards; only what exists is kept. Level and MinLevel stay null: no allowed
+// source holds them (docs/sources.md). The zone is the UiMap of the quest's first POI.
 type Quest struct {
-	ID            int32  `parquet:"id"`
-	UniqueBitFlag int32  `parquet:"unique_bit_flag"`
-	UIThemeID     int32  `parquet:"ui_theme_id"`
-	QuestLineID   *int32 `parquet:"quest_line_id,optional"`
-	MapID         *int32 `parquet:"map_id,optional"`
-	UIMapID       *int32 `parquet:"ui_map_id,optional"`
+	ID            int32   `parquet:"id"`
+	UniqueBitFlag int32   `parquet:"unique_bit_flag"`
+	UIThemeID     int32   `parquet:"ui_theme_id"`
+	QuestLineID   *int32  `parquet:"quest_line_id,optional"`
+	MapID         *int32  `parquet:"map_id,optional"`
+	UIMapID       *int32  `parquet:"ui_map_id,optional"`
+	Level         *int16  `parquet:"level,optional"`
+	MinLevel      *int16  `parquet:"min_level,optional"`
+	ZoneID        *int32  `parquet:"zone_id,optional"`
+	ZoneName      *string `parquet:"zone_name,optional"`
 }
 
 // Row is one CSV record keyed by header name.
@@ -65,6 +70,7 @@ var Required = map[string][]string{
 	"QuestV2":            {"ID", "UniqueBitFlag", "UiQuestDetailsThemeID"},
 	"QuestLineXQuest":    {"ID", "QuestID", "QuestLineID"},
 	"QuestPOIBlob":       {"ID", "QuestID", "MapID", "UiMapID"},
+	"UiMap":              {"ID", "Name_lang"},
 	"Creature":           {"ID", "Name_lang", "Classification", "CreatureType", "CreatureFamily"},
 	"CreatureDifficulty": {"ID", "CreatureID", "MinLevel", "MaxLevel", "FactionTemplateID"},
 
@@ -214,8 +220,16 @@ func firstBy(rows []Row, key string) map[int]Row {
 
 func ptr(v int) *int32 { x := int32(v); return &x }
 
-// BuildQuests returns quests with their first quest line and first map, sorted by id.
-func BuildQuests(quests, lines, pois []Row) []Quest {
+// BuildQuests returns quests with their first quest line, first map and zone, sorted by id.
+// The zone is the first POI's UiMapID and that map's name; it is null when the POI has no
+// UiMap (0) and the name is null when the UiMap table has no row for it.
+func BuildQuests(quests, lines, pois, uiMaps []Row) []Quest {
+	mapName := make(map[int]string, len(uiMaps))
+	for _, m := range uiMaps {
+		if n := m["Name_lang"]; n != "" {
+			mapName[m.int("ID", 0)] = n
+		}
+	}
 	lineOf := firstBy(lines, "QuestID")
 	poiOf := firstBy(pois, "QuestID")
 	out := make([]Quest, 0, len(quests))
@@ -232,6 +246,12 @@ func BuildQuests(quests, lines, pois []Row) []Quest {
 		if p, ok := poiOf[id]; ok {
 			q.MapID = ptr(p.int("MapID", 0))
 			q.UIMapID = ptr(p.int("UiMapID", 0))
+			if z := p.int("UiMapID", 0); z != 0 {
+				q.ZoneID = ptr(z)
+				if n, ok := mapName[z]; ok {
+					q.ZoneName = &n
+				}
+			}
 		}
 		out = append(out, q)
 	}

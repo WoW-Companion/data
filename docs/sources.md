@@ -55,3 +55,32 @@ Tables fetched: `TraitNode`, `TraitNodeGroup`, `TraitNodeGroupXTraitNode`, `Trai
 - `talent_trees`: one row per `TraitNodeGroup` (tree, group, order by group id). `required_points` is `TraitCond.SpentAmountRequired` for the group. The class comes from `SkillLineXTraitTree` (tree to skill line), `SkillRaceClassInfo` (skill line to class mask) and `ChrClasses`; 9 trees resolve to a class, the others (34 groups) have none.
 - `talent_nodes`: one row per `TraitNode`. A node sits in many groups, so `group_ids` is a list. Spell, name and max rank come from the node's first entry by `_Index` (`TraitNodeXTraitNodeEntry`, `TraitNodeEntry`, `TraitDefinition`); the name is the definition's override name or, if empty, the spell's name from `SpellName`. `prerequisite_node_ids` are the `LeftTraitNodeID`s of `TraitEdge` rows pointing at the node, whatever the edge type.
 - Names the tables do not carry: no table holds a tree or group name (`TraitTree.TitleText_lang` and `TraitNodeGroup` have no name), so `group_name` is null. The class's specialisation names exist only as skill lines (priest: "Holy", "Shadow Magic", "Discipline") with no key tying them to a group.
+
+## Quest level, minimum level and zone (survey)
+
+Surveyed 2026-11-21 against build `1.60.1.71037` (wago.tools) and Everloot's API. Row counts are data rows.
+
+| Source | Rows | Holds |
+| ------ | ---: | ----- |
+| `QuestV2` | 6,626 | `ID`, `UniqueBitFlag`, `UiQuestDetailsThemeID` only: no level, minimum level or zone |
+| `QuestPOIBlob` | 57 | `QuestID` to `MapID` and `UiMapID` (22 quests with a non-zero `UiMapID`) |
+| `UiMap` | 60 | `ID` to `Name_lang` (zone, continent and city names) |
+| `QuestLine`, `QuestLineXQuest` | 3 and 22 | quest line membership; no level or zone |
+| `QuestSort` | 39 | sort names ("Epic", old dungeon labels), no key from `QuestV2` |
+| `QuestInfo` | 7 | quest type names, no key from `QuestV2` |
+| `QuestXP` | 100 | XP by level and difficulty; keyed by level, not by quest |
+| `ContentTuning` | 102 | level squish, scaling and `XpMultQuest` by tuning id; nothing in the quest tables points at a tuning id |
+| `AreaTable` | 1,404 | area names; nothing ties a quest to an area |
+| `QuestPOIPoint` | 121 | coordinates for POI blobs; no level or zone |
+| `QuestV2CliTask`, `QuestObjective`, `Quest` | – | "Table not found" |
+| Everloot `/api/edges?rel=located_in` | 540 | npc to zone only; no quest rows. `reward_from` holds 0 rows; the client layer (`/api/edges/client-layer`) has no quest relations. |
+
+Outcome, per `quests` column:
+
+- `level`, `min_level`: **no allowed source holds them**, so both are always null. Nothing is inferred (not from `QuestXP`, `ContentTuning` or the quest's zone).
+- `zone_id`: the `UiMapID` of the quest's first `QuestPOIBlob` row (lowest `ID`), when non-zero. Source: wago.tools `QuestPOIBlob`.
+- `zone_name`: `UiMap.Name_lang` for that `zone_id`; null when `UiMap` has no named row. Source: wago.tools `UiMap`. It is a short map label.
+
+`UiMap` is fetched with the other client tables and its `ID` and `Name_lang` columns are required (a missing column is an error, as for every table).
+
+Live coverage (2026-11-21 run): see the mission report; zone is non-null for 22 of 6,626 quests (0.33%), level and min_level for none.

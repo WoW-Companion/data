@@ -28,7 +28,7 @@ const (
 var Delay = 2 * time.Second
 
 // Tables are the client tables the pipeline reads.
-var Tables = []string{"ItemSparse", "Item", "QuestV2", "QuestLineXQuest", "QuestPOIBlob", "Creature", "CreatureDifficulty",
+var Tables = []string{"ItemSparse", "Item", "QuestV2", "QuestLineXQuest", "QuestPOIBlob", "UiMap", "Creature", "CreatureDifficulty",
 	"TraitNode", "TraitNodeGroup", "TraitNodeGroupXTraitNode", "TraitNodeXTraitNodeEntry", "TraitNodeEntry", "TraitDefinition", "TraitEdge", "TraitCond", "SkillLineXTraitTree", "SkillRaceClassInfo", "ChrClasses", "SpellName"}
 
 // Provenance is the record kept beside the cached CSVs and stamped into every built table.

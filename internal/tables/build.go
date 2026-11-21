@@ -70,7 +70,7 @@ func LoadCache(dir string) (Cached, error) {
 		}
 	}
 	c.Items = BuildItems(rows["ItemSparse"], rows["Item"])
-	c.Quests = BuildQuests(rows["QuestV2"], rows["QuestLineXQuest"], rows["QuestPOIBlob"])
+	c.Quests = BuildQuests(rows["QuestV2"], rows["QuestLineXQuest"], rows["QuestPOIBlob"], rows["UiMap"])
 	c.Npcs = BuildNpcs(rows["Creature"], rows["CreatureDifficulty"])
 	in := TalentInput{
 		Groups: rows["TraitNodeGroup"], GroupNodes: rows["TraitNodeGroupXTraitNode"], Conds: rows["TraitCond"],
