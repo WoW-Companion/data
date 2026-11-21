@@ -29,6 +29,7 @@ commands:
   coverage         print per-table row counts and null or zero shares of a built dataset
   diff             print what changed between two dataset directories, as Markdown
   bench            measure each table of a built dataset: size, layout, lookup time and bytes read
+  release-notes    print the release notes of a built dataset, with what changed since the previous release
   release-check    print the latest Forever build and whether its dataset release exists
 `
 
@@ -53,6 +54,8 @@ func main() {
 		err = runDiff(os.Args[2:])
 	case "bench":
 		err = runBench(os.Args[2:])
+	case "release-notes":
+		err = runReleaseNotes(os.Args[2:])
 	case "release-check":
 		err = runReleaseCheck(os.Args[2:])
 	default:
@@ -224,5 +227,32 @@ func runReleaseCheck(args []string) error {
 			return err
 		}
 	}
+	return nil
+}
+
+// runReleaseNotes prints the notes of the dataset in <dir>. With -prev-tag and -prev-dir
+// (the previous release's manifest.json and, if it has one, stats.json) they open with
+// the diff; without, they say it is the first release.
+func runReleaseNotes(args []string) error {
+	fs := flag.NewFlagSet("release-notes", flag.ExitOnError)
+	prevTag := fs.String("prev-tag", "", "tag of the previous dataset release; empty for the first")
+	prevDir := fs.String("prev-dir", "", "directory holding the previous release's manifest.json and stats.json")
+	fs.Parse(args)
+	if fs.NArg() != 1 || (*prevTag != "") != (*prevDir != "") {
+		return fmt.Errorf("usage: wowc-data release-notes [-prev-tag TAG -prev-dir DIR] <dataset dir>")
+	}
+	cur, err := diff.Load(fs.Arg(0))
+	if err != nil {
+		return err
+	}
+	changes := ""
+	if *prevTag != "" {
+		old, err := diff.Load(*prevDir)
+		if err != nil {
+			return err
+		}
+		changes = diff.Markdown(old, cur)
+	}
+	fmt.Print(release.Notes(cur.Manifest.GameBuild, *prevTag, changes))
 	return nil
 }

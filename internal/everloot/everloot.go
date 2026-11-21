@@ -7,13 +7,14 @@ package everloot
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 	"slices"
 	"strings"
 	"time"
+
+	"github.com/WoW-Companion/data/internal/httpget"
 )
 
 const (
@@ -140,7 +141,7 @@ func Fetch(baseURL, cacheDir, retrieved string) (Snapshot, error) {
 		return s, json.Unmarshal(b, &s)
 	}
 	s := Snapshot{Retrieved: retrieved}
-	client := &http.Client{Timeout: 120 * time.Second}
+	client := newGetter()
 	u := fmt.Sprintf("%s%s?offset=0&limit=%d", baseURL, DropsPath, PageLen)
 	for first := true; u != ""; first = false {
 		if !first {
@@ -172,7 +173,7 @@ func Fetch(baseURL, cacheDir, retrieved string) (Snapshot, error) {
 }
 
 // fetchEdges follows every page of one relation of /api/edges.
-func fetchEdges(c *http.Client, baseURL, rel string) ([]Edge, error) {
+func fetchEdges(c *httpget.Getter, baseURL, rel string) ([]Edge, error) {
 	var out []Edge
 	u := fmt.Sprintf("%s%s?rel=%s&offset=0&limit=%d", baseURL, EdgesPath, rel, PageLen)
 	for u != "" {
@@ -212,19 +213,20 @@ func BuildNpcZones(edges []Edge) map[int32]NpcZone {
 	return out
 }
 
-func getBody(c *http.Client, u string) ([]byte, error) {
-	resp, err := c.Get(u)
-	if err != nil {
-		return nil, err
+// newGetter makes the one client a fetch shares. Without a key Everloot allows 30
+// requests an hour per address and answers 429 with Retry-After (about 23 minutes), and
+// a CI runner's address is shared, so a 429 is waited out: one wait of up to 30 minutes,
+// 40 minutes in all, which fits the workflow's timeout.
+func newGetter() *httpget.Getter {
+	return &httpget.Getter{
+		Client: &http.Client{Timeout: 120 * time.Second}, Attempts: 4, Base: 10 * time.Second,
+		MaxWait: 30 * time.Minute, Budget: 40 * time.Minute, Sleep: time.Sleep,
 	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("%s: HTTP %d (Retry-After %q)", u, resp.StatusCode, resp.Header.Get("Retry-After"))
-	}
-	return io.ReadAll(resp.Body)
 }
 
-func getPage(c *http.Client, u string) (page, error) {
+func getBody(c *httpget.Getter, u string) ([]byte, error) { return c.Get(u) }
+
+func getPage(c *httpget.Getter, u string) (page, error) {
 	var p page
 	body, err := getBody(c, u)
 	if err != nil {
@@ -236,7 +238,7 @@ func getPage(c *http.Client, u string) (page, error) {
 	return p, json.Unmarshal(body, &p)
 }
 
-func getEdges(c *http.Client, u string) (edgePage, error) {
+func getEdges(c *httpget.Getter, u string) (edgePage, error) {
 	var p edgePage
 	body, err := getBody(c, u)
 	if err != nil {

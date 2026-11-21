@@ -15,7 +15,7 @@ concurrency:
 jobs:
   release:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 120
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -40,40 +40,4 @@ jobs:
         if: steps.check.outputs.exists == 'false'
         env:
           BUILD: ${{ steps.check.outputs.build }}
-        run: |
-          set -euo pipefail
-          tar -C dist -cf - "$BUILD" | zstd -19 -T0 -o "wowc-dataset-$BUILD.tar.zst"
-          cp "dist/$BUILD/manifest.json" "manifest-$BUILD.json"
-          go run ./cmd/wowc-data coverage "dist/$BUILD" > "coverage-$BUILD.md"
-          go run ./cmd/wowc-data coverage -json "dist/$BUILD" > "stats-$BUILD.json"
-          # The previous release is the newest dataset release; its manifest and stats
-          # are all the diff needs. A release without stats still diffs tables and rows.
-          PREV=$(gh release list --limit 20 --json tagName,createdAt \
-            --jq '[.[] | select(.tagName | startswith("dataset-"))] | sort_by(.createdAt) | last | .tagName // ""')
-          {
-            if [ -n "$PREV" ]; then
-              mkdir prev
-              gh release download "$PREV" --dir prev --pattern 'manifest-*.json' --pattern 'stats-*.json'
-              mv prev/manifest-*.json prev/manifest.json
-              mv prev/stats-*.json prev/stats.json 2>/dev/null || true
-              echo "Changes since $PREV."
-              echo
-              go run ./cmd/wowc-data diff prev "dist/$BUILD"
-            else
-              echo "First release: there is no earlier dataset to compare with."
-            fi
-            cat <<NOTES
-
-          WoW: Forever dataset for game build $BUILD (Parquet tables plus manifest.json).
-
-          Licence: the dataset is CC BY-SA 4.0 (LICENSE-DATA in the repository).
-
-          Credits:
-          - Game data: Blizzard game client data, retrieved via wago.tools. The underlying game data is Blizzard's; only facts are published.
-          - Loot sources: Data from Everloot (https://everloot.app), CC BY-SA 4.0.
-
-          Verify: \`wowc-data verify-manifest <dir>\`, or compare the sha256 of each file with manifest.json. See docs/releases.md.
-          NOTES
-          } > notes.md
-          gh release create "dataset-$BUILD" "wowc-dataset-$BUILD.tar.zst" "manifest-$BUILD.json" "coverage-$BUILD.md" "stats-$BUILD.json" \
-            --title "Dataset $BUILD" --notes-file notes.md --target "$GITHUB_SHA"
+        run: scripts/pack-and-publish.sh
