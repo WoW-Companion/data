@@ -5,6 +5,7 @@ package schema
 
 import (
 	"github.com/WoW-Companion/data/internal/everloot"
+	"github.com/WoW-Companion/data/internal/names"
 	"github.com/WoW-Companion/data/internal/tables"
 )
 
@@ -169,5 +170,11 @@ var Tables = []Table{
 		{"name", "QuestLine", "Quest line name; null when QuestLine has no named row."},
 		{"position", "QuestLineXQuest OrderIndex", "Position of the quest in the line, from 0."},
 		{"quest_id", "", "quests.id of the quest at that position."},
+	}},
+	{"names", names.Row{}, "derived from items, npcs, instances, recipes and item_sets", "Prebuilt name index: one row per named item, npc, instance, recipe and item set, sorted by norm, with a Bloom filter on norm. Quests carry no name, so none are listed. An exact lookup reads the row groups whose norm min/max range and Bloom filter admit the name; a prefix lookup reads those whose min/max range overlaps the prefix (see layout.md).", []Col{
+		{"norm", "derived", "The name lowercased, accent-folded, apostrophes dropped and other punctuation turned into single spaces."},
+		{"name", "", "The name as the source table spells it."},
+		{"table", "", "Table the name belongs to: items, npcs, instances, recipes or item_sets."},
+		{"id", "", "Row id in that table: items.id, npcs.id, instances.map_id, recipes.spell_id, item_sets.set_id."},
 	}},
 }
