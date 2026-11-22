@@ -127,6 +127,18 @@ var Tables = []Table{
 		{"reagent_item_id", "", "Item id of the reagent."},
 		{"count", "", "Units needed; a reagent in two slots is summed."},
 	}},
+	{"class_spells", tables.ClassSpell{}, wago + "SkillLine, SkillLineAbility, SkillRaceClassInfo, ChrClasses, SpellName, Spell, SpellLevels", "One row per class ability rank on a class skill line (Arms, Fury, Holy ...), once per class, skill line and spell. Filter on class_id and level for what a level unlocks. Talents, professions, pets and racials are not listed.", []Col{
+		{"class_id", "SkillRaceClassInfo, SkillLineAbility", "Class id (ChrClasses.ID) of the skill line; an ability ClassMask, when set, narrows it."},
+		{"spell_id", "SkillLineAbility", "Spell id of the ability rank."},
+		{"name", "SpellName", "Spell name."},
+		{"rank", "Spell NameSubtext", "Rank number when the spell's subtext reads \"Rank N\"; null otherwise."},
+		{"subtext", "Spell NameSubtext", "The spell's subtext (for example \"Rank 2\"); null when empty."},
+		{"level", "SpellLevels", "Level the spell becomes learnable: SpellLevel of the difficulty-0 row, BaseLevel when that is zero. Abilities with neither are not listed."},
+		{"skill_line_id", "SkillLineAbility", "Class skill line id."},
+		{"skill_line_name", "SkillLine", "Class skill line name (a specialisation tree, for example Arms)."},
+		{"superseded_spell_id", "SkillLineAbility SupercedesSpell", "The previous rank this one replaces; null for a first rank. It may name a spell with no row here when that spell has no level."},
+		{"trained", "none", "Always null: the client tables do not say whether a trainer teaches a spell or it is learned automatically."},
+	}},
 	{"instances", tables.Instance{}, wago + "Map, MapDifficulty, ContentTuning", "One row per dungeon or raid map.", []Col{
 		{"map_id", "", "Map id."},
 		{"name", "", "Map name."},

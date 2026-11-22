@@ -59,6 +59,8 @@ type Cached struct {
 	Recipes        []Recipe
 	RecipeReagents []RecipeReagent
 
+	ClassSpells []ClassSpell
+
 	Instances      []Instance
 	InstanceBosses []InstanceBoss
 
@@ -101,6 +103,10 @@ func LoadCache(dir string) (Cached, error) {
 	}
 	c.Recipes = BuildRecipes(rin)
 	c.RecipeReagents = BuildRecipeReagents(c.Recipes, rin)
+	c.ClassSpells = BuildClassSpells(ClassSpellInput{
+		SkillLines: rows["SkillLine"], Abilities: rows["SkillLineAbility"], SkillClasses: rows["SkillRaceClassInfo"],
+		Classes: rows["ChrClasses"], SpellNames: rows["SpellName"], Spells: rows["Spell"], SpellLevels: rows["SpellLevels"],
+	})
 	iin := InstanceInput{
 		Maps: rows["Map"], Encounters: rows["DungeonEncounter"], MapDifficulties: rows["MapDifficulty"],
 		ContentTuning: rows["ContentTuning"],
@@ -200,6 +206,9 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, outDir, created strin
 		return m, err
 	}
 	if err := add(writeTable(outDir, "recipe_reagents.parquet", c.RecipeReagents, Layout(nil, []string{"spell_id", "reagent_item_id"}, src))); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "class_spells.parquet", c.ClassSpells, Layout(nil, []string{"class_id", "level", "spell_id", "skill_line_id"}, src))); err != nil {
 		return m, err
 	}
 	if err := add(writeTable(outDir, "instances.parquet", c.Instances, Layout(nil, []string{"map_id"}, src))); err != nil {
