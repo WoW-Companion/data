@@ -143,6 +143,23 @@ One row per reagent of each recipe. Source: wago.tools client table SpellReagent
 | `reagent_item_id` | `int32` | no | table | Item id of the reagent. |
 | `count` | `int16` | no | table | Units needed; a reagent in two slots is summed. |
 
+## class_spells
+
+One row per class ability rank on a class skill line (Arms, Fury, Holy ...), once per class, skill line and spell. Filter on class_id and level for what a level unlocks. Talents, professions, pets and racials are not listed. Source: wago.tools client table SkillLine, SkillLineAbility, SkillRaceClassInfo, ChrClasses, SpellName, Spell, SpellLevels. File: `class_spells.parquet`.
+
+| Column | Type | Null | Source | Meaning |
+| --- | --- | --- | --- | --- |
+| `class_id` | `int32` | no | SkillRaceClassInfo, SkillLineAbility | Class id (ChrClasses.ID) of the skill line; an ability ClassMask, when set, narrows it. |
+| `spell_id` | `int32` | no | SkillLineAbility | Spell id of the ability rank. |
+| `name` | `string` | no | SpellName | Spell name. |
+| `rank` | `int16` | yes | Spell NameSubtext | Rank number when the spell's subtext reads "Rank N"; null otherwise. |
+| `subtext` | `string` | yes | Spell NameSubtext | The spell's subtext (for example "Rank 2"); null when empty. |
+| `level` | `int16` | no | SpellLevels | Level the spell becomes learnable: SpellLevel of the difficulty-0 row, BaseLevel when that is zero. Abilities with neither are not listed. |
+| `skill_line_id` | `int32` | no | SkillLineAbility | Class skill line id. |
+| `skill_line_name` | `string` | no | SkillLine | Class skill line name (a specialisation tree, for example Arms). |
+| `superseded_spell_id` | `int32` | yes | SkillLineAbility SupercedesSpell | The previous rank this one replaces; null for a first rank. It may name a spell with no row here when that spell has no level. |
+| `trained` | `bool` | yes | none | Always null: the client tables do not say whether a trainer teaches a spell or it is learned automatically. |
+
 ## instances
 
 One row per dungeon or raid map. Source: wago.tools client table Map, MapDifficulty, ContentTuning. File: `instances.parquet`.

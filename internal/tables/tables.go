@@ -100,7 +100,9 @@ var Required = map[string][]string{
 	"SpellName":                {"ID", "Name_lang"},
 
 	"SkillLine":        {"ID", "DisplayName_lang", "CategoryID"},
-	"SkillLineAbility": {"SkillLine", "Spell", "MinSkillLineRank", "TrivialSkillLineRankHigh", "TrivialSkillLineRankLow"},
+	"SkillLineAbility": {"SkillLine", "Spell", "ClassMask", "SupercedesSpell", "MinSkillLineRank", "TrivialSkillLineRankHigh", "TrivialSkillLineRankLow"},
+	"Spell":            {"ID", "NameSubtext_lang"},
+	"SpellLevels":      {"SpellID", "DifficultyID", "BaseLevel", "SpellLevel"},
 	"SpellReagents":    {"SpellID", "Reagent_0", "ReagentCount_0", "Reagent_7", "ReagentCount_7"},
 	"SpellEffect":      {"SpellID", "EffectIndex", "Effect", "EffectItemType"},
 

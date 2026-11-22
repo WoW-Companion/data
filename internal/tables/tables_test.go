@@ -221,7 +221,7 @@ func TestReadTableRequiredColumns(t *testing.T) {
 		{"quest line order missing", "QuestLineXQuest", "ID,QuestID,QuestLineID\n", `QuestLineXQuest: required column "OrderIndex" missing`},
 		{"quest line name missing", "QuestLine", "ID\n", `QuestLine: required column "Name_lang" missing`},
 		{"uimap name missing", "UiMap", "ID,Flags\n", `UiMap: required column "Name_lang" missing`},
-		{"trivial rank missing", "SkillLineAbility", "SkillLine,Spell,MinSkillLineRank,TrivialSkillLineRankHigh\n", `SkillLineAbility: required column "TrivialSkillLineRankLow" missing`},
+		{"trivial rank missing", "SkillLineAbility", "SkillLine,Spell,ClassMask,SupercedesSpell,MinSkillLineRank,TrivialSkillLineRankHigh\n", `SkillLineAbility: required column "TrivialSkillLineRankLow" missing`},
 		{"reagent count missing", "SpellReagents", "SpellID,Reagent_0,ReagentCount_0,Reagent_7\n", `SpellReagents: required column "ReagentCount_7" missing`},
 		{"lock skill missing", "Lock", "ID,_Index_0,_Index_7,Skill_0,Type_0,Type_7\n", `Lock: required column "Skill_7" missing`},
 		{"game object lock prop missing", "GameObjects", "ID,Name_lang,TypeID\n", `GameObjects: required column "PropValue_0" missing`},
@@ -510,5 +510,79 @@ func TestBuildQuestLines(t *testing.T) {
 	}
 	if got[0].Name == nil || *got[0].Name != "Soil" || got[2].Name != nil {
 		t.Errorf("names: %+v", got)
+	}
+}
+
+func classSpellFixture() ClassSpellInput {
+	return ClassSpellInput{
+		Classes: []Row{{"ID": "1"}, {"ID": "2"}},
+		SkillLines: []Row{
+			{"ID": "26", "DisplayName_lang": "Arms", "CategoryID": "7"},
+			{"ID": "56", "DisplayName_lang": "Holy", "CategoryID": "7"},
+			{"ID": "777", "DisplayName_lang": "Mounts", "CategoryID": "7"},
+			{"ID": "208", "DisplayName_lang": "Pet - Wolf", "CategoryID": "7"},
+			{"ID": "171", "DisplayName_lang": "Alchemy", "CategoryID": "11"},
+		},
+		SkillClasses: []Row{
+			{"SkillID": "26", "ClassMask": "1"}, {"SkillID": "56", "ClassMask": "2"},
+			{"SkillID": "777", "ClassMask": "3"}, {"SkillID": "208", "ClassMask": "1"}, {"SkillID": "171", "ClassMask": "0"},
+		},
+		Abilities: []Row{
+			{"SkillLine": "26", "Spell": "100", "ClassMask": "0", "SupercedesSpell": "0"},
+			{"SkillLine": "26", "Spell": "101", "ClassMask": "1", "SupercedesSpell": "100"},
+			{"SkillLine": "26", "Spell": "101", "ClassMask": "1", "SupercedesSpell": "100"},
+			{"SkillLine": "26", "Spell": "102", "ClassMask": "2"},
+			{"SkillLine": "26", "Spell": "103"},
+			{"SkillLine": "56", "Spell": "200"},
+			{"SkillLine": "777", "Spell": "300"},
+			{"SkillLine": "208", "Spell": "301"},
+			{"SkillLine": "171", "Spell": "302"},
+		},
+		SpellNames: []Row{
+			{"ID": "100", "Name_lang": "Strike"}, {"ID": "101", "Name_lang": "Strike"}, {"ID": "102", "Name_lang": "Other"},
+			{"ID": "103", "Name_lang": "Unleveled"}, {"ID": "200", "Name_lang": "Light"}, {"ID": "300", "Name_lang": "Mount"},
+			{"ID": "301", "Name_lang": "Bite"}, {"ID": "302", "Name_lang": "Brew"},
+		},
+		Spells: []Row{{"ID": "100", "NameSubtext_lang": "Rank 1"}, {"ID": "101", "NameSubtext_lang": "Rank 2"}, {"ID": "200", "NameSubtext_lang": "Racial Passive"}},
+		SpellLevels: []Row{
+			{"SpellID": "100", "DifficultyID": "0", "BaseLevel": "0", "SpellLevel": "4"},
+			{"SpellID": "101", "DifficultyID": "0", "BaseLevel": "12", "SpellLevel": "0"},
+			{"SpellID": "102", "DifficultyID": "0", "SpellLevel": "6"},
+			{"SpellID": "103", "DifficultyID": "0", "SpellLevel": "0", "BaseLevel": "0"},
+			{"SpellID": "200", "DifficultyID": "0", "SpellLevel": "20"},
+			{"SpellID": "300", "DifficultyID": "0", "SpellLevel": "5"},
+			{"SpellID": "301", "DifficultyID": "0", "SpellLevel": "5"},
+			{"SpellID": "302", "DifficultyID": "0", "SpellLevel": "5"},
+			{"SpellID": "100", "DifficultyID": "1", "SpellLevel": "2"},
+		},
+	}
+}
+
+func TestBuildClassSpells(t *testing.T) {
+	got := BuildClassSpells(classSpellFixture())
+	type k struct {
+		class, spell int32
+		level        int16
+		line         string
+	}
+	var keys []k
+	for _, r := range got {
+		keys = append(keys, k{r.ClassID, r.SpellID, r.Level, r.SkillLineName})
+	}
+	// Mounts (two classes), pet, profession lines, an ability for another class, one with no
+	// level and the difficulty-1 level row are all out; the duplicate ability is one row.
+	want := []k{{1, 100, 4, "Arms"}, {1, 101, 12, "Arms"}, {2, 200, 20, "Holy"}}
+	if !reflect.DeepEqual(keys, want) {
+		t.Fatalf("rows: %+v", got)
+	}
+	r1, r2 := got[0], got[1]
+	if *r1.Rank != 1 || *r1.Subtext != "Rank 1" || r1.SupersededSpellID != nil || r1.Trained != nil {
+		t.Errorf("rank 1: %+v", r1)
+	}
+	if *r2.Rank != 2 || *r2.SupersededSpellID != 100 {
+		t.Errorf("rank 2 (BaseLevel when SpellLevel is zero, supersedes rank 1): %+v", r2)
+	}
+	if r := got[2]; r.Rank != nil || *r.Subtext != "Racial Passive" {
+		t.Errorf("subtext without a rank number: %+v", r)
 	}
 }

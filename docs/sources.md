@@ -252,3 +252,22 @@ Outcome:
 - `make dataset` prints the share of distinct `loot_sources` creature ids resolved in `npcs` (and with client rows alone) and the share of bosses linked.
 
 Live coverage (2026-11-21 run): creature ids in `loot_sources` resolved in `npcs`: before 0 of 57 (0.0%), after 15 of 57 (26.3%); with a zone 0; bosses linked 0 of 372; `npcs` 189 client rows plus 15 from Everloot.
+
+## Class spells by level (survey)
+
+Surveyed 2026-11-22 against build `1.60.1.71037` (wago.tools; client tables, facts only, no description text read). Source credit: "Blizzard game client data, retrieved via wago.tools", as for every table.
+
+| Source | Rows | Holds |
+| ------ | ---: | ----- |
+| `SkillLine` | 154 | `CategoryID` 7 = class lines (Arms, Fury, Holy ... but also Pet, Mounts, Companions, Runes, Engraving) |
+| `SkillRaceClassInfo` | 186 | `SkillID`, `ClassMask`: which classes a line belongs to. Class lines have one class; Mounts, Companions, Runes and Engraving carry every class |
+| `SkillLineAbility` | 7,853 | `SkillLine`, `Spell`, `ClassMask` (0 = the line's), `SupercedesSpell` (the previous rank), `AcquireMethod` |
+| `SpellLevels` | 13,082 | `SpellID`, `DifficultyID`, `SpellLevel` (the level it is learnable at), `BaseLevel`, `MaxLevel` |
+| `Spell` | 37,687 | `NameSubtext_lang` ("Rank 2"); the description columns are not read |
+| `SpellName`, `ChrClasses` | | spell names; class ids (class id n is bit n-1 of a class mask) |
+
+`class_spells`: one row per (class, skill line, spell) from `SkillLineAbility` rows on a `CategoryID` 7 line whose `SkillRaceClassInfo` masks name exactly one class (this drops Mounts, Companions, Runes, Engraving) and whose name does not start with Pet, Beast Training or Explorer; the ability's own `ClassMask`, when set, narrows the class. Level is `SpellLevels.SpellLevel` of the difficulty-0 row, `BaseLevel` when that is zero (the lowest across rows); an ability with neither, or with no name, is left out. Talents are trait nodes, not skill line abilities, and professions and racials sit on other categories, so none are included.
+
+- `trained` is always null. `SkillLineAbility.AcquireMethod` takes 0, 2 and 3 on class lines but nothing in the client tables or in its documentation says which means "a trainer teaches it", so nothing is derived.
+- First ranks learned at level 1 (for example Heroic Strike rank 1) have no `SpellLevels` row, so they are not listed; `superseded_spell_id` of rank 2 can still name them.
+- Not added to `names`: the index holds one row per named entity, and class spells repeat a name per rank.
