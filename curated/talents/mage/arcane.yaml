@@ -1,0 +1,27 @@
+class: Mage
+spec: "Arcane"
+group_id: 11582
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Arcane Mind and Arcane Concentration give more mana and free casts for longer fights."
+    steps:
+      - {node: 105800, name: Arcane Mind, points: 5}
+      - {node: 105810, name: Arcane Concentration, points: 5}
+  - levels: 20-29
+    rationale: "Arcane Meditation adds mana regeneration while casting; Arcane Instability and Arcane Impact raise damage."
+    steps:
+      - {node: 105803, name: Arcane Meditation, points: 3}
+      - {node: 105799, name: Arcane Instability, points: 3}
+      - {node: 105807, name: Arcane Impact, points: 3}
+      - {node: 105802, name: Arcane Resilience, points: 1}
+  - levels: 30-39
+    rationale: "Presence of Mind unlocks Arcane Power; Arcane Blast and Counterspell upgrades round out the build."
+    steps:
+      - {node: 105802, name: Arcane Resilience, points: 2}
+      - {node: 105804, name: Improved Counterspell, points: 2}
+      - {node: 105801, name: Presence of Mind, points: 1}
+      - {node: 105806, name: Arcane Blast, points: 1}
+      - {node: 105812, name: Arcane Subtlety, points: 2}
+      - {node: 105798, name: Arcane Power, points: 1}
+      - {node: 105811, name: Magic Absorption, points: 1}

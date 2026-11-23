@@ -1,0 +1,23 @@
+class: Mage
+spec: "Fire"
+group_id: 11594
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Incineration and Accelerant raise the damage and critical chance of fire spells."
+    steps:
+      - {node: 105796, name: Incineration, points: 5}
+      - {node: 105795, name: Accelerant, points: 5}
+  - levels: 20-29
+    rationale: "Ignite adds burning damage on crits; Fire Power and Improved Fire Blast fill out direct damage."
+    steps:
+      - {node: 105794, name: Ignite, points: 5}
+      - {node: 105782, name: Fire Power, points: 3}
+      - {node: 105797, name: Improved Fire Blast, points: 2}
+  - levels: 30-39
+    rationale: "Impact and Improved Scorch add stun and stacking damage; Critical Mass leads toward Combustion."
+    steps:
+      - {node: 105792, name: Impact, points: 3}
+      - {node: 105788, name: Improved Scorch, points: 3}
+      - {node: 105790, name: Pyroblast, points: 1}
+      - {node: 105784, name: Critical Mass, points: 3}

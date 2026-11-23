@@ -12,7 +12,9 @@ authoritative. A step is `{node: <talent_nodes.node_id>, name: <node name>, poin
 `group_id` names the spec's talent group (the tables carry no group names). The Priest
 (Discipline, Holy, Shadow Magic), Rogue (Assassination, Combat, Subtlety), Warrior (Arms, Fury,
 Protection), Paladin (Holy, Protection, Retribution) and Hunter (Beast Mastery, Marksmanship,
-Survival) specs are covered.
+Survival), Druid (Balance, Feral Combat, Restoration), Mage (Arcane, Fire, Frost), Shaman
+(Elemental, Enhancement, Restoration) and Warlock (Affliction, Demonology, Destruction) specs are
+covered, which is every class in `talent_trees`.
 
 `make dataset` validates every file against `talent_trees` and `talent_nodes` and fails on any
 problem, then publishes the `talent_builds` table (source "curated (advisor defaults)").

@@ -1,0 +1,24 @@
+class: Warlock
+spec: "Demonology"
+group_id: 11636
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Unholy Power and Demonic Embrace make your demon hit harder and raise your stamina."
+    steps:
+      - {node: 105906, name: Unholy Power, points: 5}
+      - {node: 105907, name: Demonic Embrace, points: 5}
+  - levels: 20-29
+    rationale: "Improved Imp, Fel Vitality and Improved Voidwalker toughen and speed up your pets."
+    steps:
+      - {node: 105908, name: Improved Imp, points: 3}
+      - {node: 105903, name: Fel Vitality, points: 3}
+      - {node: 105904, name: Improved Voidwalker, points: 3}
+      - {node: 105905, name: Improved Health Funnel, points: 1}
+  - levels: 30-39
+    rationale: "Master Demonologist gives a bonus tied to the active demon; Demonic Aegis and Demonic Knowledge add armor and spell power."
+    steps:
+      - {node: 105905, name: Improved Health Funnel, points: 1}
+      - {node: 105891, name: Master Demonologist, points: 5}
+      - {node: 105902, name: Demonic Aegis, points: 2}
+      - {node: 105893, name: Demonic Knowledge, points: 2}

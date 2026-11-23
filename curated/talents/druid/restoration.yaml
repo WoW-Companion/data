@@ -1,0 +1,23 @@
+class: Druid
+spec: "Restoration"
+group_id: 11340
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Naturalist and Nature's Focus speed up healing casts and protect them from pushback while grouping."
+    steps:
+      - {node: 104922, name: Naturalist, points: 5}
+      - {node: 104957, name: "Nature's Focus", points: 5}
+  - levels: 20-29
+    rationale: "Improved Rejuvenation unlocks Improved Regrowth; Subtlety starts lowering threat from heals."
+    steps:
+      - {node: 104914, name: Improved Rejuvenation, points: 3}
+      - {node: 104913, name: Improved Regrowth, points: 5}
+      - {node: 104917, name: Subtlety, points: 2}
+  - levels: 30-39
+    rationale: "Gift of Nature raises all healing, Swiftmend gives an instant heal, and Tranquil Spirit saves mana."
+    steps:
+      - {node: 104917, name: Subtlety, points: 1}
+      - {node: 104916, name: Gift of Nature, points: 5}
+      - {node: 104912, name: Swiftmend, points: 1}
+      - {node: 104915, name: Tranquil Spirit, points: 3}

@@ -1,0 +1,22 @@
+class: Warlock
+spec: "Destruction"
+group_id: 11637
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Improved Shadow Bolt and Bane raise Shadow Bolt damage and shorten the cast of your main nukes."
+    steps:
+      - {node: 105889, name: Improved Shadow Bolt, points: 5}
+      - {node: 105888, name: Bane, points: 5}
+  - levels: 20-29
+    rationale: "Ruin boosts spell crit damage and Aftermath adds a chance to slow with fire damage."
+    steps:
+      - {node: 105883, name: Ruin, points: 5}
+      - {node: 105886, name: Aftermath, points: 5}
+  - levels: 30-39
+    rationale: "Intensity guards casts, Destructive Reach extends range and Agonizing Flames and Cataclysm cut mana use."
+    steps:
+      - {node: 105882, name: Intensity, points: 3}
+      - {node: 105881, name: Destructive Reach, points: 2}
+      - {node: 105879, name: Agonizing Flames, points: 3}
+      - {node: 105887, name: Cataclysm, points: 2}
