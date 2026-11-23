@@ -128,7 +128,7 @@ func TestBuildTalentBuildsRows(t *testing.T) {
 // The committed files parse, and each carries its own header: no network needed.
 func TestCuratedTalentBuildsParse(t *testing.T) {
 	builds, err := LoadTalentBuilds(filepath.Join("..", "..", "curated", "talents"))
-	if err != nil || len(builds) != 6 {
+	if err != nil || len(builds) != 15 {
 		t.Fatalf("%d builds, err %v", len(builds), err)
 	}
 	for _, b := range builds {
