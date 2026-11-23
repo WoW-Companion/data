@@ -1,0 +1,27 @@
+class: Paladin
+spec: "Retribution"
+group_id: 11559
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Two-Handed Weapon Specialization and Conviction raise melee damage and crits, with Improved Judgement and the first Sanctified Judgement points."
+    steps:
+      - {node: 105697, name: Two-Handed Weapon Specialization, points: 3}
+      - {node: 105703, name: Conviction, points: 3}
+      - {node: 105705, name: Improved Judgement, points: 2}
+      - {node: 105701, name: Sanctified Judgement, points: 2}
+  - levels: 20-29
+    rationale: "Sanctified Judgement, Vindication and Pursuit of Justice add mana, debuffing and movement; Benediction begins."
+    steps:
+      - {node: 105701, name: Sanctified Judgement, points: 1}
+      - {node: 105702, name: Vindication, points: 3}
+      - {node: 105699, name: Pursuit of Justice, points: 2}
+      - {node: 105706, name: Benediction, points: 4}
+  - levels: 30-39
+    rationale: "Seal of Command at rank one opens Vengeance, with Benediction, Eye for an Eye and Champion of the Light completing the band."
+    steps:
+      - {node: 105706, name: Benediction, points: 1}
+      - {node: 105696, name: Seal of Command, points: 1}
+      - {node: 105693, name: Vengeance, points: 3}
+      - {node: 105698, name: Eye for an Eye, points: 2}
+      - {node: 110882, name: Champion of the Light, points: 3}

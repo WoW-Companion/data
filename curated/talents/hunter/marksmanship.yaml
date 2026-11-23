@@ -1,0 +1,20 @@
+class: Hunter
+spec: "Marksmanship"
+group_id: 11371
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Ranged Weapon Specialization and Efficiency raise ranged damage and stretch mana."
+    steps:
+      - {node: 104998, name: Ranged Weapon Specialization, points: 5}
+      - {node: 105009, name: Efficiency, points: 5}
+  - levels: 20-29
+    rationale: "Lethal Attacks and Improved Arcane Shot increase crit damage and shot damage."
+    steps:
+      - {node: 105011, name: Lethal Attacks, points: 5}
+      - {node: 105006, name: Improved Arcane Shot, points: 5}
+  - levels: 30-39
+    rationale: "Careful Aim and Improved Serpent Sting add ranged damage and damage over time."
+    steps:
+      - {node: 105008, name: Careful Aim, points: 5}
+      - {node: 105003, name: Improved Serpent Sting, points: 5}
