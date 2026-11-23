@@ -1,0 +1,27 @@
+class: Hunter
+spec: "Survival"
+group_id: 11370
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Survivalist and Lightning Reflexes raise health and agility for a sturdier leveling hunter."
+    steps:
+      - {node: 104992, name: Survivalist, points: 5}
+      - {node: 104982, name: Lightning Reflexes, points: 5}
+  - levels: 20-29
+    rationale: "Savage Strikes, Survival Tactics, Clever Traps and Resourcefulness improve melee and trap utility; Deterrence prepares Counterattack."
+    steps:
+      - {node: 104993, name: Savage Strikes, points: 2}
+      - {node: 104988, name: Survival Tactics, points: 2}
+      - {node: 104991, name: Clever Traps, points: 2}
+      - {node: 104983, name: Resourcefulness, points: 2}
+      - {node: 104986, name: Deterrence, points: 1}
+      - {node: 104987, name: Surefooted, points: 1}
+  - levels: 30-39
+    rationale: "Expose Prey opens Lacerating Strikes, with Counterattack, Surefooted and Predator's Edge finishing the band."
+    steps:
+      - {node: 104987, name: Surefooted, points: 2}
+      - {node: 104985, name: Expose Prey, points: 2}
+      - {node: 104984, name: Lacerating Strikes, points: 1}
+      - {node: 104989, name: Counterattack, points: 1}
+      - {node: 110861, name: "Predator's Edge", points: 4}

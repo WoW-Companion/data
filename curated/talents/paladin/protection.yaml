@@ -1,0 +1,24 @@
+class: Paladin
+spec: "Protection"
+group_id: 11541
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Redoubt and Toughness raise block and armor for early survivability."
+    steps:
+      - {node: 105626, name: Redoubt, points: 5}
+      - {node: 105630, name: Toughness, points: 5}
+  - levels: 20-29
+    rationale: "Shield Specialization needs Redoubt at max rank; Precision and Anticipation add hit and avoidance."
+    steps:
+      - {node: 110874, name: Shield Specialization, points: 2}
+      - {node: 105638, name: Precision, points: 3}
+      - {node: 105636, name: Anticipation, points: 5}
+  - levels: 30-39
+    rationale: "Improved Righteous Fury and Stoicism add threat and resilience, with Templar's Bulwark, Guardian's Favor and Sacred Duty to finish."
+    steps:
+      - {node: 105634, name: Improved Righteous Fury, points: 3}
+      - {node: 105639, name: Stoicism, points: 2}
+      - {node: 105625, name: "Templar's Bulwark", points: 1}
+      - {node: 105637, name: "Guardian's Favor", points: 2}
+      - {node: 105632, name: Sacred Duty, points: 2}

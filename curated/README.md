@@ -10,7 +10,9 @@ bands (10-19, 20-29, 30-39), each with the points gained in that band in the ord
 them, and a short rationale written for this project. Every build is an advisor default, not
 authoritative. A step is `{node: <talent_nodes.node_id>, name: <node name>, points: <n>}`;
 `group_id` names the spec's talent group (the tables carry no group names). The Priest
-(Discipline, Holy, Shadow Magic) and Rogue (Assassination, Combat, Subtlety) specs are covered.
+(Discipline, Holy, Shadow Magic), Rogue (Assassination, Combat, Subtlety), Warrior (Arms, Fury,
+Protection), Paladin (Holy, Protection, Retribution) and Hunter (Beast Mastery, Marksmanship,
+Survival) specs are covered.
 
 `make dataset` validates every file against `talent_trees` and `talent_nodes` and fails on any
 problem, then publishes the `talent_builds` table (source "curated (advisor defaults)").

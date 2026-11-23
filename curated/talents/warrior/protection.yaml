@@ -1,0 +1,23 @@
+class: Warrior
+spec: "Protection"
+group_id: 11670
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Defiance raises threat, Improved Bloodrage helps rage, and Shield Specialization at full rank opens Master of Defense."
+    steps:
+      - {node: 110856, name: Defiance, points: 3}
+      - {node: 105974, name: Improved Bloodrage, points: 2}
+      - {node: 105976, name: Shield Specialization, points: 5}
+  - levels: 20-29
+    rationale: "Anticipation and Master of Defense cut damage taken, with Focused Rage lowering ability costs."
+    steps:
+      - {node: 105975, name: Anticipation, points: 5}
+      - {node: 105971, name: Master of Defense, points: 2}
+      - {node: 105961, name: Focused Rage, points: 3}
+  - levels: 30-39
+    rationale: "Bastion, Improved Revenge and Improved Shield Wall add block value, threat and a stronger defensive cooldown."
+    steps:
+      - {node: 105962, name: Bastion, points: 5}
+      - {node: 105969, name: Improved Revenge, points: 3}
+      - {node: 105964, name: Improved Shield Wall, points: 2}

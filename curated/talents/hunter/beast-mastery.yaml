@@ -1,0 +1,25 @@
+class: Hunter
+spec: "Beast Mastery"
+group_id: 11372
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Ferocity and Unleashed Fury make the pet hit harder, which is most of a hunter's damage early on."
+    steps:
+      - {node: 104967, name: Ferocity, points: 5}
+      - {node: 104969, name: Unleashed Fury, points: 5}
+  - levels: 20-29
+    rationale: "Endurance Training, Improved Mend Pet, Spirit Bond and Focused Fire keep the pet alive and the hunter topped up."
+    steps:
+      - {node: 104976, name: Endurance Training, points: 5}
+      - {node: 104968, name: Improved Mend Pet, points: 2}
+      - {node: 104965, name: Spirit Bond, points: 2}
+      - {node: 104975, name: Focused Fire, points: 1}
+  - levels: 30-39
+    rationale: "Frenzy needs Ferocity at max rank; Bestial Swiftness, Pathfinding and Bestial Discipline round out pet speed and focus."
+    steps:
+      - {node: 104962, name: Frenzy, points: 5}
+      - {node: 104970, name: Bestial Swiftness, points: 1}
+      - {node: 104973, name: Pathfinding, points: 2}
+      - {node: 104975, name: Focused Fire, points: 1}
+      - {node: 104963, name: Bestial Discipline, points: 1}

@@ -1,0 +1,28 @@
+class: Warrior
+spec: "Arms"
+group_id: 11650
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Improved Heroic Strike, Two-Handed Weapon Specialization and Improved Charge give cheap damage and rage on a two-hander, with the first Improved Rend points."
+    steps:
+      - {node: 105958, name: Improved Heroic Strike, points: 3}
+      - {node: 105948, name: Two-Handed Weapon Specialization, points: 3}
+      - {node: 105955, name: Improved Charge, points: 2}
+      - {node: 105956, name: Improved Rend, points: 2}
+  - levels: 20-29
+    rationale: "Improved Rend at full rank opens Deep Wounds, and Improved Tactical Mastery and Improved Overpower keep rage between fights."
+    steps:
+      - {node: 105956, name: Improved Rend, points: 1}
+      - {node: 105950, name: Deep Wounds, points: 3}
+      - {node: 105954, name: Improved Tactical Mastery, points: 3}
+      - {node: 105952, name: Improved Overpower, points: 2}
+      - {node: 105947, name: Impale, points: 1}
+  - levels: 30-39
+    rationale: "Impale and Anger Management finish the chain, Sweeping Strikes adds multi-target damage, and Weaponmaster and Improved Slam raise two-hand damage."
+    steps:
+      - {node: 105947, name: Impale, points: 1}
+      - {node: 105951, name: Anger Management, points: 1}
+      - {node: 105945, name: Sweeping Strikes, points: 1}
+      - {node: 110858, name: Improved Slam, points: 2}
+      - {node: 105944, name: Weaponmaster, points: 5}

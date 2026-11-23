@@ -1,0 +1,24 @@
+class: Paladin
+spec: "Holy"
+group_id: 11486
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Healing Light, Spiritual Focus and Divine Precision make heals stronger and harder to interrupt while mana is tight."
+    steps:
+      - {node: 105333, name: Healing Light, points: 3}
+      - {node: 105335, name: Spiritual Focus, points: 5}
+      - {node: 105324, name: Divine Precision, points: 2}
+  - levels: 20-29
+    rationale: "Improved Seals and Holy Power strengthen seals and healing output through the middle levels."
+    steps:
+      - {node: 105334, name: Improved Seals, points: 5}
+      - {node: 105321, name: Holy Power, points: 5}
+  - levels: 30-39
+    rationale: "Reverence at full rank opens Illumination, then Holy Shock, Divine Favor and Purifying Power round out the healing kit."
+    steps:
+      - {node: 110871, name: Reverence, points: 2}
+      - {node: 105329, name: Illumination, points: 5}
+      - {node: 105323, name: Holy Shock, points: 1}
+      - {node: 105325, name: Divine Favor, points: 1}
+      - {node: 105327, name: Purifying Power, points: 1}
