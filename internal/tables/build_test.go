@@ -27,7 +27,7 @@ func TestBuildDatasetSmoke(t *testing.T) {
 	ev := filepath.Join(dir, "drops.json")
 	os.WriteFile(ev, []byte(`{"retrieved":"2026-11-20T00:00:00Z","dataAsOf":"2026-11-19","rates":[{"itemId":1,"sourceNpcId":5,"kills":4,"drops":1,"rate":0.25,"reporters":3,"public":true}]}`), 0o644)
 	out := filepath.Join(dir, "out")
-	m, err := BuildDataset(cache, ev, filepath.Join(dir, "no-builds"), out, "2026-11-20T00:00:00Z")
+	m, err := BuildDataset(cache, ev, filepath.Join(dir, "no-builds"), out, "2026-11-20T00:00:00Z", "")
 	if err != nil {
 		t.Fatal(err)
 	}

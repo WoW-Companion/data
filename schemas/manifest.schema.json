@@ -8,6 +8,7 @@
     "dataset_version": { "type": "string", "minLength": 1 },
     "game_build": { "type": "string", "minLength": 1 },
     "created": { "type": "string", "format": "date-time" },
+    "revision": { "type": "string", "pattern": "^[0-9a-f]{12}$" },
     "tables": {
       "type": "array",
       "items": {

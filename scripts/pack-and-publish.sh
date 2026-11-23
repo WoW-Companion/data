@@ -5,6 +5,8 @@
 #   DRYRUN=1   do everything except `gh release create`
 #   PREV_TAG   the previous dataset release's tag; when the variable is set, even to
 #              empty (the first release), the lookup through `gh` is skipped
+#   REPUBLISH  "true" when dataset-$BUILD already exists: its assets are replaced (new
+#              ones uploaded under temporary names, then swapped in) and its notes rewritten
 #   OUT        where the release files are written (default: the current directory)
 set -euo pipefail
 
@@ -49,6 +51,29 @@ if [ "${DRYRUN:-}" = 1 ]; then
   step "dry run: not publishing dataset-$BUILD"
   exit 0
 fi
-step "publish dataset-$BUILD"
-gh release create "dataset-$BUILD" "$OUT/wowc-dataset-$BUILD.tar.zst" "$OUT/manifest-$BUILD.json" "$OUT/coverage-$BUILD.md" "$OUT/stats-$BUILD.json" \
-  --title "Dataset $BUILD" --notes-file "$OUT/notes.md" --target "${GITHUB_SHA:-main}"
+ASSETS=(wowc-dataset-"$BUILD".tar.zst manifest-"$BUILD".json coverage-"$BUILD".md stats-"$BUILD".json)
+TAG=dataset-$BUILD
+if [ "${REPUBLISH:-}" != true ]; then
+  step "publish $TAG"
+  gh release create "$TAG" "${ASSETS[@]/#/$OUT/}" \
+    --title "Dataset $BUILD" --notes-file "$OUT/notes.md" --target "${GITHUB_SHA:-main}"
+  exit 0
+fi
+
+step "republish $TAG (same build, new revision)"
+# Upload the new assets under temporary names first; only when all are up, swap each
+# pair member by renaming, so the release never lacks a manifest or an archive.
+: "${GITHUB_REPOSITORY:?GITHUB_REPOSITORY is required}"
+gh_assets() { gh api --paginate "repos/$GITHUB_REPOSITORY/releases/tags/$TAG" --jq ".assets[] | select(.name == \"$1\") | .id"; }
+rename_asset() { gh api -X PATCH "repos/$GITHUB_REPOSITORY/releases/assets/$1" -f name="$2" >/dev/null; }
+STAGE=$OUT/stage && rm -rf "$STAGE" && mkdir "$STAGE"
+for a in "${ASSETS[@]}"; do cp "$OUT/$a" "$STAGE/new-$a"; done
+gh release upload "$TAG" "$STAGE"/new-* --clobber
+for a in "${ASSETS[@]}"; do
+  new=$(gh_assets "new-$a"); old=$(gh_assets "$a")
+  [ -n "$new" ] || { echo "temporary asset new-$a is missing; the release is unchanged" >&2; exit 1; }
+  if [ -n "$old" ]; then rename_asset "$old" "old-$a"; fi
+  rename_asset "$new" "$a"
+  if [ -n "$old" ]; then gh api -X DELETE "repos/$GITHUB_REPOSITORY/releases/assets/$old" >/dev/null; fi
+done
+gh release edit "$TAG" --notes-file "$OUT/notes.md"

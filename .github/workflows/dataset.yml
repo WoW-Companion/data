@@ -4,6 +4,13 @@ on:
   schedule:
     - cron: "17 6 * * *"
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "curated/**"
+      - "internal/**"
+      - "cmd/**"
+      - "schemas/**"
 
 permissions:
   contents: write
@@ -28,16 +35,17 @@ jobs:
         id: check
         run: go run ./cmd/wowc-data release-check
       - name: Fetch client tables and Everloot rates
-        if: steps.check.outputs.exists == 'false'
+        if: steps.check.outputs.publish == 'true'
         run: go run ./cmd/wowc-data fetch -build "${{ steps.check.outputs.build }}"
       - name: Build the dataset
-        if: steps.check.outputs.exists == 'false'
+        if: steps.check.outputs.publish == 'true'
         run: go run ./cmd/wowc-data build -build "${{ steps.check.outputs.build }}"
       - name: Verify the manifest
-        if: steps.check.outputs.exists == 'false'
+        if: steps.check.outputs.publish == 'true'
         run: go run ./cmd/wowc-data verify-manifest "dist/${{ steps.check.outputs.build }}"
       - name: Pack and publish
-        if: steps.check.outputs.exists == 'false'
+        if: steps.check.outputs.publish == 'true'
         env:
           BUILD: ${{ steps.check.outputs.build }}
+          REPUBLISH: ${{ steps.check.outputs.exists }}
         run: scripts/pack-and-publish.sh
