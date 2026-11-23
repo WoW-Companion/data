@@ -1,0 +1,24 @@
+class: Shaman
+spec: "Elemental"
+group_id: 11326
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Convection and Concussion cut shock mana cost and raise shock damage for quick pulls."
+    steps:
+      - {node: 104773, name: Convection, points: 5}
+      - {node: 104772, name: Concussion, points: 5}
+  - levels: 20-29
+    rationale: "Call of Thunder then Lightning Mastery; Elemental Alacrity feeds Lightning Overload."
+    steps:
+      - {node: 104760, name: Call of Thunder, points: 1}
+      - {node: 104758, name: Lightning Mastery, points: 1}
+      - {node: 104771, name: Elemental Alacrity, points: 3}
+      - {node: 104759, name: Lightning Overload, points: 3}
+      - {node: 104765, name: Elemental Warding, points: 2}
+  - levels: 30-39
+    rationale: "Elemental Fury adds spell crit damage and Reverberation speeds up shocks."
+    steps:
+      - {node: 104765, name: Elemental Warding, points: 1}
+      - {node: 104766, name: Elemental Fury, points: 5}
+      - {node: 104767, name: Reverberation, points: 4}

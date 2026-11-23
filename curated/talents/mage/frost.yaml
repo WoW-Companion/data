@@ -1,0 +1,25 @@
+class: Mage
+spec: "Frost"
+group_id: 11601
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Improved Frostbolt and Ice Shards make Frostbolt cast faster and crit harder."
+    steps:
+      - {node: 105779, name: Improved Frostbolt, points: 5}
+      - {node: 105777, name: Ice Shards, points: 5}
+  - levels: 20-29
+    rationale: "Frostbite, Precision and Permafrost add control and accuracy while kiting."
+    steps:
+      - {node: 105774, name: Frostbite, points: 3}
+      - {node: 105778, name: Precision, points: 3}
+      - {node: 105776, name: Permafrost, points: 3}
+      - {node: 105780, name: Frost Warding, points: 1}
+  - levels: 30-39
+    rationale: "Shatter rewards frozen targets, Ice Block is a safety button, and Winter's Chill adds damage."
+    steps:
+      - {node: 105780, name: Frost Warding, points: 1}
+      - {node: 105768, name: Shatter, points: 3}
+      - {node: 105769, name: Ice Block, points: 1}
+      - {node: 105775, name: Improved Frost Nova, points: 2}
+      - {node: 105763, name: "Winter's Chill", points: 3}

@@ -1,0 +1,25 @@
+class: Druid
+spec: "Feral Combat"
+group_id: 11347
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Ferocity and Furor make shapeshifting cheaper and keep energy and rage flowing."
+    steps:
+      - {node: 104938, name: Ferocity, points: 5}
+      - {node: 104939, name: Furor, points: 5}
+  - levels: 20-29
+    rationale: "A sturdier form: Feral Instinct, Thick Hide and Feral Swiftness, plus Feral Charge and Brutal Impact for control."
+    steps:
+      - {node: 104940, name: Feral Instinct, points: 3}
+      - {node: 104942, name: Thick Hide, points: 3}
+      - {node: 104943, name: Feral Swiftness, points: 2}
+      - {node: 104944, name: Feral Charge, points: 1}
+      - {node: 104941, name: Brutal Impact, points: 1}
+  - levels: 30-39
+    rationale: "Shredding Attacks and Sharpened Claws lift damage; Blood Frenzy and Predatory Strikes add bleed and attack power."
+    steps:
+      - {node: 104945, name: Shredding Attacks, points: 3}
+      - {node: 104946, name: Sharpened Claws, points: 2}
+      - {node: 104947, name: Blood Frenzy, points: 2}
+      - {node: 104952, name: Predatory Strikes, points: 3}

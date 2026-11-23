@@ -1,0 +1,23 @@
+class: Warlock
+spec: "Affliction"
+group_id: 11629
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Improved Corruption and Suppression speed up Corruption and make afflictions land more reliably."
+    steps:
+      - {node: 105924, name: Improved Corruption, points: 5}
+      - {node: 105925, name: Suppression, points: 5}
+  - levels: 20-29
+    rationale: "Shadow Mastery raises shadow damage; Soul Siphon and Improved Life Tap support mana and damage-over-time."
+    steps:
+      - {node: 105910, name: Shadow Mastery, points: 5}
+      - {node: 105911, name: Soul Siphon, points: 3}
+      - {node: 105921, name: Improved Life Tap, points: 2}
+  - levels: 30-39
+    rationale: "Fel Concentration and Improved Drains protect and strengthen channeled spells; Nightfall adds free casts."
+    steps:
+      - {node: 105918, name: Fel Concentration, points: 3}
+      - {node: 105920, name: Improved Drains, points: 3}
+      - {node: 105923, name: Grim Reach, points: 2}
+      - {node: 105914, name: Nightfall, points: 2}

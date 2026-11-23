@@ -1,0 +1,23 @@
+class: Shaman
+spec: "Restoration"
+group_id: 11362
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Tidal Focus and Improved Healing Wave lower the cost and raise the output of the main heal."
+    steps:
+      - {node: 104729, name: Tidal Focus, points: 5}
+      - {node: 104739, name: Improved Healing Wave, points: 5}
+  - levels: 20-29
+    rationale: "Healing Way and Purification strengthen heals; Ancestral Healing begins to add armor on a heal."
+    steps:
+      - {node: 104727, name: Healing Way, points: 3}
+      - {node: 104725, name: Purification, points: 5}
+      - {node: 104731, name: Ancestral Healing, points: 2}
+  - levels: 30-39
+    rationale: "Tidal Mastery adds crit, Nature's Swiftness gives an emergency heal and Restorative Totems boost totem healing."
+    steps:
+      - {node: 104731, name: Ancestral Healing, points: 1}
+      - {node: 104738, name: Tidal Mastery, points: 5}
+      - {node: 104726, name: "Nature's Swiftness", points: 1}
+      - {node: 104730, name: Restorative Totems, points: 3}

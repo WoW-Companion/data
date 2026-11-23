@@ -1,0 +1,24 @@
+class: Druid
+spec: "Balance"
+group_id: 11328
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Improved Wrath and Genesis are the cheap early damage boosts for Wrath and damage-over-time spells."
+    steps:
+      - {node: 104923, name: Improved Wrath, points: 5}
+      - {node: 104924, name: Genesis, points: 5}
+  - levels: 20-29
+    rationale: "Moonglow and Improved Moonfire ease mana use and strengthen Moonfire; Insect Swarm adds a ranged damage-over-time spell."
+    steps:
+      - {node: 104925, name: Moonglow, points: 3}
+      - {node: 104931, name: Improved Moonfire, points: 2}
+      - {node: 104930, name: Insect Swarm, points: 1}
+      - {node: 104933, name: Improved Starfire, points: 4}
+  - levels: 30-39
+    rationale: "Finish Improved Starfire, then Vengeance for spell crits and Nature's Grace for faster casts."
+    steps:
+      - {node: 104933, name: Improved Starfire, points: 1}
+      - {node: 104932, name: Vengeance, points: 5}
+      - {node: 104934, name: "Nature's Grace", points: 1}
+      - {node: 104926, name: Improved Entangling Roots, points: 3}

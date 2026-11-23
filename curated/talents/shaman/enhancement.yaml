@@ -1,0 +1,23 @@
+class: Shaman
+spec: "Enhancement"
+group_id: 11363
+status: "advisor default, not authoritative; points are added band by band, so each band lists only the points gained in its levels"
+bands:
+  - levels: 10-19
+    rationale: "Thundering Strikes and Ancestral Knowledge improve melee crits and the mana pool for a hybrid leveling start."
+    steps:
+      - {node: 104753, name: Thundering Strikes, points: 5}
+      - {node: 104756, name: Ancestral Knowledge, points: 5}
+  - levels: 20-29
+    rationale: "Mental Dexterity opens Flurry for faster swings; Anticipation helps dodging."
+    steps:
+      - {node: 104755, name: Mental Dexterity, points: 3}
+      - {node: 104747, name: Flurry, points: 5}
+      - {node: 104748, name: Anticipation, points: 2}
+  - levels: 30-39
+    rationale: "Toughness adds armor and health, with Improved Ghost Wolf and Earth's Grasp for movement and totem durability."
+    steps:
+      - {node: 104748, name: Anticipation, points: 1}
+      - {node: 104746, name: Toughness, points: 5}
+      - {node: 104752, name: Improved Ghost Wolf, points: 2}
+      - {node: 104757, name: "Earth's Grasp", points: 2}
