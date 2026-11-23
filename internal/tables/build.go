@@ -151,7 +151,7 @@ func CuratedSource(build, created string) manifest.Source {
 // BuildDataset writes items, quests, npcs and loot_sources Parquet files and
 // manifest.json into outDir. everlootFile is the cached Everloot snapshot; talentsDir holds
 // the curated talent builds, which are validated against the cached talent tables.
-func BuildDataset(cacheBuildDir, everlootFile, talentsDir, outDir, created string) (manifest.Manifest, error) {
+func BuildDataset(cacheBuildDir, everlootFile, talentsDir, outDir, created, revision string) (manifest.Manifest, error) {
 	c, err := LoadCache(cacheBuildDir)
 	if err != nil {
 		return manifest.Manifest{}, err
@@ -176,7 +176,7 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, outDir, created strin
 	}
 	src := SourceFrom(c.Prov)
 	byID := Layout(nil, []string{"id"}, src) // no Bloom filters: see docs/spikes/parquet-layout.md
-	m := manifest.Manifest{DatasetVersion: c.Prov.Build, GameBuild: c.Prov.Build, Created: created}
+	m := manifest.Manifest{DatasetVersion: c.Prov.Build, GameBuild: c.Prov.Build, Created: created, Revision: revision}
 	add := func(t manifest.Table, err error) error {
 		m.Tables = append(m.Tables, t)
 		return err

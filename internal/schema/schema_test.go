@@ -79,7 +79,7 @@ func TestCoverageOnFixtureDataset(t *testing.T) {
 	ev := filepath.Join(dir, "drops.json")
 	os.WriteFile(ev, []byte(`{"retrieved":"2026-11-20T00:00:00Z","dataAsOf":"2026-11-19","rates":[]}`), 0o644)
 	out := filepath.Join(dir, "out")
-	m, err := tables.BuildDataset(cache, ev, filepath.Join(dir, "none"), out, "2026-11-20T00:00:00Z")
+	m, err := tables.BuildDataset(cache, ev, filepath.Join(dir, "none"), out, "2026-11-20T00:00:00Z", "")
 	if err != nil {
 		t.Fatal(err)
 	}

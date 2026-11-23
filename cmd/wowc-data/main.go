@@ -30,7 +30,7 @@ commands:
   diff             print what changed between two dataset directories, as Markdown
   bench            measure each table of a built dataset: size, layout, lookup time and bytes read
   release-notes    print the release notes of a built dataset, with what changed since the previous release
-  release-check    print the latest Forever build and whether its dataset release exists
+  release-check    print the latest Forever build, whether its dataset release exists and whether its revision is current
 `
 
 func main() {
@@ -94,7 +94,11 @@ func runBuild(args []string) error {
 	talents := fs.String("talents", "curated/talents", "directory of curated talent builds")
 	fs.Parse(args)
 	dir := filepath.Join(*out, *build)
-	m, err := tables.BuildDataset(filepath.Join(*cache, *build), filepath.Join(*cache, "everloot", everloot.CacheFile), *talents, dir, time.Now().UTC().Format("2006-01-02T15:04:05Z"))
+	rev, err := release.Revision(".")
+	if err != nil {
+		return err
+	}
+	m, err := tables.BuildDataset(filepath.Join(*cache, *build), filepath.Join(*cache, "everloot", everloot.CacheFile), *talents, dir, time.Now().UTC().Format("2006-01-02T15:04:05Z"), rev)
 	if err != nil {
 		return err
 	}
@@ -215,7 +219,18 @@ func runReleaseCheck(args []string) error {
 	if err != nil {
 		return err
 	}
-	out := fmt.Sprintf("build=%s\nexists=%t\n", build, exists)
+	rev, err := release.Revision(".")
+	if err != nil {
+		return err
+	}
+	published := ""
+	if exists {
+		if published, err = release.PublishedRevision(*api, *repo, release.Tag(build), build, os.Getenv("GITHUB_TOKEN")); err != nil {
+			return err
+		}
+	}
+	out := fmt.Sprintf("build=%s\nexists=%t\nrevision=%s\npublished=%s\nrevision_differs=%t\npublish=%t\n",
+		build, exists, rev, published, exists && published != rev, release.NeedsPublish(exists, published, rev))
 	fmt.Print(out)
 	if p := os.Getenv("GITHUB_OUTPUT"); p != "" {
 		f, err := os.OpenFile(p, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0o644)
@@ -253,6 +268,6 @@ func runReleaseNotes(args []string) error {
 		}
 		changes = diff.Markdown(old, cur)
 	}
-	fmt.Print(release.Notes(cur.Manifest.GameBuild, *prevTag, changes))
+	fmt.Print(release.NotesAt(cur.Manifest.GameBuild, *prevTag, changes, cur.Manifest.Revision, cur.Manifest.Created[:min(10, len(cur.Manifest.Created))]))
 	return nil
 }

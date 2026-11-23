@@ -38,7 +38,8 @@ type Table struct {
 type Manifest struct {
 	DatasetVersion string  `json:"dataset_version"`
 	GameBuild      string  `json:"game_build"`
-	Created        string  `json:"created"` // RFC 3339 timestamp
+	Created        string  `json:"created"`            // RFC 3339 timestamp
+	Revision       string  `json:"revision,omitempty"` // hash of the inputs we control (release.Revision)
 	Tables         []Table `json:"tables"`
 }
 
