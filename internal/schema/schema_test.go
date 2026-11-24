@@ -81,7 +81,9 @@ func TestCoverageOnFixtureDataset(t *testing.T) {
 	out := filepath.Join(dir, "out")
 	inst := filepath.Join(dir, "instances.yaml")
 	os.WriteFile(inst, []byte("status: \"advisor default, not authoritative\"\ninstances:\n"), 0o644)
-	m, err := tables.BuildDataset(cache, ev, filepath.Join(dir, "none"), inst, out, "2026-11-20T00:00:00Z", "")
+	prof := filepath.Join(dir, "professions.yaml")
+	os.WriteFile(prof, []byte("status: \"advisor default, not authoritative\"\n"), 0o644)
+	m, err := tables.BuildDataset(cache, ev, filepath.Join(dir, "none"), inst, prof, out, "2026-11-20T00:00:00Z", "")
 	if err != nil {
 		t.Fatal(err)
 	}

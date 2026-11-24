@@ -1,0 +1,44 @@
+# Profession notes in our own words from conventional knowledge, not from any guide's text.
+# Advisor default: not authoritative; check against the game when a number matters.
+# Profession names are the client's skill line names (the build checks them).
+status: "advisor default, not authoritative; conventional knowledge in our own words"
+professions:
+  - {name: Alchemy, kind: primary, text: "Brews potions, elixirs and flasks from herbs; the main consumer of Herbalism."}
+  - {name: Blacksmithing, kind: primary, text: "Forges metal armor and weapons from bars; the main consumer of Mining."}
+  - {name: Enchanting, kind: primary, text: "Adds effects to gear and makes rods and oils; materials come from disenchanting, not from gathering."}
+  - {name: Engineering, kind: primary, text: "Builds gadgets, explosives and devices from bars and parts; leans on Mining."}
+  - {name: Herbalism, kind: primary, text: "Gathers herbs from the world; sells to or feeds Alchemy."}
+  - {name: Leatherworking, kind: primary, text: "Makes leather and mail armor from leather and hides; the main consumer of Skinning."}
+  - {name: Mining, kind: primary, text: "Gathers ore and stone and smelts bars; feeds Blacksmithing and Engineering."}
+  - {name: Skinning, kind: primary, text: "Takes hides from beasts; feeds Leatherworking."}
+  - {name: Tailoring, kind: primary, text: "Makes cloth armor, bags and bandage cloth from cloth bolts."}
+  - {name: Cooking, kind: secondary, text: "Turns meat, fish and similar into food; learned by everyone and needs no slot."}
+  - {name: Fishing, kind: secondary, text: "Catches fish, and sometimes other items, at any water; feeds Cooking."}
+  - {name: First Aid, kind: secondary, text: "Makes bandages from cloth and heals with them; no slot needed."}
+ranks:
+  - {rank: Apprentice, skill_min: 1, skill_cap: 75, min_level: 5, text: "First tier; any character of the minimum level can learn it."}
+  - {rank: Journeyman, skill_min: 75, skill_cap: 150, min_level: 10, text: "Second tier, taught by trainers once the first is full."}
+  - {rank: Expert, skill_min: 150, skill_cap: 225, min_level: 20, text: "Third tier; many good recipes start here."}
+  - {rank: Artisan, skill_min: 225, skill_cap: 300, min_level: 35, text: "Fourth tier and the practical cap of the early game."}
+pairings:
+  - {a: Mining, b: Blacksmithing, text: "Smelted bars are what Blacksmithing spends; one character can supply itself."}
+  - {a: Mining, b: Engineering, text: "Engineering also consumes bars and stone, so Mining covers most of its needs."}
+  - {a: Skinning, b: Leatherworking, text: "Hides and leather from skinning are Leatherworking's raw material."}
+  - {a: Herbalism, b: Alchemy, text: "Herbs go straight into potions and elixirs, with no outlay."}
+  - {a: Tailoring, b: Enchanting, text: "Both sit well together: tailored cloth gear is disenchanted into enchanting materials."}
+feeders:
+  - {from: Fishing, to: Cooking, text: "Many recipes want raw fish; fish while you level Cooking so the catch is not wasted."}
+  - {from: Mining, to: Blacksmithing, text: "Bars for every recipe come from ore."}
+  - {from: Herbalism, to: Alchemy, text: "Herbs are the main reagent of most potions."}
+  - {from: Skinning, to: Leatherworking, text: "Leather is the base of every recipe."}
+  - {from: Blacksmithing, to: Enchanting, text: "Spare green armor and weapons from any crafter can be disenchanted for materials."}
+  - {from: Tailoring, to: Enchanting, text: "Cloth gear you outgrow is a steady source of disenchanting materials."}
+special_cases:
+  - {profession: Enchanting, text: "Needs a rod before its enchants work, and its materials come from disenchanting gear you no longer wear; most enchants have no item and apply to gear you own."}
+  - {profession: Cooking, text: "Needs raw food from vendors, fishing or hunting; recipes drop or are sold in addition to what the trainer teaches."}
+  - {profession: First Aid, text: "Needs cloth for bandages; the later ranks come from books, not only a trainer."}
+  - {profession: Fishing, text: "Needs a fishing pole; what you catch depends on the water and its zone."}
+rules:
+  - {topic: skinning, text: "Rule of thumb: skill needed is about five times the creature's level once the creature is above level 10; below that, a low flat requirement applies."}
+  - {topic: slots, text: "A character holds two primary professions; the three secondary professions do not count against that."}
+  - {topic: skill-ups, text: "Orange recipes always raise skill, yellow often, green seldom and grey never; plan each rank from the recipes' yellow and grey levels."}

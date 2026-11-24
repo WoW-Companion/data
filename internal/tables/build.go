@@ -58,6 +58,8 @@ type Cached struct {
 
 	Recipes        []Recipe
 	RecipeReagents []RecipeReagent
+	RecipeItems    []RecipeItem
+	SkillLineNames []string
 
 	ClassSpells []ClassSpell
 
@@ -104,6 +106,8 @@ func LoadCache(dir string) (Cached, error) {
 	}
 	c.Recipes = BuildRecipes(rin)
 	c.RecipeReagents = BuildRecipeReagents(c.Recipes, rin)
+	c.RecipeItems = BuildRecipeItems(c.Recipes, RecipeItemInput{ItemEffects: rows["ItemEffect"], ItemLinks: rows["ItemXItemEffect"], SpellEffects: rows["SpellEffect"], Items: rows["ItemSparse"]})
+	c.SkillLineNames = ProfessionLineNames(rows["SkillLine"])
 	c.ClassSpells = BuildClassSpells(ClassSpellInput{
 		SkillLines: rows["SkillLine"], Abilities: rows["SkillLineAbility"], SkillClasses: rows["SkillRaceClassInfo"],
 		Classes: rows["ChrClasses"], SpellNames: rows["SpellName"], Spells: rows["Spell"], SpellLevels: rows["SpellLevels"],
@@ -163,7 +167,7 @@ func CuratedSource(build, created string) manifest.Source {
 // manifest.json into outDir. everlootFile is the cached Everloot snapshot; talentsDir holds
 // the curated talent builds, which are validated against the cached talent tables, and
 // instancesFile the curated level ranges and entrance zones.
-func BuildDataset(cacheBuildDir, everlootFile, talentsDir, instancesFile, outDir, created, revision string) (manifest.Manifest, error) {
+func BuildDataset(cacheBuildDir, everlootFile, talentsDir, instancesFile, professionsFile, outDir, created, revision string) (manifest.Manifest, error) {
 	c, err := LoadCache(cacheBuildDir)
 	if err != nil {
 		return manifest.Manifest{}, err
@@ -173,6 +177,14 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, instancesFile, outDir
 		return manifest.Manifest{}, err
 	}
 	corpus, err := everloot.LoadCorpus(filepath.Join(filepath.Dir(everlootFile), everloot.CorpusFile))
+	if err != nil {
+		return manifest.Manifest{}, err
+	}
+	disenchant, err := everloot.LoadDisenchant(filepath.Join(filepath.Dir(everlootFile), everloot.DisenchantFile))
+	if err != nil {
+		return manifest.Manifest{}, err
+	}
+	profNotes, err := LoadCuratedProfessions(professionsFile, c.SkillLineNames)
 	if err != nil {
 		return manifest.Manifest{}, err
 	}
@@ -191,6 +203,14 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, instancesFile, outDir
 			hasLoot[r.SourceID] = true
 		}
 	}
+	trainers, trainerSpells := BuildTrainers(everloot.BuildTrainerOffers(corpus), c.Recipes, c.Npcs, everloot.BuildNpcZones(ev.NpcZones), c.UiMaps, c.SkillLineNames)
+	nodeObs, nodeYields := everloot.BuildGatherObs(corpus)
+	gatherNodes, gatherYields := BuildGathering(nodeObs, nodeYields, c.Nodes, c.UiMaps)
+	fishing := BuildFishingCatches(everloot.BuildFishing(corpus), c.UiMaps)
+	deYields := everloot.BuildDisenchantYields(disenchant)
+	byTrainer, byItem, byBoth := ApplyLearnedFrom(c.Recipes, c.RecipeItems, TrainedSpells(trainerSpells))
+	fmt.Printf("recipes learned from: trainer %d, item %d, both %d; recipe items %d, trainers %d, trainer offers %d\n", byTrainer, byItem, byBoth, len(c.RecipeItems), len(trainers), len(trainerSpells))
+	fmt.Printf("gathering nodes %d, yields %d, fishing catches %d, disenchant yields %d\n", len(gatherNodes), len(gatherYields), len(fishing), len(deYields))
 	linked := LinkBosses(c.InstanceBosses, c.Npcs, hasLoot)
 	curated, err := LoadCuratedInstances(instancesFile)
 	if err != nil {
@@ -279,6 +299,35 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, instancesFile, outDir
 		return m, err
 	}
 	if err := add(writeTable(outDir, "quest_lines.parquet", c.QuestLines, Layout(nil, []string{"line_id", "position", "quest_id"}, src))); err != nil {
+		return m, err
+	}
+	profSrc := CuratedSource(c.Prov.Build, created)
+	if err := add(writeTable(outDir, "recipe_items.parquet", c.RecipeItems, Layout(nil, []string{"item_id", "teaches_spell_id"}, src))); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "trainers.parquet", trainers, Layout(nil, []string{"npc_id", "profession"}, corpusSrc, src))); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "trainer_spells.parquet", trainerSpells, Layout(nil, []string{"npc_id", "profession", "recipe_name"}, corpusSrc, src))); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "gathering_nodes.parquet", gatherNodes, Layout(nil, []string{"node_id", "zone_id"}, corpusSrc, src))); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "gathering_yields.parquet", gatherYields, Layout(nil, []string{"node_id", "item_id"}, corpusSrc))); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "fishing_catches.parquet", fishing, Layout(nil, []string{"zone_id", "item_id"}, corpusSrc))); err != nil {
+		return m, err
+	}
+	if disenchant.DataAsOf == "" || disenchant.Retrieved == "" {
+		disenchant.DataAsOf, disenchant.Retrieved = ev.DataAsOf, ev.Retrieved
+	}
+	deSrc := manifest.Source{Name: "Everloot (https://everloot.app), disenchant rollup", Version: disenchant.DataAsOf, Retrieved: disenchant.Retrieved, License: everloot.License + ". " + everloot.Credit}
+	if err := add(writeTable(outDir, "disenchant_yields.parquet", deYields, Layout(nil, []string{"band_id", "material_item_id"}, deSrc))); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "profession_notes.parquet", profNotes.Rows, Layout(nil, []string{"section"}, profSrc))); err != nil {
 		return m, err
 	}
 	// names.parquet: the prebuilt name index. One row group per DefaultRowGroup rows

@@ -39,3 +39,7 @@ mismatch. The build fills `instances.min_level` and `max_level` from it only whe
 content tuning holds none (`level_source` says which), and uses the entrance zone unless
 Everloot's corroborated observation names one (`entrance_zone_source`). Maps without a row
 (cities, scenarios, season-specific maps) keep null levels.
+
+## professions.yaml
+
+`professions.yaml` holds profession notes in our own words from conventional knowledge: each profession and whether it is primary or secondary, the rank tiers with skill caps and the character level each needs, pairings, feeders, special cases and rules of thumb (the skinning rule). It is an advisor default, not authoritative. Sections hold one flow map per line; every field of a section is required. `make dataset` checks the file and every profession name against the client's profession skill lines, and publishes it as `profession_notes`.
