@@ -438,7 +438,7 @@ func TestBuildInstances(t *testing.T) {
 	}
 	bosses := BuildInstanceBosses(got, in)
 	npcs := []Npc{{ID: 100, Name: "Cookie"}, {ID: 101, Name: "Rhahk'Zor"}, {ID: 102, Name: "Rhahk'Zor"}, {ID: 103, Name: "Ragnaros"}}
-	if n := LinkBosses(bosses, npcs); n != 2 {
+	if n := LinkBosses(bosses, npcs, nil); n != 2 {
 		t.Errorf("linked %d", n)
 	}
 	if len(bosses) != 3 || bosses[0].Name != "Rhahk'Zor" || bosses[1].Name != "Cookie" || bosses[2].MapID != 409 {

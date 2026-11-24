@@ -63,6 +63,7 @@ type Cached struct {
 
 	Instances      []Instance
 	InstanceBosses []InstanceBoss
+	InstanceQuests []InstanceQuest
 
 	Nodes map[int32]Node
 }
@@ -160,8 +161,9 @@ func CuratedSource(build, created string) manifest.Source {
 
 // BuildDataset writes items, quests, npcs and loot_sources Parquet files and
 // manifest.json into outDir. everlootFile is the cached Everloot snapshot; talentsDir holds
-// the curated talent builds, which are validated against the cached talent tables.
-func BuildDataset(cacheBuildDir, everlootFile, talentsDir, outDir, created, revision string) (manifest.Manifest, error) {
+// the curated talent builds, which are validated against the cached talent tables, and
+// instancesFile the curated level ranges and entrance zones.
+func BuildDataset(cacheBuildDir, everlootFile, talentsDir, instancesFile, outDir, created, revision string) (manifest.Manifest, error) {
 	c, err := LoadCache(cacheBuildDir)
 	if err != nil {
 		return manifest.Manifest{}, err
@@ -183,7 +185,23 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, outDir, created, revi
 	creatures, clientOnly, _ := ZoneCoverage(c.Npcs, rows)
 	c.Npcs = AddEverlootNpcs(c.Npcs, rows, everloot.BuildNpcNames(ev.Rates))
 	ApplyNpcZones(c.Npcs, c.UiMaps, everloot.BuildNpcZones(ev.NpcZones))
-	linked := LinkBosses(c.InstanceBosses, c.Npcs)
+	hasLoot := map[int32]bool{}
+	for _, r := range rows {
+		if r.SourceKind == everloot.KindCreature {
+			hasLoot[r.SourceID] = true
+		}
+	}
+	linked := LinkBosses(c.InstanceBosses, c.Npcs, hasLoot)
+	curated, err := LoadCuratedInstances(instancesFile)
+	if err != nil {
+		return manifest.Manifest{}, err
+	}
+	if err := ApplyInstanceData(c.Instances, curated, c.UiMaps, everloot.BuildEntranceZones(corpus)); err != nil {
+		return manifest.Manifest{}, err
+	}
+	corroborated := ApplyEncounterObs(c.InstanceBosses, everloot.BuildEncounterObs(corpus))
+	bossLoot := TagInstanceLoot(rows, c.InstanceBosses)
+	c.InstanceQuests = BuildInstanceQuests(c.Instances, quests, c.Quests)
 	builds, err := LoadTalentBuilds(talentsDir)
 	if err != nil {
 		return manifest.Manifest{}, err
@@ -229,10 +247,13 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, outDir, created, revi
 	if err := add(writeTable(outDir, "class_spells.parquet", c.ClassSpells, Layout(nil, []string{"class_id", "level", "spell_id", "skill_line_id"}, src))); err != nil {
 		return m, err
 	}
-	if err := add(writeTable(outDir, "instances.parquet", c.Instances, Layout(nil, []string{"map_id"}, src))); err != nil {
+	if err := add(writeTable(outDir, "instances.parquet", c.Instances, Layout(nil, []string{"map_id"}, src, CuratedSource(c.Prov.Build, created), CorpusSource(corpus, ev)))); err != nil {
 		return m, err
 	}
-	if err := add(writeTable(outDir, "instance_bosses.parquet", c.InstanceBosses, Layout(nil, []string{"map_id", "order_index", "encounter_id"}, src))); err != nil {
+	if err := add(writeTable(outDir, "instance_bosses.parquet", c.InstanceBosses, Layout(nil, []string{"map_id", "order_index", "encounter_id"}, src, CorpusSource(corpus, ev)))); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "instance_quests.parquet", c.InstanceQuests, Layout(nil, []string{"map_id", "quest_id", "reason"}, CorpusSource(corpus, ev), src))); err != nil {
 		return m, err
 	}
 	loot := Layout(nil, []string{"item_id", "source_kind", "source_id"}, EverlootSource(ev), src)
@@ -241,6 +262,7 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, outDir, created, revi
 	_, inNpcs, withZone := ZoneCoverage(c.Npcs, rows)
 	fmt.Printf("creature loot sources: %d, resolved in npcs: %d (%.1f%%; client rows alone %d, %.1f%%), with a zone: %d (%.1f%%)\n",
 		creatures, inNpcs, pctOf(inNpcs, creatures), clientOnly, pctOf(clientOnly, creatures), withZone, pctOf(withZone, creatures))
+	fmt.Printf("instances: %s\n", InstanceCoverage(c.Instances, c.InstanceBosses, rows, c.InstanceQuests, corroborated, bossLoot))
 	fmt.Printf("instance bosses linked to a creature: %d of %d (%.1f%%)\n", linked, len(c.InstanceBosses), pctOf(linked, len(c.InstanceBosses)))
 	if err := add(writeTable(outDir, "loot_sources.parquet", rows, loot)); err != nil {
 		return m, err

@@ -19,6 +19,14 @@ type Instance struct {
 	EntranceY     *float32 `parquet:"entrance_y,optional"`
 	MinLevel      *int16   `parquet:"min_level,optional"`
 	MaxLevel      *int16   `parquet:"max_level,optional"`
+	// LevelSource says where MinLevel and MaxLevel came from: client or curated (observed is
+	// reserved: no Everloot record carries an instance level).
+	LevelSource *string `parquet:"level_source,optional,dict"`
+	// EntranceZoneID and EntranceZoneName are the open-world UiMap the entrance stands on;
+	// EntranceZoneSource is observed (Everloot) or curated.
+	EntranceZoneID     *int32  `parquet:"entrance_zone_id,optional"`
+	EntranceZoneName   *string `parquet:"entrance_zone_name,optional,dict"`
+	EntranceZoneSource *string `parquet:"entrance_zone_source,optional,dict"`
 }
 
 // InstanceBoss is one row of the instance_bosses table: a client dungeon encounter.
@@ -30,6 +38,9 @@ type InstanceBoss struct {
 	OrderIndex   int32  `parquet:"order_index"`
 	DifficultyID int32  `parquet:"difficulty_id"`
 	CreatureID   *int32 `parquet:"creature_id,optional"`
+	// Reporters is how many distinct Everloot installs killed the encounter; null when
+	// fewer than two did.
+	Reporters *int32 `parquet:"reporters,optional"`
 }
 
 // InstanceInput is the client tables the instance builders read.
@@ -102,6 +113,9 @@ func BuildInstances(in InstanceInput) []Instance {
 		}
 		if l, ok := levels[id]; ok {
 			inst.MinLevel, inst.MaxLevel = optPositive(l[0]), optPositive(l[1])
+			if inst.MinLevel != nil && inst.MaxLevel != nil {
+				inst.LevelSource = to(LevelClient)
+			}
 		}
 		out = append(out, inst)
 	}
@@ -143,15 +157,27 @@ func BuildInstanceBosses(instances []Instance, in InstanceInput) []InstanceBoss 
 
 // LinkBosses sets CreatureID on every boss whose exact name is carried by exactly one npc,
 // and returns how many it linked. No client table or Everloot relation ties an encounter to
-// a creature, so the name is the only key and an ambiguous one links nothing.
-func LinkBosses(bosses []InstanceBoss, npcs []Npc) int {
+// a creature, so the name is the only key. When several npcs share the name, the ones that
+// are a loot source (hasLoot, by creature id) decide: exactly one of them links, none or
+// several link nothing.
+func LinkBosses(bosses []InstanceBoss, npcs []Npc, hasLoot map[int32]bool) int {
 	byName := map[string][]int32{}
 	for _, n := range npcs {
 		byName[n.Name] = append(byName[n.Name], n.ID)
 	}
 	linked := 0
 	for i := range bosses {
-		if ids := byName[bosses[i].Name]; len(ids) == 1 {
+		ids := byName[bosses[i].Name]
+		if len(ids) > 1 {
+			var withLoot []int32
+			for _, id := range ids {
+				if hasLoot[id] {
+					withLoot = append(withLoot, id)
+				}
+			}
+			ids = withLoot
+		}
+		if len(ids) == 1 {
 			bosses[i].CreatureID = &ids[0]
 			linked++
 		}

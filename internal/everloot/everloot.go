@@ -323,6 +323,9 @@ type LootSource struct {
 	NodeID        *int32  `parquet:"node_id,optional"`
 	NodeName      *string `parquet:"node_name,optional,dict"`
 	SkillRequired *int16  `parquet:"skill_required,optional"`
+	// MapID is the instance map of a creature row whose creature is a boss of that
+	// instance (instance_bosses.creature_id); null otherwise.
+	MapID *int32 `parquet:"map_id,optional"`
 }
 
 // BuildLootSources keeps the public rates that name a creature or object source, plus a

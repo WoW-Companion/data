@@ -1,0 +1,33 @@
+# Typical level ranges and entrance zones of the classic dungeons and raids.
+# A client content-tuning range, where one exists, wins over these (instances.level_source),
+# and so does an Everloot-observed entrance zone that at least two installs agree on.
+# Maps not listed (cities, scenarios, season-specific maps) have no settled range and stay null.
+# Each row: map = Map.ID, name = Map name, min/max = typical level range, zone_id/zone = UiMap of the entrance zone.
+status: "advisor default, not authoritative; typical ranges"
+instances:
+  - {map: 389, name: "Ragefire Chasm", min: 13, max: 18, zone_id: 1454, zone: "Orgrimmar", source: "long-established classic range (community convention)"}
+  - {map: 36, name: "Deadmines", min: 15, max: 25, zone_id: 1436, zone: "Westfall", source: "long-established classic range (community convention)"}
+  - {map: 43, name: "Wailing Caverns", min: 15, max: 25, zone_id: 1413, zone: "The Barrens", source: "long-established classic range (community convention)"}
+  - {map: 33, name: "Shadowfang Keep", min: 18, max: 28, zone_id: 1421, zone: "Silverpine Forest", source: "long-established classic range (community convention)"}
+  - {map: 48, name: "Blackfathom Deeps", min: 20, max: 30, zone_id: 1440, zone: "Ashenvale", source: "long-established classic range (community convention)"}
+  - {map: 34, name: "Stormwind Stockade", min: 22, max: 30, zone_id: 1453, zone: "Stormwind City", source: "long-established classic range (community convention)"}
+  - {map: 90, name: "Gnomeregan", min: 24, max: 34, zone_id: 1426, zone: "Dun Morogh", source: "long-established classic range (community convention)"}
+  - {map: 47, name: "Razorfen Kraul", min: 25, max: 35, zone_id: 1413, zone: "The Barrens", source: "long-established classic range (community convention)"}
+  - {map: 189, name: "Scarlet Monastery", min: 28, max: 38, zone_id: 1420, zone: "Tirisfal Glades", source: "long-established classic range (community convention)"}
+  - {map: 129, name: "Razorfen Downs", min: 35, max: 45, zone_id: 1413, zone: "The Barrens", source: "long-established classic range (community convention)"}
+  - {map: 70, name: "Uldaman", min: 35, max: 45, zone_id: 1418, zone: "Badlands", source: "long-established classic range (community convention)"}
+  - {map: 349, name: "Maraudon", min: 40, max: 52, zone_id: 1443, zone: "Desolace", source: "long-established classic range (community convention)"}
+  - {map: 209, name: "Zul'Farrak", min: 44, max: 54, zone_id: 1446, zone: "Tanaris", source: "long-established classic range (community convention)"}
+  - {map: 109, name: "Sunken Temple", min: 50, max: 60, zone_id: 1435, zone: "Swamp of Sorrows", source: "long-established classic range (community convention)"}
+  - {map: 230, name: "Blackrock Depths", min: 52, max: 60, zone_id: 1427, zone: "Searing Gorge", source: "long-established classic range (community convention)"}
+  - {map: 229, name: "Blackrock Spire", min: 55, max: 60, zone_id: 1428, zone: "Burning Steppes", source: "long-established classic range (community convention)"}
+  - {map: 429, name: "Dire Maul", min: 55, max: 60, zone_id: 1444, zone: "Feralas", source: "long-established classic range (community convention)"}
+  - {map: 289, name: "Scholomance", min: 58, max: 60, zone_id: 1422, zone: "Western Plaguelands", source: "long-established classic range (community convention)"}
+  - {map: 329, name: "Stratholme", min: 58, max: 60, zone_id: 1423, zone: "Eastern Plaguelands", source: "long-established classic range (community convention)"}
+  - {map: 309, name: "Zul'Gurub", min: 60, max: 60, zone_id: 1434, zone: "Stranglethorn Vale", source: "long-established classic range (community convention)"}
+  - {map: 409, name: "Molten Core", min: 60, max: 60, zone_id: 1427, zone: "Searing Gorge", source: "long-established classic range (community convention)"}
+  - {map: 469, name: "Blackwing Lair", min: 60, max: 60, zone_id: 1428, zone: "Burning Steppes", source: "long-established classic range (community convention)"}
+  - {map: 249, name: "Onyxia's Lair", min: 60, max: 60, zone_id: 1445, zone: "Dustwallow Marsh", source: "long-established classic range (community convention)"}
+  - {map: 509, name: "Ruins of Ahn'Qiraj", min: 60, max: 60, zone_id: 1451, zone: "Silithus", source: "long-established classic range (community convention)"}
+  - {map: 531, name: "Ahn'Qiraj Temple", min: 60, max: 60, zone_id: 1451, zone: "Silithus", source: "long-established classic range (community convention)"}
+  - {map: 533, name: "Naxxramas", min: 60, max: 60, zone_id: 1423, zone: "Eastern Plaguelands", source: "long-established classic range (community convention)"}
