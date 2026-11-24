@@ -67,6 +67,20 @@ Import rule (`internal/everloot/corpus.go`): a quest is kept when it is in Everl
 
 Pipeline: `wowc-data fetch` caches the records as `dist/cache/everloot/corpus.json` (git-ignored); `build` reads it, and a missing file gives empty tables. Quest chains stay out: Everloot has no pre-quest or follow-up fields.
 
+## Everloot quest lines (survey 2026-11-24)
+
+Status: **no public rows; nothing imported.** Everloot's upload protocol defines a `quest_chain_catalog` record (`questLineId`, `name`, `questIds` in order, `truncated`; OpenAPI 3.1 at https://everloot.app/api/openapi.json), but the public corpus does not serve it. Surveyed 2026-11-24 with 3 requests (2 s apart, no 429): `GET /api/corpus/public?kinds=quest_chain_catalog` answers 400 `Unknown record kind.`, and the OpenAPI `kinds` filter enum lists only `npc_sighting, loot, quest, vendor, item_seen, guild_snapshot, raid_lockout, attendance, loot_award, gear_snapshot, collection_catalog, collection_owned, auction_scan, recipe_seen, price_seen, recipe_observed, trainer_seen, gold_snapshot, money_event, map_bounds, instance_entrance, encounter, object_sighting, item_fact`. No other route (`/api/edges`, `/api/items`, `/api/history`, rollups) carries quest lines. The unfiltered corpus holds 125,475 records from 1,433 uploads, too many to page through in the 30 requests an hour, and the quest-line kind is not a documented read.
+
+| What | Count |
+| --- | --- |
+| `quest_chain_catalog` records / distinct quest lines | 0 / 0 public |
+| lines with quest ids >= 90000 | 0 |
+| `truncated` lines | 0 |
+| agreement across installs | not measurable |
+| quest 94003 in any line | no |
+
+No `quest_lines_observed` table was added. Revisit if Everloot adds the kind to its public corpus; the intended rule then: keep a line when at least 2 distinct installs report the same ordered id list, else the longest prefix-consistent superset that at least 2 agree with.
+
 ## Talent trees (client tables)
 
 Checked 2026-11-21 against build `1.60.1.71037`, same route and ruling as above. This client generation uses the trait-tree family (a classic-style `Talent`/`TalentTab` pair also exists and is not used).
