@@ -189,11 +189,40 @@ Surveyed 2026-11-21 against build `1.60.1.71037` (wago.tools). Row counts are da
 Tables fetched for this: `Map`, `DungeonEncounter`, `MapDifficulty`, `ContentTuning`. Their columns used are required (a missing column is an error, as for every table). `Creature` (already fetched) is read for the boss link.
 
 - `instances`: one row per `Map` with `InstanceType` 1 or 2, leaving out placeholder maps (empty name, a name starting with `<`, or containing "Test"). Columns: `map_id`, `name` (`MapName_lang`), `instance_type` (`dungeon` or `raid`, as the client types it; the client also types a few city and scenario maps as dungeons), `max_players` (`MaxPlayers`, null when 0), `entrance_map_id` (`CorpseMapID`, null when -1), `entrance_x` and `entrance_y` (`Corpse_0`, `Corpse_1`, null when both 0), `min_level` and `max_level` (`ContentTuning.LfgMinLevel` and `LfgMaxLevel` of the map's lowest-id `MapDifficulty` row that has a non-zero pair; null otherwise).
-- Zone of the entrance: no table names it (`AreaTable` holds no map-to-entrance key, and the entrance position is a world coordinate), so there is no zone column; `entrance_map_id` and position are what the client gives. Levels are never inferred from `LFGDungeons`, creature levels or the content tuning squish values.
+- Zone of the entrance (see "Dungeon gaps" below for the curated and observed zone columns): no client table names it (`AreaTable` holds no map-to-entrance key, and the entrance position is a world coordinate), so there is no zone column; `entrance_map_id` and position are what the client gives. Levels are never inferred from `LFGDungeons`, creature levels or the content tuning squish values.
 - `instance_bosses`: one row per `DungeonEncounter` whose `MapID` is an `instances` map. Columns: `map_id`, `encounter_id` (`ID`), `name`, `order_index`, `difficulty_id`, and `creature_id`. The client has no encounter-to-creature key, so `creature_id` is the one derived column: the `npcs.id` (client or Everloot-named row) when exactly one npc carries the encounter's exact name, null otherwise. Join `creature_id` to `loot_sources` (`source_kind` creature) for drops.
 - No description text is read.
 
 Live coverage (2026-11-21 run): 52 instances (39 dungeon, 13 raid) and 372 boss rows on 44 of them. Entrance map on 27 instances (position on 25), max players on 31, min and max level on 1. `creature_id` on 0 of 372 bosses: the fetched `Creature` table holds only 189 rows and none matches an encounter name, so no boss links to `loot_sources` (52 creature sources there).
+
+## Dungeon gaps: level ranges, entrance zones, boss links, instance quests (survey 2026-11-24)
+
+Status: **partly closed.** Levels and entrance zones are filled from a curated file; boss loot and boss links stay empty because no allowed source ties an encounter to a creature. Credit on everything from Everloot: "Data from Everloot (https://everloot.app), CC BY-SA 4.0."
+
+Everloot survey (`GET /api/corpus/public?kinds=...`, 2 s apart, 500 per page, stopped on the first 429): `encounter` 723 records in 2 pages, 115 distinct (instance, encounter) pairs on 19 instances; `instance_entrance` 37 records on 28 (instance, zone) pairs for 16 instances; `loot` 24,996 records (50 pages) and `npc_sighting` 47,722 (96 pages), neither paged: the 30-an-hour limit without a key cannot carry them, and a first full fetch hit a 429 (`Retry-After` 2,973 s), so the corpus fetch was re-run after the wait.
+
+| Everloot kind | Fields read | Used for |
+| ------------- | ----------- | -------- |
+| `encounter` | `installId`, `encounterId` (the client's `DungeonEncounter.ID`), `instanceMapId`, `success` | `instance_bosses.reporters`: installs that killed it, kept at 2 or more. All 115 pairs match a client encounter id; the names are in each install's own language (French, Spanish) and are never kept. The record carries no creature id and no level. |
+| `instance_entrance` | `instanceMapId`, `mapId` (a UiMap id), position | `instances.entrance_zone_*`: kept only when at least 2 installs name the zone and no install names another. Installs queueing from a city report the city, so most instances disagree with themselves (Deadmines is reported in Durotar and Arathi Highlands) or have one install, and only The Drowned City (Durotar, 2 installs) passes. |
+| `loot` | `sourceNpcId`, items; no map and no creature name | Not read: nothing in a loot record ties it to an instance. |
+
+Curated file: `curated/instances.yaml` holds the typical level range and entrance zone (UiMap id and name) of 26 classic dungeons and raids, status "advisor default, not authoritative; typical ranges", a source per row. The build checks each row against `instances` and `UiMap` and fails on a mismatch. Precedence: the client's content tuning range first (only Ruins of Lordaeron, 27 to 27), then the curated range; an observed entrance zone first, then the curated one. No Everloot record carries an instance level, so `level_source` is `client` or `curated`; `observed` is reserved. The other 25 maps (cities, scenarios, season-specific maps) have no settled range and stay null.
+
+Boss links: `LinkBosses` still keys on the exact name, and now also picks, among several npcs of one name, the one that is a loot source. With 101 creature loot sources and 35 named npcs, 0 of 372 bosses link, so no `loot_sources` row carries `map_id` (the column and the tagging are in place for when a link exists). Linking needs a creature-to-name source: the `npc_sighting` kind (npc id, name, rank) would give it but is 96 pages; revisit with an API key.
+
+Instance quests (`instance_quests`: `map_id`, `quest_id`, `reason`): `category` where an observed quest's log heading equals an instance name (case and a leading "the" ignored; a name shared by two instances counts only when one has a level range), and `zone` where the client quest's zone names an instance (0 rows: client quest zones are open-world UiMaps). 75 rows on 14 instances. The third source in the plan, quests whose objective creature drops only inside an instance, is not derivable: no allowed source holds quest objectives.
+
+Coverage before and after (build 1.60.1.71037):
+
+| | Before | After |
+| - | -----: | ----: |
+| instances with a level range | 1 of 52 | 27 of 52 |
+| instances with an entrance zone | 0 | 27 |
+| bosses linked to a creature | 0 of 372 | 0 of 372 |
+| bosses corroborated by Everloot kills | – | 84 (14 instances) |
+| boss loot rows (`loot_sources.map_id`) | 0 | 0 |
+| instance quests | – | 75 |
 
 ## Crafted sources in `loot_sources`
 

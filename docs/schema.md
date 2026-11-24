@@ -162,7 +162,7 @@ One row per class ability rank on a class skill line (Arms, Fury, Holy ...), onc
 
 ## instances
 
-One row per dungeon or raid map. Source: wago.tools client table Map, MapDifficulty, ContentTuning. File: `instances.parquet`.
+One row per dungeon or raid map. Level range: the client's content tuning where it holds one, else the curated typical range (an advisor default, not authoritative). Entrance zone: Everloot's observed zone where at least two installs agree and none differ, else the curated one. Source: wago.tools client table Map, MapDifficulty, ContentTuning, UiMap; curated instances.yaml (advisor defaults); Everloot instance_entrance records (CC BY-SA 4.0). File: `instances.parquet`.
 
 | Column | Type | Null | Source | Meaning |
 | --- | --- | --- | --- | --- |
@@ -173,8 +173,12 @@ One row per dungeon or raid map. Source: wago.tools client table Map, MapDifficu
 | `entrance_map_id` | `int32` | yes | table | Map of the entrance (CorpseMapID); null when none. |
 | `entrance_x` | `float32` | yes | table | Entrance position x; null when none. |
 | `entrance_y` | `float32` | yes | table | Entrance position y; null when none. |
-| `min_level` | `int16` | yes | ContentTuning | LFG minimum level; null when the tuning row holds none. |
-| `max_level` | `int16` | yes | ContentTuning | LFG maximum level; null when the tuning row holds none. |
+| `min_level` | `int16` | yes | ContentTuning, curated | Recommended minimum level: the client's LFG level, else the curated typical range; null when neither has one. |
+| `max_level` | `int16` | yes | ContentTuning, curated | Recommended maximum level: the client's LFG level, else the curated typical range; null when neither has one. |
+| `level_source` | `string` | yes | derived | Where min_level and max_level came from: client or curated (observed is reserved: no Everloot record carries an instance level); null with no range. |
+| `entrance_zone_id` | `int32` | yes | curated, Everloot | UiMap id of the open-world zone the entrance stands in; null when unknown. |
+| `entrance_zone_name` | `string` | yes | UiMap | Name of that zone (UiMap Name_lang); null when unknown. |
+| `entrance_zone_source` | `string` | yes | derived | observed (Everloot, at least two installs agreeing) or curated; null when unknown. |
 
 ## instance_bosses
 
@@ -187,7 +191,18 @@ One row per dungeon encounter of an instance. Source: wago.tools client table Du
 | `name` | `string` | no | table | Encounter name. |
 | `order_index` | `int32` | no | table | Order of the encounter in the instance. |
 | `difficulty_id` | `int32` | no | table | Difficulty id (0 on nearly all). |
-| `creature_id` | `int32` | yes | derived from npcs | npcs.id when exactly one npc carries the encounter's exact name; null otherwise. |
+| `creature_id` | `int32` | yes | derived from npcs | npcs.id when exactly one npc carries the encounter's exact name (or, among several, exactly one that is a loot source); null otherwise. Join loot_sources on source_kind creature and source_id = creature_id. |
+| `reporters` | `int32` | yes | Everloot | Distinct installs that killed the encounter (Everloot encounter records); null when fewer than two. |
+
+## instance_quests
+
+Quests tied to an instance: the ones to pick up before you go. Sorted by map, quest and reason. Source: wago.tools client table QuestPOIBlob, UiMap; Everloot observed quests (CC BY-SA 4.0). Data from Everloot (https://everloot.app), CC BY-SA 4.0.. File: `instance_quests.parquet`.
+
+| Column | Type | Null | Source | Meaning |
+| --- | --- | --- | --- | --- |
+| `map_id` | `int32` | no | table | instances.map_id. |
+| `quest_id` | `int32` | no | table | quests.id or quests_observed.quest_id. |
+| `reason` | `string` | no | derived | category: the quest's observed log heading names the instance; zone: the client's quest zone names it. A quest whose objective creature drops only in an instance is not derivable: no source holds quest objectives. |
 
 ## loot_sources
 
@@ -211,6 +226,7 @@ Where an item comes from: creature, object, quest reward, sold by, crafted and g
 | `node_id` | `int32` | yes | GameObjects | Gathered rows only: the node's game object id (equals source_id); null otherwise. |
 | `node_name` | `string` | yes | GameObjects | Gathered rows only: the node's name; null when the client holds none. |
 | `skill_required` | `int16` | yes | Lock | Gathered rows only: the skill rank the node's lock needs; null otherwise. |
+| `map_id` | `int32` | yes | instance_bosses | Creature rows only: the instance map when the creature is a linked boss (instance_bosses.creature_id) of exactly one instance; null otherwise. |
 
 ## quests_observed
 

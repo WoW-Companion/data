@@ -139,7 +139,7 @@ var Tables = []Table{
 		{"superseded_spell_id", "SkillLineAbility SupercedesSpell", "The previous rank this one replaces; null for a first rank. It may name a spell with no row here when that spell has no level."},
 		{"trained", "none", "Always null: the client tables do not say whether a trainer teaches a spell or it is learned automatically."},
 	}},
-	{"instances", tables.Instance{}, wago + "Map, MapDifficulty, ContentTuning", "One row per dungeon or raid map.", []Col{
+	{"instances", tables.Instance{}, wago + "Map, MapDifficulty, ContentTuning, UiMap; curated instances.yaml (advisor defaults); Everloot instance_entrance records (CC BY-SA 4.0)", "One row per dungeon or raid map. Level range: the client's content tuning where it holds one, else the curated typical range (an advisor default, not authoritative). Entrance zone: Everloot's observed zone where at least two installs agree and none differ, else the curated one.", []Col{
 		{"map_id", "", "Map id."},
 		{"name", "", "Map name."},
 		{"instance_type", "", "dungeon or raid, as the client types the map."},
@@ -147,8 +147,12 @@ var Tables = []Table{
 		{"entrance_map_id", "", "Map of the entrance (CorpseMapID); null when none."},
 		{"entrance_x", "", "Entrance position x; null when none."},
 		{"entrance_y", "", "Entrance position y; null when none."},
-		{"min_level", "ContentTuning", "LFG minimum level; null when the tuning row holds none."},
-		{"max_level", "ContentTuning", "LFG maximum level; null when the tuning row holds none."},
+		{"min_level", "ContentTuning, curated", "Recommended minimum level: the client's LFG level, else the curated typical range; null when neither has one."},
+		{"max_level", "ContentTuning, curated", "Recommended maximum level: the client's LFG level, else the curated typical range; null when neither has one."},
+		{"level_source", "derived", "Where min_level and max_level came from: client or curated (observed is reserved: no Everloot record carries an instance level); null with no range."},
+		{"entrance_zone_id", "curated, Everloot", "UiMap id of the open-world zone the entrance stands in; null when unknown."},
+		{"entrance_zone_name", "UiMap", "Name of that zone (UiMap Name_lang); null when unknown."},
+		{"entrance_zone_source", "derived", "observed (Everloot, at least two installs agreeing) or curated; null when unknown."},
 	}},
 	{"instance_bosses", tables.InstanceBoss{}, wago + "DungeonEncounter; npcs", "One row per dungeon encounter of an instance.", []Col{
 		{"map_id", "", "instances.map_id."},
@@ -156,7 +160,13 @@ var Tables = []Table{
 		{"name", "", "Encounter name."},
 		{"order_index", "", "Order of the encounter in the instance."},
 		{"difficulty_id", "", "Difficulty id (0 on nearly all)."},
-		{"creature_id", "derived from npcs", "npcs.id when exactly one npc carries the encounter's exact name; null otherwise."},
+		{"creature_id", "derived from npcs", "npcs.id when exactly one npc carries the encounter's exact name (or, among several, exactly one that is a loot source); null otherwise. Join loot_sources on source_kind creature and source_id = creature_id."},
+		{"reporters", "Everloot", "Distinct installs that killed the encounter (Everloot encounter records); null when fewer than two."},
+	}},
+	{"instance_quests", tables.InstanceQuest{}, wago + "QuestPOIBlob, UiMap; Everloot observed quests (CC BY-SA 4.0). Data from Everloot (https://everloot.app), CC BY-SA 4.0.", "Quests tied to an instance: the ones to pick up before you go. Sorted by map, quest and reason.", []Col{
+		{"map_id", "", "instances.map_id."},
+		{"quest_id", "", "quests.id or quests_observed.quest_id."},
+		{"reason", "derived", "category: the quest's observed log heading names the instance; zone: the client's quest zone names it. A quest whose objective creature drops only in an instance is not derivable: no source holds quest objectives."},
 	}},
 	{"loot_sources", everloot.LootSource{}, "Everloot drop rates (CC BY-SA 4.0) and recipes", "Where an item comes from: creature, object, quest reward, sold by, crafted and gathered rows.", []Col{
 		{"item_id", "", "Item id."},
@@ -175,6 +185,7 @@ var Tables = []Table{
 		{"node_id", "GameObjects", "Gathered rows only: the node's game object id (equals source_id); null otherwise."},
 		{"node_name", "GameObjects", "Gathered rows only: the node's name; null when the client holds none."},
 		{"skill_required", "Lock", "Gathered rows only: the skill rank the node's lock needs; null otherwise."},
+		{"map_id", "instance_bosses", "Creature rows only: the instance map when the creature is a linked boss (instance_bosses.creature_id) of exactly one instance; null otherwise."},
 	}},
 	{"quests_observed", everloot.QuestObserved{}, "Everloot observed quests (CC BY-SA 4.0). Data from Everloot (https://everloot.app), CC BY-SA 4.0.", "One row per quest players observed, kept when Everloot lists it as settled or at least two distinct installs reported its title, sorted by quest id. Includes Forever's own quests (ids from 90000) that the client tables lack. A field is null unless the quest is settled or at least two installs reported that value. Join quests.id or loot_sources (source_kind quest reward) on quest_id.", []Col{
 		{"quest_id", "Everloot", "Quest id."},

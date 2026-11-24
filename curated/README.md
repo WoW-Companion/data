@@ -28,3 +28,14 @@ Assumptions: the fetched tables hold no currency rules, so a character has one t
 per level from level 10 (level 39 has 30). Talent rows ("tiers") that open after N points spent
 are not checked: the tables give no per-node requirement, only groups with a points condition,
 so the builds avoid nodes that look deeper than the points spent.
+
+## instances.yaml
+
+`instances.yaml` holds the typical level range and the entrance zone (UiMap id and name) of the
+classic dungeons and raids, one flow map per `Map.ID`, with a `source` on every row. It is an
+advisor default, not authoritative. `make dataset` checks every row against `instances` (the map
+exists and carries that name) and `UiMap` (the zone id carries that name), and fails on a
+mismatch. The build fills `instances.min_level` and `max_level` from it only where the client's
+content tuning holds none (`level_source` says which), and uses the entrance zone unless
+Everloot's corroborated observation names one (`entrance_zone_source`). Maps without a row
+(cities, scenarios, season-specific maps) keep null levels.

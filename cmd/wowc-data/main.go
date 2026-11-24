@@ -97,13 +97,14 @@ func runBuild(args []string) error {
 	cache := fs.String("cache", "dist/cache", "cache directory")
 	out := fs.String("out", "dist", "output root; files go to <out>/<build>/")
 	talents := fs.String("talents", "curated/talents", "directory of curated talent builds")
+	instances := fs.String("instances", "curated/instances.yaml", "curated instance level ranges and entrance zones")
 	fs.Parse(args)
 	dir := filepath.Join(*out, *build)
 	rev, err := release.Revision(".")
 	if err != nil {
 		return err
 	}
-	m, err := tables.BuildDataset(filepath.Join(*cache, *build), filepath.Join(*cache, "everloot", everloot.CacheFile), *talents, dir, time.Now().UTC().Format("2006-01-02T15:04:05Z"), rev)
+	m, err := tables.BuildDataset(filepath.Join(*cache, *build), filepath.Join(*cache, "everloot", everloot.CacheFile), *talents, *instances, dir, time.Now().UTC().Format("2006-01-02T15:04:05Z"), rev)
 	if err != nil {
 		return err
 	}
