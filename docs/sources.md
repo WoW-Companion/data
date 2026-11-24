@@ -44,7 +44,28 @@ Status: **usable. Everloot's data is CC BY-SA 4.0, credited, with a paginated JS
 
 Pipeline: `wowc-data fetch` follows `next` through every page and caches the union as `dist/cache/everloot/drops.json` (git-ignored) with the retrieval time, `dataAsOf` and attribution. `loot_sources` keeps rows with `public: true` that name a creature or object source; values are stored as Everloot gives them. The table's Parquet metadata and manifest source carry the credit line and `dataAsOf`.
 
-Quest rewards: neither the client tables fetched here (no quest reward items; QuestV2 has three columns, and no QuestPackageItem or QuestObjective table exists for this build) nor the drops route carry them. `loot_sources` takes `quest reward` rows from Everloot's `GET /api/edges?rel=reward_from` (item to quest, `installs` as `reporters`, `evidence` as `tier`; rate fields zero). Checked 2026-11-21: that relation held 0 rows. Not covered: vendor sources.
+Quest rewards: neither the client tables fetched here (no quest reward items; QuestV2 has three columns, and no QuestPackageItem or QuestObjective table exists for this build) nor the drops route carry them. `loot_sources` takes `quest reward` rows from Everloot's `GET /api/edges?rel=reward_from` (item to quest, `installs` as `reporters`, `evidence` as `tier`; rate fields zero). Checked 2026-11-21: that relation held 0 rows. Vendor sources: see "Everloot quests and vendor offers" below.
+
+## Everloot quests and vendor offers (survey 2026-11-24)
+
+Status: **usable under CC BY-SA 4.0, credited.** Re-surveyed 2026-11-24 with `DATA_POLICY.md` rules: no crawling, one request per page, 2 s apart, 500 records per page, about 20 requests in the hour (limit 30 without a key), no 429 seen. Attribution on every new table, in the manifest and in the release notes: "Data from Everloot (https://everloot.app), CC BY-SA 4.0."
+
+Routes: `GET /api/corpus/public?kinds=quest` and `?kinds=vendor` (one record per upload, with a per-install pseudonym `installId`), `GET /api/coverage/settled?build=1.60.1.71037`, `GET /api/edges`, `GET /api/market/prices`. `dataAsOf` 2026-11-24T17:51Z on all.
+
+| What | Count | Notes |
+| --- | --- | --- |
+| `quest` records | 3,273 | 1,799 distinct quest ids from 1,433 uploads; 508 ids are >= 90000 (Forever's own quests, up to 99260). Records carry `questId`, `title`, `level`, `rewardItemIds`, `category`, `faction`, `tag` (497) and `giverNpcId` (374 records, 296 quests). Not one record has `turnInNpcId` or `suggestedGroup`, and not one lists a reward item. Distinct installs per quest: 1 for 928 quests, 2 for 477, 3 for 251, 4 or more for 143. 313 quests carry conflicting values. |
+| `/api/coverage/settled` quest list | 0 | no quest is settled yet for build 1.60.1.71037, so `settled` is false on every row. |
+| `vendor` records | 1,793 | 480 vendors, 16,289 offers (`itemId`, `priceCopper`, optional `limitedStock`; 529 limited). 264 vendors seen by one install, 216 by two or more. Settled vendor list: 0. |
+| `/api/edges?rel=sold_by` | 479 | item to npc, `installs` per edge. |
+| `/api/edges?rel=reward_from` | 0 | still empty, as on 2026-11-21. |
+| `npc_sighting` records | 47,617 | not imported here. |
+| quest 94003 | absent | no record names it. |
+| `/api/market/prices` | 1 realm | `CAMWOW US1 Realm 4 PvP`, Horde house only (2,000 items, 1,999 with a market value, newest day 2026-11-20, ageDays 4 on 1,940 rows, up to 17). Other realms are pending: `CAMWOW US1 Realm 1 PvE` and `CAMWOW US2 Realm 6 PvP` each have 1 of the 3 reporters needed. So a PvP realm is covered (Horde house), a PvE realm is not. Surveyed only: not imported and nothing depends on it. |
+
+Import rule (`internal/everloot/corpus.go`): a quest is kept when it is in Everloot's settled list for the build, or when at least two distinct installs reported its title. Each field takes the value most installs reported (the smallest on a tie) and is null unless the quest is settled or at least two installs reported that value. `reporters` is the installs that reported the quest at all. Facts only: titles, category and tag as published, no description text. Reward items become `loot_sources` `quest reward` rows (`source_id` the quest id) when the quest is settled or two installs listed the item; none exist yet. Vendor offers are kept when the vendor is settled or two distinct installs listed the item; the price is the one most installs saw; `limited` is true when any install saw limited stock. Each offer is also a `loot_sources` `sold by` row (`source_id` the vendor npc, rates zero, `tier` settled or corroborated). The settled lists are read as delta-encoded ids, as `/api/coverage/settled` describes ("sorted and delta-encoded"); both are empty today, so the decoding is unproven against live data.
+
+Pipeline: `wowc-data fetch` caches the records as `dist/cache/everloot/corpus.json` (git-ignored); `build` reads it, and a missing file gives empty tables. Quest chains stay out: Everloot has no pre-quest or follow-up fields.
 
 ## Talent trees (client tables)
 

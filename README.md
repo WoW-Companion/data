@@ -14,7 +14,7 @@ Every table and column is documented in [`docs/schema.md`](docs/schema.md), and 
 
 ## Data sources and credit
 
-Loot sources come from Everloot (https://everloot.app), CC BY-SA 4.0. Game data comes from the WoW: Forever client's own tables. Credit: Blizzard game client data, retrieved via wago.tools. The underlying game data is Blizzard's. Only facts (ids, numbers, flags, slots, names) are published, never long-form text. See `docs/sources.md`.
+Loot sources, observed quests (`quests_observed`) and vendor offers (`vendor_sources`) come from Everloot (https://everloot.app), CC BY-SA 4.0. Game data comes from the WoW: Forever client's own tables. Credit: Blizzard game client data, retrieved via wago.tools. The underlying game data is Blizzard's. Only facts (ids, numbers, flags, slots, names) are published, never long-form text. See `docs/sources.md`.
 
 No game data is committed to the repository; `dist/` is git-ignored.
 
@@ -47,7 +47,7 @@ make spike     # re-measure the Parquet layout (about a minute)
 - Code is MIT, in `LICENSE`.
 - The dataset is CC BY-SA 4.0, in `LICENSE-DATA`, because it includes Everloot's open data, which is share-alike.
 
-The `loot_sources` table is Everloot's: "Data from Everloot (https://everloot.app), CC BY-SA 4.0." (see `docs/sources.md`).
+The `loot_sources`, `quests_observed` and `vendor_sources` tables are Everloot's: "Data from Everloot (https://everloot.app), CC BY-SA 4.0." (see `docs/sources.md`).
 
 Never redistributed here:
 
