@@ -75,7 +75,7 @@ type Row map[string]string
 // Required lists the columns each client table must carry in its header. A column the
 // export lacks is an error naming table and column, never a silent null or zero.
 var Required = map[string][]string{
-	"ItemSparse":         {"ID", "Display_lang", "ItemLevel", "RequiredLevel", "OverallQualityID", "InventoryType", "AllowableClass", "Bonding", "StatModifier_bonusStat_0", "StatPercentEditor_0", "ItemDelay", "SellPrice", "BuyPrice"},
+	"ItemSparse":         {"ID", "Display_lang", "ItemLevel", "RequiredLevel", "OverallQualityID", "InventoryType", "AllowableClass", "Bonding", "StatModifier_bonusStat_0", "StatPercentEditor_0", "ItemDelay", "SellPrice", "BuyPrice", "RequiredSkillRank"},
 	"Item":               {"ID", "ClassID", "SubclassID"},
 	"QuestV2":            {"ID", "UniqueBitFlag", "UiQuestDetailsThemeID"},
 	"QuestLineXQuest":    {"ID", "QuestID", "QuestLineID", "OrderIndex"},
@@ -104,7 +104,9 @@ var Required = map[string][]string{
 	"Spell":            {"ID", "NameSubtext_lang"},
 	"SpellLevels":      {"SpellID", "DifficultyID", "BaseLevel", "SpellLevel"},
 	"SpellReagents":    {"SpellID", "Reagent_0", "ReagentCount_0", "Reagent_7", "ReagentCount_7"},
-	"SpellEffect":      {"SpellID", "EffectIndex", "Effect", "EffectItemType"},
+	"SpellEffect":      {"SpellID", "EffectIndex", "Effect", "EffectItemType", "EffectTriggerSpell"},
+	"ItemEffect":       {"ID", "SpellID", "TriggerType"},
+	"ItemXItemEffect":  {"ItemEffectID", "ItemID"},
 
 	"Map":              {"ID", "MapName_lang", "InstanceType", "CorpseMapID", "Corpse_0", "Corpse_1", "MaxPlayers"},
 	"DungeonEncounter": {"ID", "Name_lang", "MapID", "DifficultyID", "OrderIndex"},

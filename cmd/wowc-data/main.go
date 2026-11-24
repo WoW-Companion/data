@@ -72,7 +72,9 @@ func runFetch(args []string) error {
 	fs := flag.NewFlagSet("fetch", flag.ExitOnError)
 	build := fs.String("build", fetch.DefaultBuild, "game build")
 	cache := fs.String("cache", "dist/cache", "cache directory")
+	loot := fs.Bool("loot", false, "also fetch Everloot loot windows (50 pages: more than 30 requests an hour; for gathering and fishing)")
 	fs.Parse(args)
+	everloot.FetchLoot = *loot
 	prov, err := fetch.Build(fetch.BaseURL, *build, *cache, fetch.Tables)
 	if err != nil {
 		return err
@@ -85,6 +87,11 @@ func runFetch(args []string) error {
 	if err != nil {
 		return err
 	}
+	de, err := everloot.FetchDisenchant(everloot.BaseURL, filepath.Join(*cache, "everloot"), time.Now().UTC().Format("2006-01-02T15:04:05Z"))
+	if err != nil {
+		return err
+	}
+	fmt.Printf("cached %d disenchant bands, %d trainer records, %d loot records\n", len(de.Bands), len(cor.Trainers), len(cor.Loots))
 	fmt.Printf("cached %d Everloot quest records and %d vendor records (data as of %s)\n", len(cor.Quests), len(cor.Vendors), cor.DataAsOf)
 	fmt.Printf("cached %d tables for build %s in %s\n", len(prov.Tables), prov.Build, filepath.Join(*cache, *build))
 	fmt.Printf("cached %d Everloot drop rates (data as of %s)\n", len(ev.Rates), ev.DataAsOf)
@@ -98,13 +105,14 @@ func runBuild(args []string) error {
 	out := fs.String("out", "dist", "output root; files go to <out>/<build>/")
 	talents := fs.String("talents", "curated/talents", "directory of curated talent builds")
 	instances := fs.String("instances", "curated/instances.yaml", "curated instance level ranges and entrance zones")
+	professions := fs.String("professions", "curated/professions.yaml", "curated profession notes")
 	fs.Parse(args)
 	dir := filepath.Join(*out, *build)
 	rev, err := release.Revision(".")
 	if err != nil {
 		return err
 	}
-	m, err := tables.BuildDataset(filepath.Join(*cache, *build), filepath.Join(*cache, "everloot", everloot.CacheFile), *talents, *instances, dir, time.Now().UTC().Format("2006-01-02T15:04:05Z"), rev)
+	m, err := tables.BuildDataset(filepath.Join(*cache, *build), filepath.Join(*cache, "everloot", everloot.CacheFile), *talents, *instances, *professions, dir, time.Now().UTC().Format("2006-01-02T15:04:05Z"), rev)
 	if err != nil {
 		return err
 	}

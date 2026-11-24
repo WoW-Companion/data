@@ -20,6 +20,10 @@ const (
 	// corroboration and entrance zones.
 	KindEncounterRec = "encounter"
 	KindEntranceRec  = "instance_entrance"
+	// KindTrainerRec is a trainer window an install saw; KindLootRec is a loot window
+	// (fetched only when FetchLoot is set: it is 50 pages).
+	KindTrainerRec = "trainer_seen"
+	KindLootRec    = "loot"
 	// KindSoldBy is the loot_sources source_kind of a vendor offer; source_id is the vendor npc.
 	KindSoldBy = "sold by"
 	// MinReporters is how many distinct installs must report the same value before an
@@ -70,6 +74,8 @@ type Corpus struct {
 	Vendors     []VendorRecord    `json:"vendors"`
 	Encounters  []EncounterRecord `json:"encounters,omitempty"`
 	Entrances   []EntranceRecord  `json:"entrances,omitempty"`
+	Trainers    []TrainerRecord   `json:"trainers,omitempty"`
+	Loots       []LootRecord      `json:"loots,omitempty"`
 	// SettledQuests and SettledVendors are decoded ids (sorted ascending).
 	SettledQuests  []int32 `json:"settledQuests,omitempty"`
 	SettledVendors []int32 `json:"settledVendors,omitempty"`
@@ -127,7 +133,11 @@ func FetchCorpus(baseURL, cacheDir, retrieved, build string) (Corpus, error) {
 	}
 	c := Corpus{Retrieved: retrieved, Build: build}
 	client := newGetter()
-	for _, kind := range []string{KindQuestRec, KindVendorRec, KindEncounterRec, KindEntranceRec} {
+	kinds := []string{KindQuestRec, KindVendorRec, KindEncounterRec, KindEntranceRec, KindTrainerRec}
+	if FetchLoot {
+		kinds = append(kinds, KindLootRec)
+	}
+	for _, kind := range kinds {
 		u := fmt.Sprintf("%s%s?kinds=%s&offset=0&limit=%d", baseURL, CorpusPath, kind, PageLen)
 		for u != "" {
 			time.Sleep(Delay)
@@ -193,6 +203,18 @@ func (c *Corpus) add(kind string, raw json.RawMessage) error {
 		return nil
 	}
 	switch kind {
+	case KindTrainerRec:
+		var r TrainerRecord
+		if err := json.Unmarshal(raw, &r); err != nil {
+			return fmt.Errorf("everloot trainer record: %w", err)
+		}
+		c.Trainers = append(c.Trainers, r)
+	case KindLootRec:
+		var r LootRecord
+		if err := json.Unmarshal(raw, &r); err != nil {
+			return fmt.Errorf("everloot loot record: %w", err)
+		}
+		c.Loots = append(c.Loots, r)
 	case KindEncounterRec:
 		var r EncounterRecord
 		if err := json.Unmarshal(raw, &r); err != nil {
@@ -205,12 +227,14 @@ func (c *Corpus) add(kind string, raw json.RawMessage) error {
 			return fmt.Errorf("everloot entrance record: %w", err)
 		}
 		c.Entrances = append(c.Entrances, r)
-	default:
+	case KindVendorRec:
 		var r VendorRecord
 		if err := json.Unmarshal(raw, &r); err != nil {
 			return fmt.Errorf("everloot vendor record: %w", err)
 		}
 		c.Vendors = append(c.Vendors, r)
+	default:
+		return fmt.Errorf("everloot corpus: unknown kind %q", kind)
 	}
 	return nil
 }

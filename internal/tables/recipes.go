@@ -20,6 +20,8 @@ type Recipe struct {
 	LearnSkill    *int16  `parquet:"learn_skill,optional"`
 	YellowSkill   *int16  `parquet:"yellow_skill,optional"`
 	GreySkill     *int16  `parquet:"grey_skill,optional"`
+	// LearnedFrom is trainer, item or both; see ApplyLearnedFrom.
+	LearnedFrom string `parquet:"learned_from,dict"`
 }
 
 // RecipeReagent is one row of the recipe_reagents table.

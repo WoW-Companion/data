@@ -27,8 +27,9 @@ type Table struct {
 func (t Table) File() string { return t.Name + ".parquet" }
 
 const (
-	wago   = "wago.tools client table "
-	curate = "curated YAML (curated/talents)"
+	wago             = "wago.tools client table "
+	curate           = "curated YAML (curated/talents)"
+	everlootTrainers = "Everloot trainer_seen records (CC BY-SA 4.0), UiMap. Data from Everloot (https://everloot.app), CC BY-SA 4.0."
 )
 
 // Tables lists every table in the order BuildDataset writes them.
@@ -121,6 +122,7 @@ var Tables = []Table{
 		{"learn_skill", "SkillLineAbility", "Minimum skill rank to learn it; null when the client stores zero."},
 		{"yellow_skill", "SkillLineAbility", "Skill rank at which it turns yellow; null when zero."},
 		{"grey_skill", "SkillLineAbility", "Skill rank at which it turns grey; null when zero."},
+		{"learned_from", "derived", "trainer when no recipe item teaches the spell, item when one does, both when a recipe item and a corroborated Everloot trainer offer both do (see recipe_items and trainer_spells). trainer also covers a spell no trainer was observed offering: it is the absence of a recipe item, not proof of a trainer."},
 	}},
 	{"recipe_reagents", tables.RecipeReagent{}, wago + "SpellReagents", "One row per reagent of each recipe.", []Col{
 		{"spell_id", "", "recipes.spell_id."},
@@ -217,6 +219,85 @@ var Tables = []Table{
 		{"name", "QuestLine", "Quest line name; null when QuestLine has no named row."},
 		{"position", "QuestLineXQuest OrderIndex", "Position of the quest in the line, from 0."},
 		{"quest_id", "", "quests.id of the quest at that position."},
+	}},
+	{"recipe_items", tables.RecipeItem{}, wago + "ItemXItemEffect, ItemEffect, SpellEffect, ItemSparse", "Items (Patterns, Plans, Recipes, Formulae, Schematics, Manuals) whose use spell has a LearnSpell effect that teaches a recipes spell. Where to get the item: join loot_sources on item_id (creature, object, quest reward, sold by).", []Col{
+		{"item_id", "ItemXItemEffect ItemID", "The item that teaches the recipe."},
+		{"teaches_spell_id", "SpellEffect EffectTriggerSpell", "recipes.spell_id the item teaches."},
+		{"profession", "SkillLine", "Skill line name of the recipe."},
+		{"required_skill", "ItemSparse RequiredSkillRank", "Skill rank the item itself needs; null when the client stores zero."},
+	}},
+	{"trainers", tables.Trainer{}, everlootTrainers, "One row per trainer and profession that at least two installs saw teaching a recipe, sorted by npc. Zone is Everloot's located_in zone for the creature; position and faction are null: a trainer window carries neither.", []Col{
+		{"npc_id", "", "Trainer creature id."},
+		{"name", "npcs", "Creature name when npcs holds the id; null otherwise."},
+		{"profession", "", "Profession the trainer teaches."},
+		{"zone_id", "Everloot located_in", "UiMap id of the zone; null when Everloot places the creature nowhere."},
+		{"zone_name", "UiMap", "Name of that UiMap."},
+		{"x", "none", "Always null: no allowed source gives a trainer position."},
+		{"y", "none", "Always null."},
+		{"faction", "none", "Always null: no allowed source gives it."},
+		{"recipes", "derived", "Corroborated recipes the trainer offers (rows in trainer_spells)."},
+		{"reporters", "", "Most installs that agreed on one of its offers."},
+	}},
+	{"trainer_spells", tables.TrainerSpell{}, everlootTrainers, "One row per recipe a trainer teaches that at least two distinct installs saw.", []Col{
+		{"npc_id", "", "Trainer creature id."},
+		{"spell_id", "recipes", "recipes.spell_id when exactly one recipe of that profession carries the offered name; null otherwise (the window names the recipe, not the spell)."},
+		{"recipe_name", "", "Recipe name as the install saw it."},
+		{"profession", "", "Profession of the offer."},
+		{"cost_copper", "", "Training cost in copper; null unless two installs agree."},
+		{"required_skill", "", "Skill rank the trainer requires; null unless two installs agree."},
+		{"reporters", "", "Distinct installs that saw the offer."},
+	}},
+	{"gathering_nodes", tables.GatheringNode{}, "Everloot loot windows (CC BY-SA 4.0), wago.tools Lock, LockType, GameObjects. Data from Everloot (https://everloot.app), CC BY-SA 4.0.", "One row per herb or mining node in a zone that at least two installs looted. Empty until the loot windows are fetched (wowc-data fetch -loot).", []Col{
+		{"node_id", "", "Game object id."},
+		{"name", "GameObjects, Everloot", "Client name when the client knows the node, else Everloot's."},
+		{"profession", "Lock, Everloot gatherKind", "Mining or Herbalism: from the client lock, else from Everloot's ore or herb label."},
+		{"skill_required", "Lock", "Skill rank the client lock needs; null when the client does not hold the node."},
+		{"zone_id", "Everloot mapId", "UiMap id of the zone the windows were taken in."},
+		{"zone_name", "UiMap", "Name of that UiMap."},
+		{"windows", "", "Loot windows seen at the node in the zone."},
+		{"reporters", "", "Distinct installs."},
+	}},
+	{"gathering_yields", tables.GatheringYield{}, "Everloot loot windows (CC BY-SA 4.0). Data from Everloot (https://everloot.app), CC BY-SA 4.0.", "What a gathering node gave, kept when at least two installs saw the item from it.", []Col{
+		{"node_id", "", "gathering_nodes.node_id."},
+		{"item_id", "", "Item gathered."},
+		{"windows", "", "Windows holding the item."},
+		{"reporters", "", "Distinct installs."},
+		{"min_count", "", "Smallest stack seen."},
+		{"max_count", "", "Largest stack seen."},
+	}},
+	{"fishing_catches", tables.FishingCatch{}, "Everloot loot windows (CC BY-SA 4.0). Data from Everloot (https://everloot.app), CC BY-SA 4.0.", "What fishing gave in a zone, kept when at least two installs caught the item there. Empty until the loot windows are fetched and carry fishing.", []Col{
+		{"zone_id", "Everloot mapId", "UiMap id."},
+		{"zone_name", "UiMap", "Name of that UiMap."},
+		{"item_id", "", "Item caught."},
+		{"casts", "", "Fishing windows seen in the zone."},
+		{"catches", "", "Windows holding the item."},
+		{"reporters", "", "Distinct installs that caught it."},
+		{"rate", "derived", "catches divided by casts."},
+	}},
+	{"disenchant_yields", everloot.DisenchantYield{}, "Everloot /api/rollups/disenchant (CC BY-SA 4.0). Data from Everloot (https://everloot.app), CC BY-SA 4.0.", "What disenchanting gives, per band of item class, quality and item level, one row per material, exactly as Everloot rates it.", []Col{
+		{"band_id", "", "Everloot's band id."},
+		{"item_class", "", "armor or weapon."},
+		{"quality", "", "Item quality name (uncommon, rare, epic)."},
+		{"min_item_level", "", "Lowest item level of the band."},
+		{"max_item_level", "", "Highest item level of the band."},
+		{"state", "", "Everloot's state for the band: rated, short (few windows) or none."},
+		{"windows", "", "Disenchants observed in the band."},
+		{"installs", "", "Distinct installs."},
+		{"material_item_id", "", "Material item id."},
+		{"chance", "", "Share of disenchants that gave the material."},
+		{"per_disenchant", "", "Average count per disenchant."},
+		{"min_count", "", "Smallest count seen."},
+		{"max_count", "", "Largest count seen."},
+	}},
+	{"profession_notes", tables.ProfessionNote{}, "curated YAML (curated/professions.yaml), advisor defaults", "Curated profession notes in our own words: which professions are primary or secondary, rank tiers with skill caps and the character level they need, pairings, feeders, special cases and rules of thumb.", []Col{
+		{"section", "", "professions, ranks, pairings, feeders, special_cases or rules."},
+		{"subject", "", "The profession, rank, first profession of a pairing, feeder, or rule topic."},
+		{"related", "", "professions: primary or secondary; pairings and feeders: the other profession; null elsewhere."},
+		{"skill_min", "", "ranks only: skill the rank starts at."},
+		{"skill_cap", "", "ranks only: skill the rank ends at."},
+		{"min_level", "", "ranks only: character level needed to learn the rank."},
+		{"text", "", "The note."},
+		{"source", "", "Always \"curated (advisor defaults)\"."},
 	}},
 	{"names", names.Row{}, "derived from items, npcs, instances, recipes and item_sets", "Prebuilt name index: one row per named item, npc, instance, recipe and item set, sorted by norm, with a Bloom filter on norm. Quests carry no name, so none are listed. An exact lookup reads the row groups whose norm min/max range and Bloom filter admit the name; a prefix lookup reads those whose min/max range overlaps the prefix (see layout.md).", []Col{
 		{"norm", "derived", "The name lowercased, accent-folded, apostrophes dropped and other punctuation turned into single spaces."},

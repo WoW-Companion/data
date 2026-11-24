@@ -29,7 +29,9 @@ func TestBuildDatasetSmoke(t *testing.T) {
 	out := filepath.Join(dir, "out")
 	inst := filepath.Join(dir, "instances.yaml")
 	os.WriteFile(inst, []byte("status: \"advisor default, not authoritative\"\ninstances:\n"), 0o644)
-	m, err := BuildDataset(cache, ev, filepath.Join(dir, "no-builds"), inst, out, "2026-11-20T00:00:00Z", "")
+	prof := filepath.Join(dir, "professions.yaml")
+	os.WriteFile(prof, []byte("status: \"advisor default, not authoritative\"\n"), 0o644)
+	m, err := BuildDataset(cache, ev, filepath.Join(dir, "no-builds"), inst, prof, out, "2026-11-20T00:00:00Z", "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -37,7 +39,7 @@ func TestBuildDatasetSmoke(t *testing.T) {
 	for _, tb := range m.Tables {
 		paths = append(paths, tb.Path)
 	}
-	if got := strings.Join(paths, ","); got != "items.parquet,quests.parquet,npcs.parquet,talent_trees.parquet,talent_nodes.parquet,talent_builds.parquet,stat_types.parquet,recipes.parquet,recipe_reagents.parquet,class_spells.parquet,instances.parquet,instance_bosses.parquet,instance_quests.parquet,loot_sources.parquet,quests_observed.parquet,vendor_sources.parquet,item_sets.parquet,quest_lines.parquet,names.parquet" {
+	if got := strings.Join(paths, ","); got != "items.parquet,quests.parquet,npcs.parquet,talent_trees.parquet,talent_nodes.parquet,talent_builds.parquet,stat_types.parquet,recipes.parquet,recipe_reagents.parquet,class_spells.parquet,instances.parquet,instance_bosses.parquet,instance_quests.parquet,loot_sources.parquet,quests_observed.parquet,vendor_sources.parquet,item_sets.parquet,quest_lines.parquet,recipe_items.parquet,trainers.parquet,trainer_spells.parquet,gathering_nodes.parquet,gathering_yields.parquet,fishing_catches.parquet,disenchant_yields.parquet,profession_notes.parquet,names.parquet" {
 		t.Fatalf("tables: %s", got)
 	}
 	if m.Tables[2].Rows != 1 || m.Tables[13].Rows != 1 || m.Tables[6].Rows != int64(len(StatTypeLabels)) {
