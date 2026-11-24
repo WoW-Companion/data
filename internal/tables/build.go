@@ -138,6 +138,16 @@ func EverlootSource(s everloot.Snapshot) manifest.Source {
 	}
 }
 
+// CorpusSource is the manifest source of quests_observed and vendor_sources, carrying the
+// Everloot attribution.
+// An absent corpus cache (no rows) takes the drop snapshot's dates, which the manifest needs.
+func CorpusSource(c everloot.Corpus, drops everloot.Snapshot) manifest.Source {
+	if c.DataAsOf == "" || c.Retrieved == "" {
+		c.DataAsOf, c.Retrieved = drops.DataAsOf, drops.Retrieved
+	}
+	return manifest.Source{Name: everloot.CorpusName, Version: c.DataAsOf, Retrieved: c.Retrieved, License: everloot.License + ". " + everloot.Credit}
+}
+
 func writeTable[T any](outDir, name string, rows []T, opts parquetio.Options) (manifest.Table, error) {
 	n, sum, err := parquetio.WriteFile(filepath.Join(outDir, name), rows, opts)
 	return manifest.Table{Path: name, Rows: n, SHA256: sum, SortKeys: opts.Sort, Sources: opts.Sources}, err
@@ -160,8 +170,16 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, outDir, created, revi
 	if err != nil {
 		return manifest.Manifest{}, err
 	}
+	corpus, err := everloot.LoadCorpus(filepath.Join(filepath.Dir(everlootFile), everloot.CorpusFile))
+	if err != nil {
+		return manifest.Manifest{}, err
+	}
+	quests := everloot.BuildQuestsObserved(corpus)
+	vendors := everloot.BuildVendorSources(corpus)
 	// loot_sources before npcs: the rows decide which Everloot-only creatures npcs adds.
 	rows := MergeLootSources(everloot.BuildLootSources(ev), BuildCraftedSources(c.Recipes))
+	rows = everloot.MergeNewKeys(rows, everloot.BuildQuestRewards(corpus))
+	rows = everloot.MergeNewKeys(rows, everloot.BuildSoldBy(corpus, vendors))
 	creatures, clientOnly, _ := ZoneCoverage(c.Npcs, rows)
 	c.Npcs = AddEverlootNpcs(c.Npcs, rows, everloot.BuildNpcNames(ev.Rates))
 	ApplyNpcZones(c.Npcs, c.UiMaps, everloot.BuildNpcZones(ev.NpcZones))
@@ -227,6 +245,14 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, outDir, created, revi
 	if err := add(writeTable(outDir, "loot_sources.parquet", rows, loot)); err != nil {
 		return m, err
 	}
+	corpusSrc := CorpusSource(corpus, ev)
+	if err := add(writeTable(outDir, "quests_observed.parquet", quests, Layout(nil, []string{"quest_id"}, corpusSrc))); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "vendor_sources.parquet", vendors, Layout(nil, []string{"npc_id", "item_id"}, corpusSrc))); err != nil {
+		return m, err
+	}
+	fmt.Printf("observed quests: %d, vendor offers: %d\n", len(quests), len(vendors))
 	if err := add(writeTable(outDir, "item_sets.parquet", c.ItemSets, Layout(nil, []string{"set_id", "item_id"}, src))); err != nil {
 		return m, err
 	}

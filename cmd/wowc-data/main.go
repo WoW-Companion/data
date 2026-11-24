@@ -81,6 +81,11 @@ func runFetch(args []string) error {
 	if err != nil {
 		return err
 	}
+	cor, err := everloot.FetchCorpus(everloot.BaseURL, filepath.Join(*cache, "everloot"), time.Now().UTC().Format("2006-01-02T15:04:05Z"), *build)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("cached %d Everloot quest records and %d vendor records (data as of %s)\n", len(cor.Quests), len(cor.Vendors), cor.DataAsOf)
 	fmt.Printf("cached %d tables for build %s in %s\n", len(prov.Tables), prov.Build, filepath.Join(*cache, *build))
 	fmt.Printf("cached %d Everloot drop rates (data as of %s)\n", len(ev.Rates), ev.DataAsOf)
 	return nil

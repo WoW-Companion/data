@@ -35,7 +35,7 @@ func TestBuildDatasetSmoke(t *testing.T) {
 	for _, tb := range m.Tables {
 		paths = append(paths, tb.Path)
 	}
-	if got := strings.Join(paths, ","); got != "items.parquet,quests.parquet,npcs.parquet,talent_trees.parquet,talent_nodes.parquet,talent_builds.parquet,stat_types.parquet,recipes.parquet,recipe_reagents.parquet,class_spells.parquet,instances.parquet,instance_bosses.parquet,loot_sources.parquet,item_sets.parquet,quest_lines.parquet,names.parquet" {
+	if got := strings.Join(paths, ","); got != "items.parquet,quests.parquet,npcs.parquet,talent_trees.parquet,talent_nodes.parquet,talent_builds.parquet,stat_types.parquet,recipes.parquet,recipe_reagents.parquet,class_spells.parquet,instances.parquet,instance_bosses.parquet,loot_sources.parquet,quests_observed.parquet,vendor_sources.parquet,item_sets.parquet,quest_lines.parquet,names.parquet" {
 		t.Fatalf("tables: %s", got)
 	}
 	if m.Tables[2].Rows != 1 || m.Tables[12].Rows != 1 || m.Tables[6].Rows != int64(len(StatTypeLabels)) {
