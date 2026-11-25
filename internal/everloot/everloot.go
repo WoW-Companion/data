@@ -138,8 +138,10 @@ type Attribution struct {
 
 // Snapshot is the cached union of every page.
 type Snapshot struct {
-	Retrieved   string      `json:"retrieved"`
-	DataAsOf    string      `json:"dataAsOf"`
+	Retrieved string `json:"retrieved"`
+	DataAsOf  string `json:"dataAsOf"`
+	// Origin is the route the rows came by: "export <path>", "api" or both joined by " + ".
+	Origin      string      `json:"origin,omitempty"`
 	Attribution Attribution `json:"attribution"`
 	Rates       []Rate      `json:"rates"`
 	// QuestRewards are the item-to-quest "reward_from" edges from /api/edges.
@@ -155,9 +157,28 @@ type page struct {
 	Next        *string     `json:"next"`
 }
 
-// Fetch downloads every page of drop rates and writes cacheDir/drops.json. An existing
-// cache file is kept as is.
+// Fetch is FetchWith without an export: every row comes from the API.
 func Fetch(baseURL, cacheDir, retrieved string) (Snapshot, error) {
+	return FetchWith(baseURL, cacheDir, retrieved, nil)
+}
+
+// joinOrigin names the routes a source used.
+func joinOrigin(ex *Export, export, api bool) string {
+	switch {
+	case export && api:
+		return ex.Origin() + " + " + OriginAPI
+	case export:
+		return ex.Origin()
+	}
+	return OriginAPI
+}
+
+// FetchWith builds the drops snapshot and writes cacheDir/drops.json; an existing cache
+// file is kept as is. Rows come from the export ex when it holds them (a dataset the export
+// lacks, or a file that cannot be read, is paged from the API instead); the export alone
+// is used where it has rows, because the API has no time filter to ask for only what is
+// newer than its dataAsOf.
+func FetchWith(baseURL, cacheDir, retrieved string, ex *Export) (Snapshot, error) {
 	path := filepath.Join(cacheDir, CacheFile)
 	if b, err := os.ReadFile(path); err == nil {
 		var s Snapshot
@@ -165,34 +186,67 @@ func Fetch(baseURL, cacheDir, retrieved string) (Snapshot, error) {
 	}
 	s := Snapshot{Retrieved: retrieved}
 	client := newGetter()
-	u := fmt.Sprintf("%s%s?offset=0&limit=%d", baseURL, DropsPath, pageLen())
-	for first := true; u != ""; first = false {
-		if !first {
-			time.Sleep(Delay)
+	var fromExport, fromAPI bool
+	if ex != nil {
+		if r, ok, err := ex.Rates(); ok && err == nil {
+			s.Rates, fromExport = r, true
+			s.DataAsOf, s.Attribution = ex.Index.DataAsOf, ex.attribution()
+		} else if err != nil {
+			fmt.Printf("everloot export drops unusable, using the API: %v\n", err)
 		}
-		p, err := getPage(client, u)
+	}
+	if !fromExport {
+		fromAPI = true
+		u := fmt.Sprintf("%s%s?offset=0&limit=%d", baseURL, DropsPath, pageLen())
+		for first := true; u != ""; first = false {
+			if !first {
+				time.Sleep(Delay)
+			}
+			p, err := getPage(client, u)
+			if err != nil {
+				return s, err
+			}
+			s.Rates = append(s.Rates, p.Rates...)
+			s.DataAsOf, s.Attribution = p.DataAsOf, p.Attribution
+			u = ""
+			if p.Next != nil {
+				u = *p.Next
+			}
+		}
+	}
+	for _, rel := range []string{RelReward, RelLocated} {
+		got, byExport, err := edgesOf(ex, client, baseURL, rel)
 		if err != nil {
 			return s, err
 		}
-		s.Rates = append(s.Rates, p.Rates...)
-		s.DataAsOf, s.Attribution = p.DataAsOf, p.Attribution
-		u = ""
-		if p.Next != nil {
-			u = *p.Next
+		fromExport, fromAPI = fromExport || byExport, fromAPI || !byExport
+		if rel == RelReward {
+			s.QuestRewards = got
+		} else {
+			s.NpcZones = got
 		}
 	}
-	var err error
-	if s.QuestRewards, err = fetchEdges(client, baseURL, RelReward); err != nil {
-		return s, err
-	}
-	if s.NpcZones, err = fetchEdges(client, baseURL, RelLocated); err != nil {
-		return s, err
-	}
+	s.Origin = joinOrigin(ex, fromExport, fromAPI)
 	if err := os.MkdirAll(cacheDir, 0o755); err != nil {
 		return s, err
 	}
 	b, _ := json.MarshalIndent(s, "", " ")
 	return s, os.WriteFile(path, append(b, '\n'), 0o644)
+}
+
+// edgesOf reads one relation from the export when it has edges, else pages the API.
+func edgesOf(ex *Export, c *httpget.Getter, baseURL, rel string) (edges []Edge, fromExport bool, err error) {
+	if ex != nil {
+		e, ok, err := ex.Edges(rel)
+		if ok && err == nil && len(e) > 0 { // none of this relation in the export: ask the API
+			return e, true, nil
+		}
+		if err != nil {
+			fmt.Printf("everloot export edges unusable, using the API: %v\n", err)
+		}
+	}
+	edges, err = fetchEdges(c, baseURL, rel)
+	return edges, false, err
 }
 
 // fetchEdges follows every page of one relation of /api/edges.

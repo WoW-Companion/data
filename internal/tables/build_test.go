@@ -73,7 +73,7 @@ func TestBuildSurvivesEverlootRateLimit(t *testing.T) {
 
 	dir := t.TempDir()
 	evDir := filepath.Join(dir, "cache", "everloot")
-	_, _, _, status := everloot.FetchAll(srv.URL, evDir, "2026-11-20T00:00:00Z", "b1")
+	_, _, _, status := everloot.FetchAll(srv.URL, "", evDir, "2026-11-20T00:00:00Z", "b1")
 	if len(status) != 3 {
 		t.Fatalf("status: %+v", status)
 	}
