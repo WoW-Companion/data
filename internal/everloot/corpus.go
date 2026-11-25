@@ -68,6 +68,7 @@ type VendorRecord struct {
 type Corpus struct {
 	Retrieved   string            `json:"retrieved"`
 	DataAsOf    string            `json:"dataAsOf"`
+	Origin      string            `json:"origin,omitempty"`
 	Build       string            `json:"build"`
 	Attribution Attribution       `json:"attribution"`
 	Quests      []QuestRecord     `json:"quests"`
@@ -123,10 +124,17 @@ func LoadCorpus(path string) (Corpus, error) {
 	return c, json.Unmarshal(b, &c)
 }
 
-// FetchCorpus downloads every page of quest and vendor records plus the settled lists of
-// build, and writes cacheDir/corpus.json. An existing cache file is kept as is. Any error
-// stops the fetch.
+// FetchCorpus is FetchCorpusWith without an export: every record comes from the API.
 func FetchCorpus(baseURL, cacheDir, retrieved, build string) (Corpus, error) {
+	return FetchCorpusWith(baseURL, cacheDir, retrieved, build, nil)
+}
+
+// FetchCorpusWith downloads the quest, vendor and other records plus the settled lists of
+// build, and writes cacheDir/corpus.json. An existing cache file is kept as is. Records
+// come from the export ex when it holds a corpus file (the API has no time filter, so the
+// export is used alone); otherwise every page is read from the API. The settled lists are
+// small and always asked of the API. Any error stops the fetch.
+func FetchCorpusWith(baseURL, cacheDir, retrieved, build string, ex *Export) (Corpus, error) {
 	path := filepath.Join(cacheDir, CorpusFile)
 	if _, err := os.Stat(path); err == nil {
 		return LoadCorpus(path)
@@ -137,7 +145,22 @@ func FetchCorpus(baseURL, cacheDir, retrieved, build string) (Corpus, error) {
 	if FetchLoot || apiKey() != "" { // with a key the 50 loot pages fit the hourly limit
 		kinds = append(kinds, KindLootRec)
 	}
+	fromExport := false
+	if ex != nil {
+		ok, err := ex.corpusInto(&c, append(kinds, KindLootRec))
+		if ok && err == nil {
+			fromExport = true
+			c.DataAsOf, c.Attribution, c.Origin = ex.Index.DataAsOf, ex.attribution(), ex.Origin()
+		} else if err != nil {
+			fmt.Printf("everloot export corpus unusable, using the API: %v\n", err)
+			c = Corpus{Retrieved: retrieved, Build: build}
+		}
+	}
 	for _, kind := range kinds {
+		if fromExport {
+			break
+		}
+		c.Origin = OriginAPI
 		u := fmt.Sprintf("%s%s?kinds=%s&offset=0&limit=%d", baseURL, CorpusPath, kind, pageLen())
 		for u != "" {
 			time.Sleep(Delay)

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/WoW-Companion/data/internal/everloot"
 	"github.com/WoW-Companion/data/internal/fetch"
@@ -134,14 +135,24 @@ func Layout(bloom, sort []string, srcs ...manifest.Source) parquetio.Options {
 	}
 }
 
+// everLicense is the licence and credit text of an Everloot source; a source read from the
+// data files export also carries the Warcraft Wiki name credit.
+func everLicense(origin string) string {
+	l := everloot.License + ". " + everloot.Credit
+	if strings.HasPrefix(origin, "export") {
+		l += " " + everloot.WikiCredit
+	}
+	return l
+}
+
 // EverlootSource turns a cached Everloot snapshot into a manifest source carrying its
 // attribution.
 func EverlootSource(s everloot.Snapshot) manifest.Source {
 	return manifest.Source{
 		Name:      "Everloot (https://everloot.app), corroborated drop rates",
-		Version:   s.DataAsOf,
+		Version:   everloot.SourceVersion(s.Origin, s.DataAsOf),
 		Retrieved: s.Retrieved,
-		License:   everloot.License + ". " + everloot.Credit,
+		License:   everLicense(s.Origin),
 	}
 }
 
@@ -150,9 +161,9 @@ func EverlootSource(s everloot.Snapshot) manifest.Source {
 // An absent corpus cache (no rows) takes the drop snapshot's dates, which the manifest needs.
 func CorpusSource(c everloot.Corpus, drops everloot.Snapshot) manifest.Source {
 	if c.DataAsOf == "" || c.Retrieved == "" {
-		c.DataAsOf, c.Retrieved = drops.DataAsOf, drops.Retrieved
+		c.DataAsOf, c.Retrieved, c.Origin = drops.DataAsOf, drops.Retrieved, drops.Origin
 	}
-	return manifest.Source{Name: everloot.CorpusName, Version: c.DataAsOf, Retrieved: c.Retrieved, License: everloot.License + ". " + everloot.Credit}
+	return manifest.Source{Name: everloot.CorpusName, Version: everloot.SourceVersion(c.Origin, c.DataAsOf), Retrieved: c.Retrieved, License: everLicense(c.Origin)}
 }
 
 func writeTable[T any](outDir, name string, rows []T, opts parquetio.Options) (manifest.Table, error) {

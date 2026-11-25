@@ -101,7 +101,7 @@ func buildWithoutEverloot(t *testing.T, rels []fakeRel) manifest.Manifest {
 
 	dir := t.TempDir()
 	evDir := filepath.Join(dir, "cache", "everloot")
-	everloot.FetchAll(rate.URL, evDir, "2026-11-20T00:00:00Z", "b1")
+	everloot.FetchAll(rate.URL, "", evDir, "2026-11-20T00:00:00Z", "b1")
 	cache := filepath.Join(dir, "cache", "b1")
 	os.MkdirAll(cache, 0o755)
 	for _, tb := range fetch.Tables {

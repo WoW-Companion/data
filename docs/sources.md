@@ -374,3 +374,14 @@ Everloot allows 30 requests an hour per address without a key, and the workflow 
 ## Everloot API key (2026-11-25)
 
 When `EVERLOOT_API_KEY` is set, every Everloot request carries `Authorization: Bearer <key>` (OpenAPI `securitySchemes.apiKey`, https://everloot.app/api/openapi.json), pages ask for 5,000 records, and the loot windows (`-loot`) are fetched without the flag. The key is never logged; error text has it redacted. Without it the fetch behaves as before.
+
+## Everloot data files export (bulk first)
+
+Status: **usable under CC BY-SA 4.0, credited.** Documented at https://everloot.app/docs/api/data-files.
+
+- Route: `https://data.everloot.app/latest.json` names the newest export's `index.json` by a path relative to that base. Each export is a folder that never changes, with one NDJSON file per dataset (`corpus`, `drops`, `edges`, `items`). Exports are made by hand, so the newest can be older than the live API.
+- The fetch reads the index, validates it against Everloot's `bulkIndex` schema (a copy is embedded), downloads `drops.ndjson`, `edges.ndjson` and `corpus.ndjson` into `dist/cache/everloot/export/<folder>/`, and checks each file's SHA-256 against the index. A file already cached with the right checksum is not downloaded again. No API key is ever sent to the files host. `items.ndjson` is not read: the item names come from the client tables above.
+- The export rows are the API rows, so they feed the same readers. A dataset the export holds no rows for (an export made while Everloot's storage was unreachable lists empty files) is paged from the API instead, with the key.
+- No delta: the API's drops, corpus and edges routes have no time filter, so records newer than the export's `dataAsOf` cannot be asked for alone. Where the export has rows it is used alone and its age is recorded as `dataAsOf` in the manifest.
+- Fallbacks, in order: the export; the API (with `EVERLOOT_API_KEY`); the earlier release's rows (carried forward). The manifest source version says which: `export <path> dataAsOf <date>`, `api dataAsOf <date>` or `carried-forward`.
+- Credit: every table built from the export keeps "Data from Everloot (https://everloot.app), CC BY-SA 4.0." and, because the export's names come from the Warcraft Wiki (CC BY-SA 4.0), also "Names from the Warcraft Wiki (https://warcraft.wiki.gg), CC BY-SA 4.0." Game data is credited to Blizzard.
