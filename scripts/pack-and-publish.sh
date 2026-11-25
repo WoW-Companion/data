@@ -25,6 +25,26 @@ go run ./cmd/wowc-data coverage "$DIST" > "$OUT/coverage-$BUILD.md"
 go run ./cmd/wowc-data coverage -json "$DIST" > "$OUT/stats-$BUILD.json"
 ls -l "$OUT"/wowc-dataset-"$BUILD".tar.zst "$OUT"/manifest-"$BUILD".json "$OUT"/coverage-"$BUILD".md "$OUT"/stats-"$BUILD".json
 
+step "revision history"
+# Every publish also keeps revision-named copies of the archive and manifest (the last 10
+# per build) and records them in revisions-$BUILD.json; the unsuffixed names stay as they are.
+TAG=dataset-$BUILD
+HIST_PREV=$OUT/revisions-prev.json
+rm -f "$HIST_PREV"
+if [ "${REPUBLISH:-}" = true ]; then
+  # Reading the old history is best effort: a release without one starts a new history.
+  gh release download "$TAG" --dir "$OUT" --pattern "revisions-$BUILD.json" --clobber \
+    && mv "$OUT/revisions-$BUILD.json" "$HIST_PREV" || echo "no earlier revision history"
+fi
+HIST=$(go run ./cmd/wowc-data history -prev "$HIST_PREV" -out "$OUT/revisions-$BUILD.json" "$DIST")
+echo "$HIST"
+REV=$(echo "$HIST" | awk '$1 == "revision" {print $2}')
+PRUNE=$(echo "$HIST" | awk '$1 == "prune" {print $2}')
+[ -n "$REV" ] || { echo "no revision in the manifest" >&2; exit 1; }
+cp "$OUT/wowc-dataset-$BUILD.tar.zst" "$OUT/wowc-dataset-$BUILD-$REV.tar.zst"
+cp "$OUT/manifest-$BUILD.json" "$OUT/manifest-$BUILD-$REV.json"
+REV_ASSETS=(wowc-dataset-"$BUILD-$REV".tar.zst manifest-"$BUILD-$REV".json)
+
 step "previous release"
 # The previous release is the newest dataset release other than this build's; its
 # manifest and stats are all the diff needs. A release without stats still diffs
@@ -38,7 +58,9 @@ echo "previous: ${PREV_TAG:-none (first release)}"
 step "release notes"
 if [ -n "$PREV_TAG" ]; then
   rm -rf "$OUT/prev" && mkdir "$OUT/prev"
-  gh release download "$PREV_TAG" --dir "$OUT/prev" --pattern 'manifest-*.json' --pattern 'stats-*.json'
+  # Exact names: the release also holds revision-named manifests (manifest-<build>-<rev>.json).
+  PREV_BUILD=${PREV_TAG#dataset-}
+  gh release download "$PREV_TAG" --dir "$OUT/prev" --pattern "manifest-$PREV_BUILD.json" --pattern "stats-$PREV_BUILD.json"
   mv "$OUT"/prev/manifest-*.json "$OUT/prev/manifest.json"
   mv "$OUT"/prev/stats-*.json "$OUT/prev/stats.json" 2>/dev/null || true
   go run ./cmd/wowc-data release-notes -prev-tag "$PREV_TAG" -prev-dir "$OUT/prev" "$DIST" > "$OUT/notes.md"
@@ -51,11 +73,10 @@ if [ "${DRYRUN:-}" = 1 ]; then
   step "dry run: not publishing dataset-$BUILD"
   exit 0
 fi
-ASSETS=(wowc-dataset-"$BUILD".tar.zst manifest-"$BUILD".json coverage-"$BUILD".md stats-"$BUILD".json)
-TAG=dataset-$BUILD
+ASSETS=(wowc-dataset-"$BUILD".tar.zst manifest-"$BUILD".json coverage-"$BUILD".md stats-"$BUILD".json revisions-"$BUILD".json)
 if [ "${REPUBLISH:-}" != true ]; then
   step "publish $TAG"
-  gh release create "$TAG" "${ASSETS[@]/#/$OUT/}" \
+  gh release create "$TAG" "${ASSETS[@]/#/$OUT/}" "${REV_ASSETS[@]/#/$OUT/}" \
     --title "Dataset $BUILD" --notes-file "$OUT/notes.md" --target "${GITHUB_SHA:-main}"
   exit 0
 fi
@@ -68,7 +89,7 @@ gh_assets() { gh api --paginate "repos/$GITHUB_REPOSITORY/releases/tags/$TAG" --
 rename_asset() { gh api -X PATCH "repos/$GITHUB_REPOSITORY/releases/assets/$1" -f name="$2" >/dev/null; }
 STAGE=$OUT/stage && rm -rf "$STAGE" && mkdir "$STAGE"
 for a in "${ASSETS[@]}"; do cp "$OUT/$a" "$STAGE/new-$a"; done
-gh release upload "$TAG" "$STAGE"/new-* --clobber
+gh release upload "$TAG" "$STAGE"/new-* "${REV_ASSETS[@]/#/$OUT/}" --clobber
 for a in "${ASSETS[@]}"; do
   new=$(gh_assets "new-$a"); old=$(gh_assets "$a")
   [ -n "$new" ] || { echo "temporary asset new-$a is missing; the release is unchanged" >&2; exit 1; }
@@ -77,3 +98,9 @@ for a in "${ASSETS[@]}"; do
   if [ -n "$old" ]; then gh api -X DELETE "repos/$GITHUB_REPOSITORY/releases/assets/$old" >/dev/null; fi
 done
 gh release edit "$TAG" --notes-file "$OUT/notes.md"
+# Prune the revisions that fell out of the last 10; a missing asset is not an error.
+for r in $PRUNE; do
+  for n in "wowc-dataset-$BUILD-$r.tar.zst" "manifest-$BUILD-$r.json"; do
+    gh release delete-asset "$TAG" "$n" --yes || echo "could not delete $n (already gone?)"
+  done
+done

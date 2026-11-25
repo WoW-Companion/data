@@ -78,7 +78,7 @@ func LoadAllowShrink(path string) ([]Allow, error) {
 }
 
 // CheckShrink refuses a dataset that drops a table that had rows by more than 50%, or to
-// 0 (or drops the table), against the previous release, unless allow lists the table. The
+// 0 (or drops the table), against the baseline (the previous release, or the maximum over the kept revisions), unless allow lists the table. The
 // error names every such table with both counts.
 func CheckShrink(prev, cur manifest.Manifest, allow []Allow) error {
 	now := map[string]int64{}
@@ -103,6 +103,6 @@ func CheckShrink(prev, cur manifest.Manifest, allow []Allow) error {
 	if len(bad) == 0 {
 		return nil
 	}
-	return fmt.Errorf("refusing to publish: %s (more than 50%% fewer rows than the release %s); if intended, add the table with a reason to %s",
+	return fmt.Errorf("refusing to publish: %s (more than 50%% fewer rows than %s); if intended, add the table with a reason to %s",
 		strings.Join(bad, "; "), prev.Revision, AllowShrinkFile)
 }
