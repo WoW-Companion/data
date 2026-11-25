@@ -9,7 +9,8 @@ import (
 
 // Recipe is one row of the recipes table: a profession spell. YellowSkill and GreySkill are
 // the skill levels at which the recipe turns yellow and grey, from the skill line ability's
-// trivial rank low and high; learn skill is its minimum rank. A zero in the client means
+// trivial rank low and high; the client's learn skill is its minimum rank, which is 1 for
+// trainer recipes. A zero in the client means
 // none and is stored as null. The client stores no green threshold, so there is no column.
 type Recipe struct {
 	SpellID       int32   `parquet:"spell_id"`
@@ -17,9 +18,12 @@ type Recipe struct {
 	SkillLineName string  `parquet:"skill_line_name"`
 	Name          *string `parquet:"name,optional"`
 	CreatesItemID *int32  `parquet:"creates_item_id,optional"`
-	LearnSkill    *int16  `parquet:"learn_skill,optional"`
-	YellowSkill   *int16  `parquet:"yellow_skill,optional"`
-	GreySkill     *int16  `parquet:"grey_skill,optional"`
+	// LearnSkill is the skill needed to learn the recipe and LearnSkillSource where it came
+	// from; see ApplyLearnSkills. BuildRecipes leaves the client minimum in LearnSkill.
+	LearnSkill       *int16  `parquet:"learn_skill,optional"`
+	LearnSkillSource *string `parquet:"learn_skill_source,optional,dict"`
+	YellowSkill      *int16  `parquet:"yellow_skill,optional"`
+	GreySkill        *int16  `parquet:"grey_skill,optional"`
 	// LearnedFrom is trainer, item or both; see ApplyLearnedFrom.
 	LearnedFrom string `parquet:"learned_from,dict"`
 }

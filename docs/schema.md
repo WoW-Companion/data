@@ -129,7 +129,8 @@ One row per profession recipe, once per skill line and spell. Source: wago.tools
 | `skill_line_name` | `string` | no | SkillLine | Profession name. |
 | `name` | `string` | yes | SpellName | Spell name; null when SpellName has none. |
 | `creates_item_id` | `int32` | yes | SpellEffect | Item the recipe makes; null when it makes none. |
-| `learn_skill` | `int16` | yes | SkillLineAbility | Minimum skill rank to learn it; null when the client stores zero. |
+| `learn_skill` | `int16` | yes | trainer_spells, recipe_items, SkillLineAbility, derived | Skill rank needed to learn the recipe, from learn_skill_source: the trainer's required skill, the teaching recipe item's, the client's minimum when above 1, else an estimate. Null only when no source and no yellow_skill exist. |
+| `learn_skill_source` | `string` | yes | derived | trainer, recipe_item, client or estimate: where learn_skill came from, in that order of preference. estimate is yellow_skill minus a multiple of the yellow-to-grey span, fitted on the other rows (docs/sources.md). Null when learn_skill is null. |
 | `yellow_skill` | `int16` | yes | SkillLineAbility | Skill rank at which it turns yellow; null when zero. |
 | `grey_skill` | `int16` | yes | SkillLineAbility | Skill rank at which it turns grey; null when zero. |
 | `learned_from` | `string` | no | derived | trainer when no recipe item teaches the spell, item when one does, both when a recipe item and a corroborated Everloot trainer offer both do (see recipe_items and trainer_spells). trainer also covers a spell no trainer was observed offering: it is the absence of a recipe item, not proof of a trainer. |
@@ -223,7 +224,7 @@ Where an item comes from: creature, object, quest reward, sold by, crafted and g
 | `tier` | `string` | yes | Everloot | reported, verified or confirmed on drop rows; settled or corroborated on quest reward and sold by rows from observed quests and vendors; null on crafted rows. |
 | `everloot_data_as_of` | `string` | yes | Everloot | Everloot's dataAsOf for the snapshot; null on crafted rows. |
 | `profession` | `string` | yes | recipes, GameObjects, Lock, LockType | Crafted rows: the recipe's profession. Gathered rows: Herbalism or Mining. Null otherwise. |
-| `learn_skill` | `int16` | yes | recipes | Crafted rows only: skill rank to learn the recipe; null otherwise. |
+| `learn_skill` | `int16` | yes | recipes | Crafted rows only: the recipe's learn_skill (see recipes.learn_skill_source); null otherwise. |
 | `node_id` | `int32` | yes | GameObjects | Gathered rows only: the node's game object id (equals source_id); null otherwise. |
 | `node_name` | `string` | yes | GameObjects | Gathered rows only: the node's name; null when the client holds none. |
 | `skill_required` | `int16` | yes | Lock | Gathered rows only: the skill rank the node's lock needs; null otherwise. |
