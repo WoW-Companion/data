@@ -134,11 +134,11 @@ func FetchCorpus(baseURL, cacheDir, retrieved, build string) (Corpus, error) {
 	c := Corpus{Retrieved: retrieved, Build: build}
 	client := newGetter()
 	kinds := []string{KindQuestRec, KindVendorRec, KindEncounterRec, KindEntranceRec, KindTrainerRec}
-	if FetchLoot {
+	if FetchLoot || apiKey() != "" { // with a key the 50 loot pages fit the hourly limit
 		kinds = append(kinds, KindLootRec)
 	}
 	for _, kind := range kinds {
-		u := fmt.Sprintf("%s%s?kinds=%s&offset=0&limit=%d", baseURL, CorpusPath, kind, PageLen)
+		u := fmt.Sprintf("%s%s?kinds=%s&offset=0&limit=%d", baseURL, CorpusPath, kind, pageLen())
 		for u != "" {
 			time.Sleep(Delay)
 			body, err := client.Get(u)

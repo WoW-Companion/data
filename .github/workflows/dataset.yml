@@ -36,6 +36,8 @@ jobs:
         run: go run ./cmd/wowc-data release-check
       - name: Fetch client tables and Everloot rates
         if: steps.check.outputs.publish == 'true'
+        env:
+          EVERLOOT_API_KEY: ${{ secrets.EVERLOOT_API_KEY }}
         run: go run ./cmd/wowc-data fetch -build "${{ steps.check.outputs.build }}"
       - name: Build the dataset
         if: steps.check.outputs.publish == 'true'

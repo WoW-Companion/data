@@ -31,7 +31,23 @@ const (
 	Credit  = "Data from Everloot (https://everloot.app), CC BY-SA 4.0."
 	License = "CC BY-SA 4.0"
 	PageLen = 500 // the cap without an API key
+	// PageLenKeyed is the cap with an API key.
+	PageLenKeyed = 5000
+	// KeyEnv names the environment variable that holds the API key (a free "Read public
+	// data" key, sent as "Authorization: Bearer <key>", per Everloot's OpenAPI document).
+	KeyEnv = "EVERLOOT_API_KEY"
 )
+
+// apiKey is the key in the environment, "" when none is set.
+func apiKey() string { return strings.TrimSpace(os.Getenv(KeyEnv)) }
+
+// pageLen is the page size to ask for: the larger one with a key.
+func pageLen() int {
+	if apiKey() != "" {
+		return PageLenKeyed
+	}
+	return PageLen
+}
 
 // Delay is the pause between two page requests.
 var Delay = 2 * time.Second
@@ -149,7 +165,7 @@ func Fetch(baseURL, cacheDir, retrieved string) (Snapshot, error) {
 	}
 	s := Snapshot{Retrieved: retrieved}
 	client := newGetter()
-	u := fmt.Sprintf("%s%s?offset=0&limit=%d", baseURL, DropsPath, PageLen)
+	u := fmt.Sprintf("%s%s?offset=0&limit=%d", baseURL, DropsPath, pageLen())
 	for first := true; u != ""; first = false {
 		if !first {
 			time.Sleep(Delay)
@@ -182,7 +198,7 @@ func Fetch(baseURL, cacheDir, retrieved string) (Snapshot, error) {
 // fetchEdges follows every page of one relation of /api/edges.
 func fetchEdges(c *httpget.Getter, baseURL, rel string) ([]Edge, error) {
 	var out []Edge
-	u := fmt.Sprintf("%s%s?rel=%s&offset=0&limit=%d", baseURL, EdgesPath, rel, PageLen)
+	u := fmt.Sprintf("%s%s?rel=%s&offset=0&limit=%d", baseURL, EdgesPath, rel, pageLen())
 	for u != "" {
 		time.Sleep(Delay)
 		p, err := getEdges(c, u)
@@ -256,7 +272,7 @@ func BuildNpcNames(rates []Rate) map[int32]string {
 	return out
 }
 
-// newGetter makes the one client a fetch shares. Without a key Everloot allows 30
+// newGetter makes the one client a fetch shares; it sends the API key when one is set. Without a key Everloot allows 30
 // requests an hour per address and answers 429 with Retry-After (about 23 minutes), and
 // a CI runner's address is shared, so a 429 is waited out: one wait of up to 30 minutes,
 // 40 minutes in all, which fits the workflow's timeout.
@@ -264,6 +280,7 @@ func newGetter() *httpget.Getter {
 	return &httpget.Getter{
 		Client: &http.Client{Timeout: 120 * time.Second}, Attempts: 4, Base: 10 * time.Second,
 		MaxWait: 30 * time.Minute, Budget: 40 * time.Minute, Sleep: time.Sleep,
+		BearerKey: apiKey(),
 	}
 }
 

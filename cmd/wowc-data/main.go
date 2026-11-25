@@ -73,7 +73,7 @@ func runFetch(args []string) error {
 	fs := flag.NewFlagSet("fetch", flag.ExitOnError)
 	build := fs.String("build", fetch.DefaultBuild, "game build")
 	cache := fs.String("cache", "dist/cache", "cache directory")
-	loot := fs.Bool("loot", false, "also fetch Everloot loot windows (50 pages: more than 30 requests an hour; for gathering and fishing)")
+	loot := fs.Bool("loot", false, "also fetch Everloot loot windows (50 pages: more than 30 requests an hour; for gathering and fishing). Always on when EVERLOOT_API_KEY is set")
 	fs.Parse(args)
 	everloot.FetchLoot = *loot
 	prov, err := fetch.Build(fetch.BaseURL, *build, *cache, fetch.Tables)

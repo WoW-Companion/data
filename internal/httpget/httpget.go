@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -16,6 +17,7 @@ import (
 type Getter struct {
 	Client    *http.Client
 	UserAgent string        // sent when not empty
+	BearerKey string        // sent as "Authorization: Bearer <key>" when not empty; never logged
 	Attempts  int           // tries per request, at least 1
 	Base      time.Duration // first backoff wait
 	MaxWait   time.Duration // longest single wait
@@ -48,8 +50,21 @@ func (g *Getter) wait(n int, retryAfter string) time.Duration {
 	return d
 }
 
-// Get returns the body of a 200 answer from u.
+// redact removes the key from an error's text, wherever a URL or a transport error put it.
+func (g *Getter) redact(err error) error {
+	if err == nil || g.BearerKey == "" || !strings.Contains(err.Error(), g.BearerKey) {
+		return err
+	}
+	return fmt.Errorf("%s", strings.ReplaceAll(err.Error(), g.BearerKey, "[redacted]"))
+}
+
+// Get returns the body of a 200 answer from u. Errors never carry the bearer key.
 func (g *Getter) Get(u string) ([]byte, error) {
+	b, err := g.get(u)
+	return b, g.redact(err)
+}
+
+func (g *Getter) get(u string) ([]byte, error) {
 	var last error
 	for n := 1; ; n++ {
 		body, status, retryAfter, err := g.once(u)
@@ -83,6 +98,9 @@ func (g *Getter) once(u string) (body []byte, status int, retryAfter string, err
 	}
 	if g.UserAgent != "" {
 		req.Header.Set("User-Agent", g.UserAgent)
+	}
+	if g.BearerKey != "" {
+		req.Header.Set("Authorization", "Bearer "+g.BearerKey)
 	}
 	resp, err := g.Client.Do(req)
 	if err != nil {
