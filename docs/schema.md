@@ -6,7 +6,7 @@ Each table is one Parquet file, `<table>.parquet`, in a dataset directory. `Null
 
 ## items
 
-One row per item the client lists, sorted by id. Source: wago.tools client table ItemSparse, Item. File: `items.parquet`.
+One row per item the client lists, sorted by id. Source: wago.tools client table ItemSparse, Item, RandPropPoints, ItemArmorTotal, ItemArmorQuality, ItemArmorShield, ArmorLocation, ItemDamage*. File: `items.parquet`.
 
 | Column | Type | Null | Source | Meaning |
 | --- | --- | --- | --- | --- |
@@ -22,10 +22,10 @@ One row per item the client lists, sorted by id. Source: wago.tools client table
 | `bonding` | `int8` | no | table | Bonding id (0 none, 1 on pickup, 2 on equip, 3 on use). |
 | `stat_types` | `list<int16>` | no | table | Stat type ids the item lists, in slot order; empty when none (see stat_types). |
 | `stats_status` | `string` | no | derived | known when stats are listed, unknown when a stat-bearing piece lists none, none otherwise. |
-| `stats` | `list<struct{type int16, value int32?}>` | no | table | One {type, value} per listed stat; value is always null, the client holds no amount. |
-| `armor` | `int32` | yes | table | Always null: the client holds no per-item armor amount. |
-| `dmg_min` | `int32` | yes | table | Always null: the client holds no per-item damage amount. |
-| `dmg_max` | `int32` | yes | table | Always null: the client holds no per-item damage amount. |
+| `stats` | `list<struct{type int16, value int32?}>` | no | table | One {type, value} per listed stat. value is StatPercentEditor/10000 of the level budget (RandPropPoints by item level, quality and slot), rounded; null for a poor or common item, a zero share or a level with no budget row. |
+| `armor` | `int32` | yes | table | Computed: ItemArmorTotal for the level and material x ItemArmorQuality x ArmorLocation for the slot (ItemArmorShield for shields), rounded. Null for non-armor, jewellery, relics and a zero result. |
+| `dmg_min` | `int32` | yes | table | Computed: the level's ItemDamage* damage per second x ItemDelay, spread by DmgVariance, rounded; null for non-weapons and items with no delay. |
+| `dmg_max` | `int32` | yes | table | Computed as dmg_min, upper end of the range (avg x (1 + DmgVariance/2)). |
 | `speed_ms` | `int32` | yes | table | Weapon speed in milliseconds (ItemDelay); null for non-weapons or a zero delay. |
 | `sell_price` | `int32` | yes | ItemSparse SellPrice | Vendor sell price in copper; null when the client stores zero. |
 | `buy_price` | `int32` | yes | ItemSparse BuyPrice | Vendor buy price in copper; null when the client stores zero. |

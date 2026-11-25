@@ -94,7 +94,7 @@ func LoadCache(dir string) (Cached, error) {
 			return c, err
 		}
 	}
-	c.Items = BuildItems(rows["ItemSparse"], rows["Item"])
+	c.Items = BuildItems(rows["ItemSparse"], rows["Item"], NewBudgets(rows))
 	c.Quests = BuildQuests(rows["QuestV2"], rows["QuestLineXQuest"], rows["QuestPOIBlob"], rows["UiMap"])
 	c.ItemSets = BuildItemSets(rows["ItemSet"])
 	c.QuestLines = BuildQuestLines(rows["QuestLine"], rows["QuestLineXQuest"])

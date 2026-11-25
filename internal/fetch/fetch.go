@@ -34,7 +34,9 @@ var Tables = []string{"ItemSparse", "Item", "QuestV2", "QuestLineXQuest", "Quest
 	"SkillLine", "SkillLineAbility", "Spell", "SpellLevels", "SpellReagents", "SpellEffect",
 	"Map", "DungeonEncounter", "MapDifficulty", "ContentTuning",
 	"ItemSet", "QuestLine",
-	"GameObjects", "Lock", "LockType", "ItemEffect", "ItemXItemEffect"}
+	"GameObjects", "Lock", "LockType", "ItemEffect", "ItemXItemEffect",
+	"RandPropPoints", "ItemArmorTotal", "ItemArmorQuality", "ItemArmorShield", "ArmorLocation", // item budget tables
+	"ItemDamageOneHand", "ItemDamageOneHandCaster", "ItemDamageTwoHand", "ItemDamageTwoHandCaster", "ItemDamageRanged", "ItemDamageThrown", "ItemDamageWand"}
 
 // RandomSuffixBuild is the client build the random suffix tables are read from. wago.tools
 // holds no ItemRandomProperties or ItemRandomSuffix for the dataset's build (1.60.1 is past
