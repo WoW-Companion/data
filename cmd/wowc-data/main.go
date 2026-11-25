@@ -79,17 +79,9 @@ func runFetch(args []string) error {
 	if err != nil {
 		return err
 	}
-	ev, err := everloot.Fetch(everloot.BaseURL, filepath.Join(*cache, "everloot"), time.Now().UTC().Format("2006-01-02T15:04:05Z"))
-	if err != nil {
-		return err
-	}
-	cor, err := everloot.FetchCorpus(everloot.BaseURL, filepath.Join(*cache, "everloot"), time.Now().UTC().Format("2006-01-02T15:04:05Z"), *build)
-	if err != nil {
-		return err
-	}
-	de, err := everloot.FetchDisenchant(everloot.BaseURL, filepath.Join(*cache, "everloot"), time.Now().UTC().Format("2006-01-02T15:04:05Z"))
-	if err != nil {
-		return err
+	ev, cor, de, status := everloot.FetchAll(everloot.BaseURL, filepath.Join(*cache, "everloot"), time.Now().UTC().Format("2006-01-02T15:04:05Z"), *build)
+	for _, st := range status {
+		fmt.Println(st.Line())
 	}
 	fmt.Printf("cached %d disenchant bands, %d trainer records, %d loot records\n", len(de.Bands), len(cor.Trainers), len(cor.Loots))
 	fmt.Printf("cached %d Everloot quest records and %d vendor records (data as of %s)\n", len(cor.Quests), len(cor.Vendors), cor.DataAsOf)
