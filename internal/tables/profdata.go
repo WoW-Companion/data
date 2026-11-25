@@ -156,7 +156,13 @@ type GatheringYield struct {
 
 // BuildGathering turns node observations into rows. Only herb and mining nodes are kept: a
 // node the client names (nodes) or Everloot labels ore or herb. Yields follow their nodes.
-func BuildGathering(obs []everloot.NodeObs, yields []everloot.NodeYield, nodes map[int32]Node, uiMaps []Row) ([]GatheringNode, []GatheringYield) {
+//
+// Skill and profession come from the client lock first, then from curatedNodeSkills by the
+// node's exact name. Everloot's drop rates (drops: object or gathered rows) add a yield for
+// an item a kept node dropped that the loot windows did not give at two installs; such a
+// yield carries the rate row's kills as windows and reporters, and 0 for both counts, which
+// the rate rows do not hold.
+func BuildGathering(obs []everloot.NodeObs, yields []everloot.NodeYield, nodes map[int32]Node, uiMaps []Row, drops []everloot.LootSource) ([]GatheringNode, []GatheringYield) {
 	ui := uiNames(uiMaps)
 	rows := []GatheringNode{}
 	kept := map[int32]bool{}
@@ -172,6 +178,14 @@ func BuildGathering(obs []everloot.NodeObs, yields []everloot.NodeYield, nodes m
 				g.Name = &nm
 			}
 		}
+		name := o.Name
+		if g.Name != nil {
+			name = *g.Name
+		}
+		cur, curOK := curatedNodeSkills[name]
+		if g.Profession == "" && curOK {
+			g.Profession = cur.Profession
+		}
 		if g.Profession == "" {
 			switch o.GatherKind {
 			case everloot.GatherOre:
@@ -186,6 +200,10 @@ func BuildGathering(obs []everloot.NodeObs, yields []everloot.NodeYield, nodes m
 			nm := o.Name
 			g.Name = &nm
 		}
+		if g.SkillRequired == nil && curOK && cur.Profession == g.Profession {
+			sk := cur.Skill
+			g.SkillRequired = &sk
+		}
 		if n, ok := ui[o.ZoneID]; ok {
 			g.ZoneName = &n
 		}
@@ -198,6 +216,23 @@ func BuildGathering(obs []everloot.NodeObs, yields []everloot.NodeYield, nodes m
 			ys = append(ys, GatheringYield{NodeID: y.ObjectID, ItemID: y.ItemID, Windows: y.Windows, Reporters: y.Reporters, MinCount: y.MinCount, MaxCount: y.MaxCount})
 		}
 	}
+	have := map[[2]int32]bool{}
+	for _, y := range ys {
+		have[[2]int32{y.NodeID, y.ItemID}] = true
+	}
+	for _, d := range drops {
+		if (d.SourceKind != everloot.KindObject && d.SourceKind != everloot.KindGathered) || !kept[d.SourceID] || d.Drops <= 0 || have[[2]int32{d.SourceID, d.ItemID}] {
+			continue
+		}
+		have[[2]int32{d.SourceID, d.ItemID}] = true
+		ys = append(ys, GatheringYield{NodeID: d.SourceID, ItemID: d.ItemID, Windows: d.Kills, Reporters: d.Reporters})
+	}
+	slices.SortFunc(ys, func(a, b GatheringYield) int {
+		if a.NodeID != b.NodeID {
+			return int(a.NodeID - b.NodeID)
+		}
+		return int(a.ItemID - b.ItemID)
+	})
 	return rows, ys
 }
 

@@ -262,7 +262,7 @@ func BuildDatasetFrom(cacheBuildDir, everlootFile, talentsDir, instancesFile, pr
 	trainers, ts := carried(prev, "trainers.parquet", corpusGone, trainers, corpusSrc)
 	trainerSpells, tss := carried(prev, "trainer_spells.parquet", corpusGone, trainerSpells, corpusSrc)
 	nodeObs, nodeYields := everloot.BuildGatherObs(corpus)
-	gatherNodes, gatherYields := BuildGathering(nodeObs, nodeYields, c.Nodes, c.UiMaps)
+	gatherNodes, gatherYields := BuildGathering(nodeObs, nodeYields, c.Nodes, c.UiMaps, rows)
 	gatherNodes, gns := carried(prev, "gathering_nodes.parquet", corpusGone, gatherNodes, corpusSrc)
 	gatherYields, gys := carried(prev, "gathering_yields.parquet", corpusGone, gatherYields, corpusSrc)
 	fishing, fs := carried(prev, "fishing_catches.parquet", corpusGone, BuildFishingCatches(everloot.BuildFishing(corpus), c.UiMaps), corpusSrc)
