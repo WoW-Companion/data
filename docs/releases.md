@@ -34,3 +34,11 @@ go run github.com/WoW-Companion/data/cmd/wowc-data@latest verify-manifest data/<
 ```
 
 `verify-manifest` checks `manifest.json` against its schema and recomputes each listed file's SHA-256. Without Go, compare by hand: every entry in `manifest.json`'s `tables` has a `path` and a `sha256`, so `shasum -a 256 data/<build>/<path>` must print that hash. Also check that `manifest-<build>.json` is identical to `data/<build>/manifest.json`.
+
+## Carry-forward and the shrink guard
+
+`wowc-data build` (with `GITHUB_REPOSITORY` set) never publishes a regression:
+
+- **Carry forward.** When an Everloot source (the corpus, or the disenchant rollup) could not be fetched, the tables built from it (`quests_observed`, `vendor_sources`, `trainers`, `trainer_spells`, `gathering_nodes`, `gathering_yields`, `fishing_catches`; `disenchant_yields`) take their rows from the newest published dataset release that has them: this build's own release first, then the others newest first. The release's manifest must show the table with rows and its Everloot source as fetched or already carried, never `unavailable`; the table file's sha256 is checked against that manifest. The manifest source records `version: carried-forward`, with the revision and `retrieved` time of the fetch it came from. With no such release the table builds empty.
+- **Shrink guard.** After the build, each table's rows are compared with the newest published release. A table that had rows and drops by more than 50%, or to 0, fails the build with a line naming the table and both counts, so nothing is published. A deliberate shrink is listed in `curated/allow-shrink.yaml` (`allow_shrink:` entries with a `table` and a `reason`).
+- **English names.** Everloot creature and node names with accented Latin letters or a non-Latin script are dropped (the client's English name wins); the build log counts them.

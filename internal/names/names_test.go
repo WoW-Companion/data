@@ -67,3 +67,14 @@ func TestLookup(t *testing.T) {
 		t.Errorf("ReadAll: %d rows, %v", len(all), err)
 	}
 }
+
+func TestIsEnglish(t *testing.T) {
+	for s, want := range map[string]bool{
+		"Mageweave Vendor": true, "Thunderfury’s Blessed Blade": true, "Defias Pillager (2)": true,
+		"Contremaître de la KapitalRisk": false, "Géomètre": false, "Бродяга": false, "狼": false, "Straßen": false, "": false,
+	} {
+		if got := IsEnglish(s); got != want {
+			t.Errorf("IsEnglish(%q) = %t", s, got)
+		}
+	}
+}

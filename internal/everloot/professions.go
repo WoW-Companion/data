@@ -3,6 +3,7 @@ package everloot
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/WoW-Companion/data/internal/names"
 	"os"
 	"path/filepath"
 	"slices"
@@ -209,6 +210,10 @@ func BuildGatherObs(c Corpus) ([]NodeObs, []NodeYield) {
 		}
 		o := NodeObs{ObjectID: k.obj, ZoneID: k.zone, Windows: n.windows, Reporters: int32(len(n.installs))}
 		o.Name, _ = best(n.name, lessS)
+		if o.Name != "" && !names.IsEnglish(o.Name) {
+			DroppedNames.Add(1)
+			o.Name = ""
+		}
 		o.GatherKind, _ = best(n.kind, lessS)
 		no = append(no, o)
 	}

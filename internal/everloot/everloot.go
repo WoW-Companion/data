@@ -5,8 +5,11 @@
 package everloot
 
 import (
+	"sync/atomic"
+
 	"encoding/json"
 	"fmt"
+	"github.com/WoW-Companion/data/internal/names"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -220,6 +223,10 @@ func BuildNpcZones(edges []Edge) map[int32]NpcZone {
 // nameTierRank orders sourceNameTier values; an unknown tier ranks lowest.
 var nameTierRank = map[string]int{"reported": 1, "verified": 2, "confirmed": 3}
 
+// DroppedNames counts the Everloot names a build dropped for not being English (accented
+// Latin letters or a non-Latin script); the build log prints it.
+var DroppedNames atomic.Int64
+
 // BuildNpcNames maps creature id to the name of its public creature rows. A creature
 // named differently on several rows takes the best corroborated name, the smallest
 // string on a tie. A creature with no named public row is not in the map.
@@ -231,6 +238,10 @@ func BuildNpcNames(rates []Rate) map[int32]string {
 	best := map[int32]pick{}
 	for _, r := range rates {
 		if !r.Public || r.SourceNpcID <= 0 || r.SourceName == "" {
+			continue
+		}
+		if !names.IsEnglish(r.SourceName) {
+			DroppedNames.Add(1)
 			continue
 		}
 		p := pick{r.SourceName, nameTierRank[r.SourceNameTier]}
