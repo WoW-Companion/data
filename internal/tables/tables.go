@@ -116,6 +116,10 @@ var Required = map[string][]string{
 	"GameObjects": {"ID", "Name_lang", "TypeID", "PropValue_0"},
 	"Lock":        {"ID", "_Index_0", "_Index_7", "Skill_0", "Skill_7", "Type_0", "Type_7"},
 	"LockType":    {"ID", "Name_lang"},
+
+	"ItemRandomProperties": {"ID", "Name_lang", "Enchantment_0", "Enchantment_4"},
+	"ItemRandomSuffix":     {"ID", "Name_lang", "Enchantment_0", "Enchantment_4", "AllocationPct_0"},
+	"SpellItemEnchantment": {"ID", "Name_lang", "Effect_0", "Effect_2", "EffectArg_0", "EffectArg_2", "EffectPointsMin_0", "EffectPointsMin_2"},
 }
 
 // ReadTable parses a client CSV export and checks its header against Required[table].

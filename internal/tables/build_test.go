@@ -27,6 +27,17 @@ func TestBuildDatasetSmoke(t *testing.T) {
 		}
 		os.WriteFile(filepath.Join(cache, tb+".csv"), []byte(body), 0o644)
 	}
+	// the random suffix tables live in their own build's cache, beside this one
+	sfx := filepath.Join(dir, "cache", fetch.RandomSuffixBuild)
+	os.MkdirAll(sfx, 0o755)
+	for tb, body := range map[string]string{
+		"ItemRandomProperties": "ID,Name_lang,Enchantment_0,Enchantment_4\n",
+		"ItemRandomSuffix":     "ID,Name_lang,Enchantment_0,Enchantment_4,AllocationPct_0\n6,of the Eagle,2804,0,6666\n",
+		"SpellItemEnchantment": "ID,Name_lang,Effect_0,Effect_2,EffectArg_0,EffectArg_2,EffectPointsMin_0,EffectPointsMin_2\n2804,+$i Intellect,5,0,5,0,0,0\n",
+	} {
+		os.WriteFile(filepath.Join(sfx, tb+".csv"), []byte(body), 0o644)
+	}
+	os.WriteFile(filepath.Join(sfx, fetch.ProvenanceFile), []byte(`{"source":"wago.tools","product":"wowf","build":"`+fetch.RandomSuffixBuild+`","retrieved":"2026-11-20T00:00:00Z","license":"x","tables":["ItemRandomSuffix"]}`), 0o644)
 	os.WriteFile(filepath.Join(cache, fetch.ProvenanceFile), []byte(`{"source":"wago.tools","product":"wowf","build":"b1","retrieved":"2026-11-20T00:00:00Z","license":"x","tables":["Creature"]}`), 0o644)
 	ev := filepath.Join(dir, "drops.json")
 	os.WriteFile(ev, []byte(`{"retrieved":"2026-11-20T00:00:00Z","dataAsOf":"2026-11-19","rates":[{"itemId":1,"sourceNpcId":5,"kills":4,"drops":1,"rate":0.25,"reporters":3,"public":true}]}`), 0o644)
@@ -43,7 +54,7 @@ func TestBuildDatasetSmoke(t *testing.T) {
 	for _, tb := range m.Tables {
 		paths = append(paths, tb.Path)
 	}
-	if got := strings.Join(paths, ","); got != "items.parquet,quests.parquet,npcs.parquet,talent_trees.parquet,talent_nodes.parquet,talent_builds.parquet,stat_types.parquet,recipes.parquet,recipe_reagents.parquet,class_spells.parquet,instances.parquet,instance_bosses.parquet,instance_quests.parquet,loot_sources.parquet,quests_observed.parquet,vendor_sources.parquet,item_sets.parquet,quest_lines.parquet,recipe_items.parquet,trainers.parquet,trainer_spells.parquet,gathering_nodes.parquet,gathering_yields.parquet,fishing_catches.parquet,disenchant_yields.parquet,profession_notes.parquet,names.parquet" {
+	if got := strings.Join(paths, ","); got != "items.parquet,quests.parquet,npcs.parquet,talent_trees.parquet,talent_nodes.parquet,talent_builds.parquet,stat_types.parquet,recipes.parquet,recipe_reagents.parquet,class_spells.parquet,instances.parquet,instance_bosses.parquet,instance_quests.parquet,loot_sources.parquet,quests_observed.parquet,vendor_sources.parquet,item_sets.parquet,random_suffixes.parquet,quest_lines.parquet,recipe_items.parquet,trainers.parquet,trainer_spells.parquet,gathering_nodes.parquet,gathering_yields.parquet,fishing_catches.parquet,disenchant_yields.parquet,profession_notes.parquet,names.parquet" {
 		t.Fatalf("tables: %s", got)
 	}
 	if m.Tables[2].Rows != 1 || m.Tables[13].Rows != 1 || m.Tables[6].Rows != int64(len(StatTypeLabels)) {
@@ -51,6 +62,10 @@ func TestBuildDatasetSmoke(t *testing.T) {
 	}
 	if err := manifest.VerifyFile(filepath.Join(out, "manifest.json")); err != nil {
 		t.Fatal(err)
+	}
+	sb, _ := os.ReadFile(filepath.Join(out, "random_suffixes.parquet"))
+	if ssrc, err := parquetio.ReadSources(sb); err != nil || len(ssrc) != 1 || ssrc[0].Version != fetch.RandomSuffixBuild {
+		t.Errorf("random_suffixes source: %+v %v", ssrc, err)
 	}
 	b, _ := os.ReadFile(filepath.Join(out, "loot_sources.parquet"))
 	srcs, err := parquetio.ReadSources(b)

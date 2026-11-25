@@ -2,6 +2,7 @@ package tables
 
 import (
 	"reflect"
+	"slices"
 	"strings"
 	"testing"
 
@@ -584,5 +585,64 @@ func TestBuildClassSpells(t *testing.T) {
 	}
 	if r := got[2]; r.Rank != nil || *r.Subtext != "Racial Passive" {
 		t.Errorf("subtext without a rank number: %+v", r)
+	}
+}
+
+func TestBuildRandomSuffixes(t *testing.T) {
+	enchant := func(id, stat, pts string) Row {
+		return Row{"ID": id, "Effect_0": "5", "EffectArg_0": stat, "EffectPointsMin_0": pts}
+	}
+	enchants := []Row{
+		enchant("2802", "3", "0"), enchant("2803", "7", "0"), enchant("2804", "5", "0"), enchant("2805", "4", "0"), enchant("2806", "6", "0"),
+		enchant("74", "3", "1"), enchant("71", "7", "1"), enchant("75", "3", "2"),
+		{"ID": "900", "Effect_0": "4", "EffectArg_0": "2", "EffectPointsMin_0": "5"}, // a resistance, not a stat
+	}
+	suffix := func(id, name string, a, b string) Row {
+		return Row{"ID": id, "Name_lang": name, "Enchantment_0": a, "Enchantment_1": b}
+	}
+	got := BuildRandomSuffixes(RandomSuffixInput{
+		Enchants: enchants,
+		Suffixes: []Row{
+			suffix("6", "of the Eagle", "2804", "2803"), suffix("69", "of the Eagle", "2803", "2804"),
+			suffix("9", "of the Owl", "2804", "2806"), suffix("8", "of the Whale", "2806", "2803"),
+			suffix("7", "of the Bear", "2803", "2805"), suffix("5", "of the Monkey", "2802", "2803"),
+			suffix("14", "of the Tiger", "2802", "2805"), suffix("18", "of Agility", "2802", "0"),
+			suffix("30", "of Fire Protection", "900", "2803"), suffix("31", "of Nothing", "900", "0"), suffix("32", "", "2803", "0"),
+		},
+		Properties: []Row{
+			suffix("584", "of the Monkey", "74", "71"), suffix("585", "of the Monkey", "75", "71"), suffix("1", "of Zero", "2802", "0"),
+		},
+	})
+	byName := map[string]RandomSuffix{}
+	for _, r := range got {
+		if r.Kind == KindSuffix {
+			byName[r.Name] = r
+		}
+	}
+	want := map[string][]int16{
+		"of the Eagle": {5, 7}, "of the Owl": {5, 6}, "of the Whale": {6, 7}, "of the Bear": {4, 7},
+		"of the Monkey": {3, 7}, "of the Tiger": {3, 4}, "of Agility": {3}, "of Fire Protection": {7},
+	}
+	if len(byName) != len(want) {
+		t.Errorf("suffix rows %d, want %d: %+v", len(byName), len(want), got)
+	}
+	for name, stats := range want {
+		if r, ok := byName[name]; !ok || !slices.Equal(r.Stats, stats) || len(r.Amounts) != 0 || r.Source != "ItemRandomSuffix" {
+			t.Errorf("%s: %+v, want stats %v", name, r, stats)
+		}
+	}
+	if e := byName["of the Eagle"]; !slices.Equal(e.IDs, []int32{6, 69}) || e.SuffixID != 6 {
+		t.Errorf("Eagle ids not grouped: %+v", e)
+	}
+	for _, r := range got {
+		if strings.Contains(r.Name, "Elixir") || r.Name == "" || r.Name == "of Nothing" {
+			t.Errorf("unexpected row %+v", r)
+		}
+		if r.Kind == KindProperties && r.Name == "of the Monkey" && (!slices.Equal(r.Amounts, []int32{2, 1}) || len(r.IDs) != 2) {
+			t.Errorf("properties Monkey: %+v", r)
+		}
+		if r.Kind == KindProperties && r.Name == "of Zero" && len(r.Amounts) != 0 {
+			t.Errorf("zero amount kept: %+v", r)
+		}
 	}
 }

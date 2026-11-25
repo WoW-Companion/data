@@ -270,6 +270,20 @@ One row per member item of an item set (ItemID_0 to ItemID_16), sorted by set id
 | `name` | `string` | no | table | Item set name. |
 | `item_id` | `int32` | no | table | items.id of a member of the set. |
 
+## random_suffixes
+
+One row per random suffix name ("of the Eagle") per client table and set of stats, with the stats it gives. Random suffixes are rolled when an item drops, so they are not in items. A name seen in both ItemRandomProperties and ItemRandomSuffix has a row per kind. Stat ids are the items.stat_types ids. Source: wago.tools client table ItemRandomProperties, ItemRandomSuffix, SpellItemEnchantment (client build 3.4.3.54261: the 1.60.1 export carries no ItemRandom tables). File: `random_suffixes.parquet`.
+
+| Column | Type | Null | Source | Meaning |
+| --- | --- | --- | --- | --- |
+| `suffix_id` | `int32` | no | ItemRandomProperties, ItemRandomSuffix | Lowest client id of the grouped suffixes; unique only together with kind. |
+| `name` | `string` | no | ItemRandomProperties, ItemRandomSuffix | Suffix name as the client spells it, for example "of the Eagle". |
+| `stats` | `list<int16>` | no | SpellItemEnchantment | Stat type ids (stat_types.id) of the stat enchants the suffix applies, sorted; resistances and spell enchants are not listed. |
+| `amounts` | `list<int32>` | no | SpellItemEnchantment EffectPointsMin | kind properties: the amount of each stat, aligned with stats (the largest across the grouped suffixes); empty for kind suffix, whose amount scales with the item's level and is not in the client tables, and where any amount is zero. |
+| `kind` | `string` | no | table | properties (ItemRandomProperties, fixed enchants) or suffix (ItemRandomSuffix, scaled by item level). |
+| `source` | `string` | no | table | Client table the row comes from. |
+| `ids` | `list<int32>` | no | ItemRandomProperties, ItemRandomSuffix | Every client id grouped into the row, sorted; the id a dropped item carries is one of these. |
+
 ## quest_lines
 
 One row per quest of a quest line, in line order. Source: wago.tools client table QuestLine, QuestLineXQuest. File: `quest_lines.parquet`.

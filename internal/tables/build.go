@@ -71,6 +71,11 @@ type Cached struct {
 	InstanceQuests []InstanceQuest
 
 	Nodes map[int32]Node
+
+	// RandomSuffixes come from the cache of fetch.RandomSuffixBuild, a sibling of the
+	// build's cache directory; RandomSuffixProv is zero when that cache is absent.
+	RandomSuffixes   []RandomSuffix
+	RandomSuffixProv fetch.Provenance
 }
 
 // LoadCache parses the cache directory of one build into table rows.
@@ -122,7 +127,33 @@ func LoadCache(dir string) (Cached, error) {
 	c.Instances = BuildInstances(iin)
 	c.InstanceBosses = BuildInstanceBosses(c.Instances, iin)
 	c.Nodes = BuildNodes(GatherInput{GameObjects: rows["GameObjects"], Locks: rows["Lock"], LockTypes: rows["LockType"]})
+	if err := loadRandomSuffixes(&c, filepath.Join(filepath.Dir(dir), fetch.RandomSuffixBuild)); err != nil {
+		return c, err
+	}
 	return c, nil
+}
+
+// loadRandomSuffixes reads the random suffix tables from their own cache directory; an
+// absent directory leaves them empty (the build then carries the earlier release's rows).
+func loadRandomSuffixes(c *Cached, dir string) error {
+	b, err := os.ReadFile(filepath.Join(dir, fetch.ProvenanceFile))
+	if os.IsNotExist(err) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	if err := json.Unmarshal(b, &c.RandomSuffixProv); err != nil {
+		return err
+	}
+	rows := map[string][]Row{}
+	for _, t := range fetch.RandomSuffixTables {
+		if rows[t], err = readCSVFile(dir, t); err != nil {
+			return err
+		}
+	}
+	c.RandomSuffixes = BuildRandomSuffixes(RandomSuffixInput{Properties: rows["ItemRandomProperties"], Suffixes: rows["ItemRandomSuffix"], Enchants: rows["SpellItemEnchantment"]})
+	return nil
 }
 
 // Layout is the adopted Parquet layout for the dataset's tables.
@@ -363,6 +394,14 @@ func BuildDatasetFrom(cacheBuildDir, everlootFile, talentsDir, instancesFile, pr
 	}
 	fmt.Printf("observed quests: %d, vendor offers: %d\n", len(quests), len(vendors))
 	if err := add(writeTable(outDir, "item_sets.parquet", c.ItemSets, Layout(nil, []string{"set_id", "item_id"}, src))); err != nil {
+		return m, err
+	}
+	suffixes, sfs := c.RandomSuffixes, src
+	if c.RandomSuffixProv.Build != "" {
+		sfs = SourceFrom(c.RandomSuffixProv)
+	}
+	suffixes, sfs = carried(prev, "random_suffixes.parquet", len(suffixes) == 0, suffixes, sfs)
+	if err := add(writeTable(outDir, "random_suffixes.parquet", suffixes, Layout(nil, []string{"kind", "suffix_id", "name"}, sfs))); err != nil {
 		return m, err
 	}
 	if err := add(writeTable(outDir, "quest_lines.parquet", c.QuestLines, Layout(nil, []string{"line_id", "position", "quest_id"}, src))); err != nil {
