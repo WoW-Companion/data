@@ -173,6 +173,13 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, instancesFile, profes
 		return manifest.Manifest{}, err
 	}
 	ev, err := everloot.Load(everlootFile)
+	if os.IsNotExist(err) {
+		ev, err = everloot.Snapshot{}, nil // the fetch could not reach Everloot: built empty
+	}
+	if err == nil && ev.Retrieved == "" {
+		// An empty source still names a retrieval time and version in the manifest.
+		ev.Retrieved, ev.DataAsOf = created, "unavailable"
+	}
 	if err != nil {
 		return manifest.Manifest{}, err
 	}

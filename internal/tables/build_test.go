@@ -1,6 +1,10 @@
 package tables
 
 import (
+	"net/http"
+	"net/http/httptest"
+
+	"github.com/WoW-Companion/data/internal/everloot"
 	"os"
 	"path/filepath"
 	"strings"
@@ -52,5 +56,51 @@ func TestBuildDatasetSmoke(t *testing.T) {
 	srcs, err := parquetio.ReadSources(b)
 	if err != nil || len(srcs) != 2 || !strings.Contains(srcs[0].License, "Data from Everloot (https://everloot.app), CC BY-SA 4.0.") || srcs[0].Version != "2026-11-19" {
 		t.Errorf("attribution missing from Parquet metadata: %+v %v", srcs, err)
+	}
+}
+
+// A rate-limited Everloot (429 on every route) must not fail the fetch or the build: the
+// sources come back unavailable and every table built from them is empty.
+func TestBuildSurvivesEverlootRateLimit(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Retry-After", "2973")
+		w.WriteHeader(http.StatusTooManyRequests)
+	}))
+	defer srv.Close()
+	old := everloot.Delay
+	everloot.Delay = 0
+	defer func() { everloot.Delay = old }()
+
+	dir := t.TempDir()
+	evDir := filepath.Join(dir, "cache", "everloot")
+	_, _, _, status := everloot.FetchAll(srv.URL, evDir, "2026-11-20T00:00:00Z", "b1")
+	if len(status) != 3 {
+		t.Fatalf("status: %+v", status)
+	}
+	for _, s := range status {
+		if s.Err == nil || !strings.Contains(s.Line(), "UNAVAILABLE") {
+			t.Errorf("want unavailable, got %q", s.Line())
+		}
+	}
+	if ents, _ := os.ReadDir(evDir); len(ents) != 0 {
+		t.Errorf("a failed fetch cached %d files", len(ents))
+	}
+
+	cache := filepath.Join(dir, "cache", "b1")
+	os.MkdirAll(cache, 0o755)
+	for _, tb := range fetch.Tables {
+		os.WriteFile(filepath.Join(cache, tb+".csv"), []byte(strings.Join(Required[tb], ",")+"\n"), 0o644)
+	}
+	os.WriteFile(filepath.Join(cache, fetch.ProvenanceFile), []byte(`{"source":"wago.tools","product":"wowf","build":"b1","retrieved":"2026-11-20T00:00:00Z","license":"x","tables":["Creature"]}`), 0o644)
+	inst := filepath.Join(dir, "instances.yaml")
+	os.WriteFile(inst, []byte("status: \"advisor default, not authoritative\"\ninstances:\n"), 0o644)
+	prof := filepath.Join(dir, "professions.yaml")
+	os.WriteFile(prof, []byte("status: \"advisor default, not authoritative\"\n"), 0o644)
+	out := filepath.Join(dir, "out")
+	if _, err := BuildDataset(cache, filepath.Join(evDir, everloot.CacheFile), filepath.Join(dir, "no-builds"), inst, prof, out, "2026-11-20T00:00:00Z", ""); err != nil {
+		t.Fatal(err)
+	}
+	if err := manifest.VerifyFile(filepath.Join(out, "manifest.json")); err != nil {
+		t.Fatal(err)
 	}
 }
