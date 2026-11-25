@@ -138,3 +138,23 @@ func TestBuildNpcNames(t *testing.T) {
 		t.Errorf("best tier, then smallest; public named creature rows only: %v", got)
 	}
 }
+
+// A French Everloot name is dropped, and the creature keeps its English one when another
+// row has it; with only the French name it gets no name at all.
+func TestBuildNpcNamesEnglishOnly(t *testing.T) {
+	before := DroppedNames.Load()
+	got := BuildNpcNames([]Rate{
+		{SourceNpcID: 1, SourceName: "Contremaître de la KapitalRisk", SourceNameTier: "confirmed", Public: true},
+		{SourceNpcID: 1, SourceName: "KapitalRisk Foreman", SourceNameTier: "reported", Public: true},
+		{SourceNpcID: 2, SourceName: "Géomètre de la KapitalRisk", Public: true},
+	})
+	if got[1] != "KapitalRisk Foreman" {
+		t.Errorf("npc 1 = %q", got[1])
+	}
+	if _, ok := got[2]; ok {
+		t.Errorf("npc 2 should have no name: %q", got[2])
+	}
+	if d := DroppedNames.Load() - before; d != 2 {
+		t.Errorf("dropped %d, want 2", d)
+	}
+}

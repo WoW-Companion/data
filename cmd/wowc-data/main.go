@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/WoW-Companion/data/internal/bench"
+	"github.com/WoW-Companion/data/internal/carry"
 	"github.com/WoW-Companion/data/internal/diff"
 	"github.com/WoW-Companion/data/internal/everloot"
 	"github.com/WoW-Companion/data/internal/fetch"
@@ -98,15 +99,44 @@ func runBuild(args []string) error {
 	talents := fs.String("talents", "curated/talents", "directory of curated talent builds")
 	instances := fs.String("instances", "curated/instances.yaml", "curated instance level ranges and entrance zones")
 	professions := fs.String("professions", "curated/professions.yaml", "curated profession notes")
+	repo := fs.String("repo", os.Getenv("GITHUB_REPOSITORY"), "owner/name of the releasing repository: earlier releases feed carry-forward and the shrink guard; empty skips both")
+	api := fs.String("api", "https://api.github.com", "GitHub API base URL")
+	download := fs.String("download", "https://github.com", "public release download base URL")
+	allowFile := fs.String("allow-shrink", release.AllowShrinkFile, "committed list of tables allowed to shrink")
 	fs.Parse(args)
 	dir := filepath.Join(*out, *build)
 	rev, err := release.Revision(".")
 	if err != nil {
 		return err
 	}
-	m, err := tables.BuildDataset(filepath.Join(*cache, *build), filepath.Join(*cache, "everloot", everloot.CacheFile), *talents, *instances, *professions, dir, time.Now().UTC().Format("2006-01-02T15:04:05Z"), rev)
+	var finder *carry.Finder
+	var prev tables.Previous
+	if *repo != "" {
+		finder = &carry.Finder{API: *api, Download: *download, Repo: *repo, Build: *build, Token: os.Getenv("GITHUB_TOKEN"), UserAgent: "wowc-data",
+			Log: func(f string, a ...any) { fmt.Printf(f+"\n", a...) }}
+		prev = finder
+	} else {
+		fmt.Println("no repository (GITHUB_REPOSITORY): carry-forward and the shrink guard are skipped")
+	}
+	m, err := tables.BuildDatasetFrom(filepath.Join(*cache, *build), filepath.Join(*cache, "everloot", everloot.CacheFile), *talents, *instances, *professions, dir, time.Now().UTC().Format("2006-01-02T15:04:05Z"), rev, prev)
 	if err != nil {
 		return err
+	}
+	if finder != nil {
+		old, tag, ok, err := finder.Previous()
+		if err != nil {
+			return fmt.Errorf("shrink guard: %w", err)
+		}
+		if ok {
+			allow, err := release.LoadAllowShrink(*allowFile)
+			if err != nil {
+				return err
+			}
+			if err := release.CheckShrink(old, m, allow); err != nil {
+				return err
+			}
+			fmt.Printf("shrink guard: no table shrank against %s\n", tag)
+		}
 	}
 	for _, t := range m.Tables {
 		fmt.Printf("%s: %d rows\n", t.Path, t.Rows)

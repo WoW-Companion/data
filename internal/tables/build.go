@@ -1,6 +1,7 @@
 package tables
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -11,6 +12,7 @@ import (
 	"github.com/WoW-Companion/data/internal/manifest"
 	"github.com/WoW-Companion/data/internal/names"
 	"github.com/WoW-Companion/data/internal/parquetio"
+	"github.com/parquet-go/parquet-go"
 )
 
 // SourceFrom turns a cache provenance record into a manifest source.
@@ -168,6 +170,38 @@ func CuratedSource(build, created string) manifest.Source {
 // the curated talent builds, which are validated against the cached talent tables, and
 // instancesFile the curated level ranges and entrance zones.
 func BuildDataset(cacheBuildDir, everlootFile, talentsDir, instancesFile, professionsFile, outDir, created, revision string) (manifest.Manifest, error) {
+	return BuildDatasetFrom(cacheBuildDir, everlootFile, talentsDir, instancesFile, professionsFile, outDir, created, revision, nil)
+}
+
+// Previous gives the rows of an earlier release. Table returns the parquet file of a table
+// and the manifest source to record for it, or false when no release holds it with rows.
+type Previous interface {
+	Table(name string) ([]byte, manifest.Source, bool)
+}
+
+// carried returns rows unchanged unless their Everloot source was unavailable in this
+// build; then it takes them from prev (and the source to record), when prev has them.
+func carried[T any](prev Previous, table string, unavailable bool, rows []T, src manifest.Source) ([]T, manifest.Source) {
+	if !unavailable || prev == nil {
+		return rows, src
+	}
+	b, psrc, ok := prev.Table(table)
+	if !ok {
+		fmt.Printf("carry forward %s: no earlier release has it, built empty\n", table)
+		return rows, src
+	}
+	got, err := parquet.Read[T](bytes.NewReader(b), int64(len(b)))
+	if err != nil || len(got) == 0 {
+		fmt.Printf("carry forward %s: earlier rows unreadable (%v), built empty\n", table, err)
+		return rows, src
+	}
+	fmt.Printf("carry forward %s: %d rows from %s\n", table, len(got), psrc.Name)
+	return got, psrc
+}
+
+// BuildDatasetFrom is BuildDataset with prev: an Everloot source that could not be fetched
+// takes its tables from prev's newest release that has them, instead of building empty.
+func BuildDatasetFrom(cacheBuildDir, everlootFile, talentsDir, instancesFile, professionsFile, outDir, created, revision string, prev Previous) (manifest.Manifest, error) {
 	c, err := LoadCache(cacheBuildDir)
 	if err != nil {
 		return manifest.Manifest{}, err
@@ -195,8 +229,11 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, instancesFile, profes
 	if err != nil {
 		return manifest.Manifest{}, err
 	}
-	quests := everloot.BuildQuestsObserved(corpus)
-	vendors := everloot.BuildVendorSources(corpus)
+	corpusGone := corpus.DataAsOf == "" || corpus.Retrieved == ""
+	deGone := disenchant.DataAsOf == "" || disenchant.Retrieved == ""
+	corpusSrc := CorpusSource(corpus, ev)
+	quests, qs := carried(prev, "quests_observed.parquet", corpusGone, everloot.BuildQuestsObserved(corpus), corpusSrc)
+	vendors, vs := carried(prev, "vendor_sources.parquet", corpusGone, everloot.BuildVendorSources(corpus), corpusSrc)
 	// loot_sources before npcs: the rows decide which Everloot-only creatures npcs adds.
 	rows := MergeLootSources(everloot.BuildLootSources(ev), BuildCraftedSources(c.Recipes))
 	rows = everloot.MergeNewKeys(rows, everloot.BuildQuestRewards(corpus))
@@ -211,10 +248,19 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, instancesFile, profes
 		}
 	}
 	trainers, trainerSpells := BuildTrainers(everloot.BuildTrainerOffers(corpus), c.Recipes, c.Npcs, everloot.BuildNpcZones(ev.NpcZones), c.UiMaps, c.SkillLineNames)
+	trainers, ts := carried(prev, "trainers.parquet", corpusGone, trainers, corpusSrc)
+	trainerSpells, tss := carried(prev, "trainer_spells.parquet", corpusGone, trainerSpells, corpusSrc)
 	nodeObs, nodeYields := everloot.BuildGatherObs(corpus)
 	gatherNodes, gatherYields := BuildGathering(nodeObs, nodeYields, c.Nodes, c.UiMaps)
-	fishing := BuildFishingCatches(everloot.BuildFishing(corpus), c.UiMaps)
-	deYields := everloot.BuildDisenchantYields(disenchant)
+	gatherNodes, gns := carried(prev, "gathering_nodes.parquet", corpusGone, gatherNodes, corpusSrc)
+	gatherYields, gys := carried(prev, "gathering_yields.parquet", corpusGone, gatherYields, corpusSrc)
+	fishing, fs := carried(prev, "fishing_catches.parquet", corpusGone, BuildFishingCatches(everloot.BuildFishing(corpus), c.UiMaps), corpusSrc)
+	if disenchant.DataAsOf == "" || disenchant.Retrieved == "" {
+		disenchant.DataAsOf, disenchant.Retrieved = ev.DataAsOf, ev.Retrieved
+	}
+	deSrc := manifest.Source{Name: "Everloot (https://everloot.app), disenchant rollup", Version: disenchant.DataAsOf, Retrieved: disenchant.Retrieved, License: everloot.License + ". " + everloot.Credit}
+	deYields, deSrc := carried(prev, "disenchant_yields.parquet", deGone, everloot.BuildDisenchantYields(disenchant), deSrc)
+	fmt.Printf("everloot names dropped for not being English: %d\n", everloot.DroppedNames.Load())
 	byTrainer, byItem, byBoth := ApplyLearnedFrom(c.Recipes, c.RecipeItems, TrainedSpells(trainerSpells))
 	ls := ApplyLearnSkills(c.Recipes, c.RecipeItems, trainerSpells)
 	SyncCraftedLearnSkill(rows, c.Recipes)
@@ -298,11 +344,10 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, instancesFile, profes
 	if err := add(writeTable(outDir, "loot_sources.parquet", rows, loot)); err != nil {
 		return m, err
 	}
-	corpusSrc := CorpusSource(corpus, ev)
-	if err := add(writeTable(outDir, "quests_observed.parquet", quests, Layout(nil, []string{"quest_id"}, corpusSrc))); err != nil {
+	if err := add(writeTable(outDir, "quests_observed.parquet", quests, Layout(nil, []string{"quest_id"}, qs))); err != nil {
 		return m, err
 	}
-	if err := add(writeTable(outDir, "vendor_sources.parquet", vendors, Layout(nil, []string{"npc_id", "item_id"}, corpusSrc))); err != nil {
+	if err := add(writeTable(outDir, "vendor_sources.parquet", vendors, Layout(nil, []string{"npc_id", "item_id"}, vs))); err != nil {
 		return m, err
 	}
 	fmt.Printf("observed quests: %d, vendor offers: %d\n", len(quests), len(vendors))
@@ -316,25 +361,21 @@ func BuildDataset(cacheBuildDir, everlootFile, talentsDir, instancesFile, profes
 	if err := add(writeTable(outDir, "recipe_items.parquet", c.RecipeItems, Layout(nil, []string{"item_id", "teaches_spell_id"}, src))); err != nil {
 		return m, err
 	}
-	if err := add(writeTable(outDir, "trainers.parquet", trainers, Layout(nil, []string{"npc_id", "profession"}, corpusSrc, src))); err != nil {
+	if err := add(writeTable(outDir, "trainers.parquet", trainers, Layout(nil, []string{"npc_id", "profession"}, ts, src))); err != nil {
 		return m, err
 	}
-	if err := add(writeTable(outDir, "trainer_spells.parquet", trainerSpells, Layout(nil, []string{"npc_id", "profession", "recipe_name"}, corpusSrc, src))); err != nil {
+	if err := add(writeTable(outDir, "trainer_spells.parquet", trainerSpells, Layout(nil, []string{"npc_id", "profession", "recipe_name"}, tss, src))); err != nil {
 		return m, err
 	}
-	if err := add(writeTable(outDir, "gathering_nodes.parquet", gatherNodes, Layout(nil, []string{"node_id", "zone_id"}, corpusSrc, src))); err != nil {
+	if err := add(writeTable(outDir, "gathering_nodes.parquet", gatherNodes, Layout(nil, []string{"node_id", "zone_id"}, gns, src))); err != nil {
 		return m, err
 	}
-	if err := add(writeTable(outDir, "gathering_yields.parquet", gatherYields, Layout(nil, []string{"node_id", "item_id"}, corpusSrc))); err != nil {
+	if err := add(writeTable(outDir, "gathering_yields.parquet", gatherYields, Layout(nil, []string{"node_id", "item_id"}, gys))); err != nil {
 		return m, err
 	}
-	if err := add(writeTable(outDir, "fishing_catches.parquet", fishing, Layout(nil, []string{"zone_id", "item_id"}, corpusSrc))); err != nil {
+	if err := add(writeTable(outDir, "fishing_catches.parquet", fishing, Layout(nil, []string{"zone_id", "item_id"}, fs))); err != nil {
 		return m, err
 	}
-	if disenchant.DataAsOf == "" || disenchant.Retrieved == "" {
-		disenchant.DataAsOf, disenchant.Retrieved = ev.DataAsOf, ev.Retrieved
-	}
-	deSrc := manifest.Source{Name: "Everloot (https://everloot.app), disenchant rollup", Version: disenchant.DataAsOf, Retrieved: disenchant.Retrieved, License: everloot.License + ". " + everloot.Credit}
 	if err := add(writeTable(outDir, "disenchant_yields.parquet", deYields, Layout(nil, []string{"band_id", "material_item_id"}, deSrc))); err != nil {
 		return m, err
 	}

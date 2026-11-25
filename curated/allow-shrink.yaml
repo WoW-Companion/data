@@ -1,0 +1,8 @@
+# Tables the dataset build may publish with more than 50% fewer rows than the newest
+# published release (or empty). Everything else is refused by `wowc-data build`.
+# Each entry names the table and why the shrink is deliberate:
+#
+#   allow_shrink:
+#     - table: vendor_sources
+#       reason: Everloot retired the vendor feed
+allow_shrink: []

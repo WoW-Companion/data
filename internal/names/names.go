@@ -142,3 +142,18 @@ func Lookup(r io.ReaderAt, size int64, q string, prefix bool, limit int) ([]Row,
 func ReadAll(b []byte) ([]Row, error) {
 	return parquet.Read[Row](bytes.NewReader(b), int64(len(b)))
 }
+
+// IsEnglish reports whether a name could be an English one: no letter outside basic Latin,
+// so no accented Latin letters (é, ô, ß) and no Cyrillic, Greek, CJK or other scripts.
+// Digits, spaces and punctuation, curly quotes included, pass. An empty name does not.
+func IsEnglish(s string) bool {
+	if strings.TrimSpace(s) == "" {
+		return false
+	}
+	for _, r := range s {
+		if unicode.IsLetter(r) && r > unicode.MaxASCII {
+			return false
+		}
+	}
+	return true
+}
