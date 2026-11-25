@@ -13,6 +13,7 @@ import (
 	"github.com/WoW-Companion/data/internal/diff"
 	"github.com/WoW-Companion/data/internal/everloot"
 	"github.com/WoW-Companion/data/internal/fetch"
+	"github.com/WoW-Companion/data/internal/history"
 	"github.com/WoW-Companion/data/internal/manifest"
 	"github.com/WoW-Companion/data/internal/names"
 	"github.com/WoW-Companion/data/internal/release"
@@ -31,6 +32,7 @@ commands:
   diff             print what changed between two dataset directories, as Markdown
   bench            measure each table of a built dataset: size, layout, lookup time and bytes read
   release-notes    print the release notes of a built dataset, with what changed since the previous release
+  history          add a built dataset's revision to the build's kept revisions (revisions-<build>.json) and name the ones to prune
   release-check    print the latest Forever build, whether its dataset release exists and whether its revision is current
 `
 
@@ -57,6 +59,8 @@ func main() {
 		err = runBench(os.Args[2:])
 	case "release-notes":
 		err = runReleaseNotes(os.Args[2:])
+	case "history":
+		err = runHistory(os.Args[2:])
 	case "release-check":
 		err = runReleaseCheck(os.Args[2:])
 	default:
@@ -123,7 +127,7 @@ func runBuild(args []string) error {
 		return err
 	}
 	if finder != nil {
-		old, tag, ok, err := finder.Previous()
+		old, ok, err := finder.Baseline()
 		if err != nil {
 			return fmt.Errorf("shrink guard: %w", err)
 		}
@@ -135,7 +139,7 @@ func runBuild(args []string) error {
 			if err := release.CheckShrink(old, m, allow); err != nil {
 				return err
 			}
-			fmt.Printf("shrink guard: no table shrank against %s\n", tag)
+			fmt.Printf("shrink guard: no table shrank against %s\n", old.Revision)
 		}
 	}
 	for _, t := range m.Tables {
@@ -305,5 +309,54 @@ func runReleaseNotes(args []string) error {
 		changes = diff.Markdown(old, cur)
 	}
 	fmt.Print(release.NotesAt(cur.Manifest.GameBuild, *prevTag, changes, cur.Manifest.Revision, cur.Manifest.Created[:min(10, len(cur.Manifest.Created))]))
+	return nil
+}
+
+// runHistory adds the built dataset's revision to the build's kept revisions: it reads the
+// release's current revisions-<build>.json (-prev, may be absent), writes the new one (-out)
+// and prints "revision <rev>" then one "prune <rev>" line for each revision that fell out of
+// the last 10, for the publish script to name and delete assets by.
+func runHistory(args []string) error {
+	fs := flag.NewFlagSet("history", flag.ExitOnError)
+	prev := fs.String("prev", "", "the release's current revisions file; absent or empty means none yet")
+	out := fs.String("out", "", "revisions file to write")
+	fs.Parse(args)
+	if fs.NArg() != 1 || *out == "" {
+		return fmt.Errorf("usage: wowc-data history -out <revisions-build.json> [-prev <file>] <dataset dir>")
+	}
+	mb, err := os.ReadFile(filepath.Join(fs.Arg(0), "manifest.json"))
+	if err != nil {
+		return err
+	}
+	m, err := manifest.Decode(mb)
+	if err != nil {
+		return err
+	}
+	if m.Revision == "" {
+		return fmt.Errorf("the manifest has no revision")
+	}
+	cur := history.File{Build: m.GameBuild}
+	if *prev != "" {
+		if b, err := os.ReadFile(*prev); err == nil {
+			if cur, err = history.Parse(b); err != nil {
+				return err
+			}
+		} else if !os.IsNotExist(err) {
+			return err
+		}
+	}
+	cur.Build = m.GameBuild
+	next, pruned := cur.Add(history.FromManifest(m), history.Keep)
+	b, err := next.Marshal()
+	if err != nil {
+		return err
+	}
+	if err := os.WriteFile(*out, b, 0o644); err != nil {
+		return err
+	}
+	fmt.Println("revision", m.Revision)
+	for _, r := range pruned {
+		fmt.Println("prune", r)
+	}
 	return nil
 }

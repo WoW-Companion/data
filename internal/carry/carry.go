@@ -18,22 +18,51 @@ import (
 	"strings"
 	"time"
 
+	"github.com/WoW-Companion/data/internal/history"
 	"github.com/WoW-Companion/data/internal/manifest"
 	"github.com/klauspost/compress/zstd"
 )
 
 const (
 	// Carried is the Version of a manifest source whose rows were carried forward.
-	Carried = "carried-forward"
+	Carried = history.CarriedVersion
 	// Unavailable is the Version a build stamps on an Everloot source it could not fetch.
-	Unavailable = "unavailable"
+	Unavailable = history.UnavailableVersion
 	tagPrefix   = "dataset-"
 	maxAsset    = 1 << 30
 )
 
+// release is one published dataset: a tag's unsuffixed assets, or, with Rev set, the
+// revision-named copies the tag keeps of one of its publishes.
 type release struct {
 	Tag       string
 	Published time.Time
+	Rev       string
+}
+
+func (r release) key() string { return r.Tag + "@" + r.Rev }
+
+func (r release) label() string {
+	if r.Rev == "" {
+		return r.Tag
+	}
+	return r.Tag + " revision " + r.Rev
+}
+
+func (r release) manifestName() string {
+	build := strings.TrimPrefix(r.Tag, tagPrefix)
+	if r.Rev == "" {
+		return "manifest-" + build + ".json"
+	}
+	return history.ManifestName(build, r.Rev)
+}
+
+func (r release) archiveName() string {
+	build := strings.TrimPrefix(r.Tag, tagPrefix)
+	if r.Rev == "" {
+		return "wowc-dataset-" + build + ".tar.zst"
+	}
+	return history.ArchiveName(build, r.Rev)
 }
 
 type loaded struct {
@@ -53,6 +82,8 @@ type Finder struct {
 
 	listed   bool
 	releases []release
+	hist     *history.File // this build's kept revisions; empty when it has none
+	histDone bool
 	cache    map[string]*loaded
 	Log      func(format string, args ...any)
 }
@@ -121,7 +152,7 @@ func (f *Finder) list() error {
 	}
 	for _, r := range raw {
 		if !r.Draft && strings.HasPrefix(r.Tag, tagPrefix) {
-			f.releases = append(f.releases, release{r.Tag, r.Published})
+			f.releases = append(f.releases, release{Tag: r.Tag, Published: r.Published})
 		}
 	}
 	own := tagPrefix + f.Build
@@ -140,19 +171,18 @@ func (f *Finder) load(r release) *loaded {
 	if f.cache == nil {
 		f.cache = map[string]*loaded{}
 	}
-	if l, ok := f.cache[r.Tag]; ok {
+	if l, ok := f.cache[r.key()]; ok {
 		return l
 	}
 	l := &loaded{}
-	f.cache[r.Tag] = l
-	build := strings.TrimPrefix(r.Tag, tagPrefix)
-	b, err := f.get(f.assetURL(r.Tag, "manifest-"+build+".json"))
+	f.cache[r.key()] = l
+	b, err := f.get(f.assetURL(r.Tag, r.manifestName()))
 	if err != nil {
 		l.err = err
 		return l
 	}
 	if err := manifest.Validate(b); err != nil {
-		l.err = fmt.Errorf("manifest of %s: %w", r.Tag, err)
+		l.err = fmt.Errorf("manifest of %s: %w", r.label(), err)
 		return l
 	}
 	l.m, l.err = manifest.Decode(b)
@@ -168,8 +198,7 @@ func (f *Finder) files(r release, l *loaded) map[string][]byte {
 		return l.files
 	}
 	l.read = true
-	build := strings.TrimPrefix(r.Tag, tagPrefix)
-	b, err := f.get(f.assetURL(r.Tag, "wowc-dataset-"+build+".tar.zst"))
+	b, err := f.get(f.assetURL(r.Tag, r.archiveName()))
 	if err != nil {
 		l.ferr = err
 		return nil
@@ -234,7 +263,7 @@ func (f *Finder) Table(table string) (data []byte, src manifest.Source, ok bool)
 		f.logf("carry forward %s: %v", table, err)
 		return nil, src, false
 	}
-	for _, r := range f.releases {
+	for _, r := range f.candidates(table) {
 		l := f.load(r)
 		if l.err != nil {
 			continue
@@ -251,12 +280,12 @@ func (f *Finder) Table(table string) (data []byte, src manifest.Source, ok bool)
 		files := f.files(r, l)
 		b, have := files[table]
 		if !have {
-			f.logf("release %s: %s missing from the archive (%v), skipped", r.Tag, table, l.ferr)
+			f.logf("release %s: %s missing from the archive (%v), skipped", r.label(), table, l.ferr)
 			continue
 		}
 		sum := sha256.Sum256(b)
 		if got := hex.EncodeToString(sum[:]); got != t.SHA256 {
-			f.logf("release %s: %s sha256 %s does not match its manifest %s, skipped", r.Tag, table, got, t.SHA256)
+			f.logf("release %s: %s sha256 %s does not match its manifest %s, skipped", r.label(), table, got, t.SHA256)
 			continue
 		}
 		src = t.Sources[j]
@@ -271,4 +300,75 @@ func (f *Finder) Table(table string) (data []byte, src manifest.Source, ok bool)
 		return b, src, true
 	}
 	return nil, src, false
+}
+
+// History is this build's kept revisions (revisions-<build>.json on its release); empty
+// when there is none yet, or it cannot be read.
+func (f *Finder) History() history.File {
+	if !f.histDone {
+		f.histDone = true
+		f.hist = &history.File{Build: f.Build}
+		b, err := f.get(f.assetURL(tagPrefix+f.Build, history.AssetName(f.Build)))
+		if err != nil {
+			f.logf("no revision history for %s (%v): using the latest releases only", f.Build, err)
+		} else if h, err := history.Parse(b); err != nil {
+			f.logf("revision history of %s unreadable, ignored: %v", f.Build, err)
+		} else {
+			f.hist = &h
+		}
+	}
+	return *f.hist
+}
+
+// candidates are the releases to look for table in, best first: this build's kept
+// revisions, newest first, whose recorded source for table was fetched (or carried from a
+// fetch) and had rows, then the latest releases as before.
+func (f *Finder) candidates(table string) []release {
+	var out []release
+	for _, e := range f.History().Revisions {
+		if e.Rows[table] == 0 || e.Sources[table] == history.Unavailable || e.Sources[table] == "" {
+			continue
+		}
+		out = append(out, release{Tag: tagPrefix + f.Build, Rev: e.Revision})
+	}
+	return append(out, f.releases...)
+}
+
+// Baseline is what the shrink guard compares a build with: for each table, the most rows
+// the newest publish or any kept revision had. ok is false when neither exists.
+func (f *Finder) Baseline() (m manifest.Manifest, ok bool, err error) {
+	prev, tag, ok, err := f.Previous()
+	if err != nil {
+		return m, false, err
+	}
+	max := map[string]int64{}
+	for _, t := range prev.Tables {
+		max[t.Path] = t.Rows
+	}
+	revs := []string{}
+	if ok {
+		revs = append(revs, tag)
+	}
+	for _, e := range f.History().Revisions {
+		revs = append(revs, e.Revision)
+		for t, n := range e.Rows {
+			max[t] = max2(max[t], n)
+		}
+	}
+	if len(revs) == 0 {
+		return m, false, nil
+	}
+	m.Revision = "(the highest of " + strings.Join(revs, ", ") + ")"
+	for t, n := range max {
+		m.Tables = append(m.Tables, manifest.Table{Path: t, Rows: n})
+	}
+	sort.Slice(m.Tables, func(i, j int) bool { return m.Tables[i].Path < m.Tables[j].Path })
+	return m, true, nil
+}
+
+func max2(a, b int64) int64 {
+	if b > a {
+		return b
+	}
+	return a
 }
