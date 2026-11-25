@@ -3,10 +3,12 @@ package schema
 import (
 	"os"
 	"path/filepath"
+	"reflect"
 	"strings"
 	"testing"
 
 	"github.com/WoW-Companion/data/internal/fetch"
+	"github.com/WoW-Companion/data/internal/parquetio"
 	"github.com/WoW-Companion/data/internal/tables"
 )
 
@@ -120,4 +122,67 @@ func TestCoverageOnFixtureDataset(t *testing.T) {
 	if md := CoverageMarkdown("b1", tcs); !strings.Contains(md, "| recipes | missing |") {
 		t.Error("a missing file is not reported")
 	}
+}
+
+func TestItemNameGaps(t *testing.T) {
+	dir := t.TempDir()
+	write := func(name string, rows any) {
+		var err error
+		switch r := rows.(type) {
+		case []nameItem:
+			_, _, err = parquetio.WriteFile(filepath.Join(dir, name), r, parquetio.Options{})
+		case []nameRef:
+			_, _, err = parquetio.WriteFile(filepath.Join(dir, name), r, parquetio.Options{})
+		case []nameReagent:
+			_, _, err = parquetio.WriteFile(filepath.Join(dir, name), r, parquetio.Options{})
+		case []nameRecipe:
+			_, _, err = parquetio.WriteFile(filepath.Join(dir, name), r, parquetio.Options{})
+		case []nameIdx:
+			_, _, err = parquetio.WriteFile(filepath.Join(dir, name), r, parquetio.Options{})
+		}
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	three := int32(3)
+	four := int32(4)
+	write("items.parquet", []nameItem{{1, "Copper Ore"}, {2, ""}})
+	write("names.parquet", []nameIdx{{"npcs", 9}, {"items", 3}})
+	write("recipe_reagents.parquet", []nameReagent{{1}, {2}, {7}})
+	write("recipes.parquet", []nameRecipe{{&three}, {&four}, {nil}})
+	write("vendor_sources.parquet", []nameRef{{1}, {8}})
+	write("gathering_yields.parquet", []nameRef{{7}, {2}})
+	g, err := ItemNameGaps(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := NameGaps{"recipe_reagents": {2, 7}, "recipes": {4}, "vendor_sources": {8}, "gathering_yields": {2, 7}}
+	if !reflect.DeepEqual(g, want) || g.Total() != 4 {
+		t.Errorf("gaps %v", g)
+	}
+	md := g.Markdown()
+	if !strings.Contains(md, "WARNING: 4 referenced item ids") || !strings.Contains(md, "| gathering_yields | 2, 7 |") {
+		t.Errorf("markdown %q", md)
+	}
+	if md := (NameGaps{}).Markdown(); !strings.Contains(md, "has a name") {
+		t.Errorf("clean markdown %q", md)
+	}
+}
+
+type nameItem struct {
+	ID   int32  `parquet:"id"`
+	Name string `parquet:"name"`
+}
+type nameIdx struct {
+	Table string `parquet:"table"`
+	ID    int32  `parquet:"id"`
+}
+type nameRef struct {
+	ItemID int32 `parquet:"item_id"`
+}
+type nameReagent struct {
+	ReagentItemID int32 `parquet:"reagent_item_id"`
+}
+type nameRecipe struct {
+	CreatesItemID *int32 `parquet:"creates_item_id,optional"`
 }

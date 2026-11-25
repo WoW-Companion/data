@@ -258,13 +258,13 @@ var Tables = []Table{
 		{"windows", "", "Loot windows seen at the node in the zone."},
 		{"reporters", "", "Distinct installs."},
 	}},
-	{"gathering_yields", tables.GatheringYield{}, "Everloot loot windows (CC BY-SA 4.0). Data from Everloot (https://everloot.app), CC BY-SA 4.0.", "What a gathering node gave, kept when at least two installs saw the item from it.", []Col{
+	{"gathering_yields", tables.GatheringYield{}, "Everloot loot windows (CC BY-SA 4.0). Data from Everloot (https://everloot.app), CC BY-SA 4.0.", "What a gathering node gave: items at least two installs saw from it in a loot window, plus items Everloot's corroborated drop rates give the node.", []Col{
 		{"node_id", "", "gathering_nodes.node_id."},
 		{"item_id", "", "Item gathered."},
 		{"windows", "", "Windows holding the item."},
 		{"reporters", "", "Distinct installs."},
-		{"min_count", "", "Smallest stack seen."},
-		{"max_count", "", "Largest stack seen."},
+		{"min_count", "", "Smallest stack seen; 0 on a yield taken from the drop rates, which hold no stack size."},
+		{"max_count", "", "Largest stack seen; 0 on a yield taken from the drop rates."},
 	}},
 	{"fishing_catches", tables.FishingCatch{}, "Everloot loot windows (CC BY-SA 4.0). Data from Everloot (https://everloot.app), CC BY-SA 4.0.", "What fishing gave in a zone, kept when at least two installs caught the item there. Empty until the loot windows are fetched and carry fishing.", []Col{
 		{"zone_id", "Everloot mapId", "UiMap id."},

@@ -340,7 +340,7 @@ One row per herb or mining node in a zone that at least two installs looted. Emp
 
 ## gathering_yields
 
-What a gathering node gave, kept when at least two installs saw the item from it. Source: Everloot loot windows (CC BY-SA 4.0). Data from Everloot (https://everloot.app), CC BY-SA 4.0.. File: `gathering_yields.parquet`.
+What a gathering node gave: items at least two installs saw from it in a loot window, plus items Everloot's corroborated drop rates give the node. Source: Everloot loot windows (CC BY-SA 4.0). Data from Everloot (https://everloot.app), CC BY-SA 4.0.. File: `gathering_yields.parquet`.
 
 | Column | Type | Null | Source | Meaning |
 | --- | --- | --- | --- | --- |
@@ -348,8 +348,8 @@ What a gathering node gave, kept when at least two installs saw the item from it
 | `item_id` | `int32` | no | table | Item gathered. |
 | `windows` | `int32` | no | table | Windows holding the item. |
 | `reporters` | `int32` | no | table | Distinct installs. |
-| `min_count` | `int32` | no | table | Smallest stack seen. |
-| `max_count` | `int32` | no | table | Largest stack seen. |
+| `min_count` | `int32` | no | table | Smallest stack seen; 0 on a yield taken from the drop rates, which hold no stack size. |
+| `max_count` | `int32` | no | table | Largest stack seen; 0 on a yield taken from the drop rates. |
 
 ## fishing_catches
 

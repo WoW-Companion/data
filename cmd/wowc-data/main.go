@@ -145,6 +145,12 @@ func runBuild(args []string) error {
 	for _, t := range m.Tables {
 		fmt.Printf("%s: %d rows\n", t.Path, t.Rows)
 	}
+	// A warning, never a failure: the coverage report lists the same ids.
+	if gaps, err := schema.ItemNameGaps(dir); err != nil {
+		fmt.Printf("WARNING: item name coverage not checked: %v\n", err)
+	} else if len(gaps) > 0 {
+		fmt.Printf("WARNING: %d referenced item ids have no name:%s", gaps.Total(), gaps.Markdown()[len("\n## Item name coverage\n\n"):])
+	}
 	return nil
 }
 
@@ -193,6 +199,11 @@ func runCoverage(args []string) error {
 		return nil
 	}
 	fmt.Print(schema.CoverageMarkdown(filepath.Base(dir), tcs))
+	gaps, err := schema.ItemNameGaps(dir)
+	if err != nil {
+		return err
+	}
+	fmt.Print(gaps.Markdown())
 	return nil
 }
 

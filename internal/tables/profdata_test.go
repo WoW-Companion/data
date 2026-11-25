@@ -90,11 +90,11 @@ func TestBuildGathering(t *testing.T) {
 	yields := []everloot.NodeYield{{ObjectID: 1731, ItemID: 2770}, {ObjectID: 178204, ItemID: 16745}}
 	nodes := map[int32]Node{2040: {ID: 2040, Name: "Tin Vein", Profession: "Mining", SkillRequired: 65}}
 	ui := []Row{{"ID": "1413", "Name_lang": "The Barrens"}}
-	rows, ys := BuildGathering(obs, yields, nodes, ui)
+	rows, ys := BuildGathering(obs, yields, nodes, ui, nil)
 	if len(rows) != 3 {
 		t.Fatalf("rows %+v", rows)
 	}
-	if rows[0].Profession != "Mining" || rows[0].SkillRequired != nil || *rows[0].ZoneName != "The Barrens" || rows[1].Profession != "Herbalism" {
+	if rows[0].Profession != "Mining" || rows[0].SkillRequired == nil || *rows[0].SkillRequired != 1 || *rows[0].ZoneName != "The Barrens" || rows[1].Profession != "Herbalism" {
 		t.Errorf("rows %+v", rows)
 	}
 	if rows[2].Profession != "Mining" || *rows[2].SkillRequired != 65 || *rows[2].Name != "Tin Vein" { // the client's lock wins
@@ -171,5 +171,53 @@ func TestCuratedProfessionsFileParses(t *testing.T) {
 	}
 	if _, err := os.Stat("../../curated/professions.yaml"); err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestBuildGatheringCuratedSkillAndDropYields(t *testing.T) {
+	obs := []everloot.NodeObs{
+		{ObjectID: 1734, ZoneID: 1413, Name: "Gold Vein", GatherKind: "other", Windows: 2, Reporters: 2},
+		{ObjectID: 2047, ZoneID: 1413, Name: "Truesilver Deposit", GatherKind: "ore", Windows: 2, Reporters: 2},
+		{ObjectID: 5, ZoneID: 1413, Name: "Mystery Vein", GatherKind: "ore", Windows: 2, Reporters: 2},
+		{ObjectID: 6, ZoneID: 1413, Name: "Peacebloom", GatherKind: "chest", Windows: 2, Reporters: 2},
+	}
+	yields := []everloot.NodeYield{{ObjectID: 2047, ItemID: 7911, Windows: 4, Reporters: 3, MinCount: 1, MaxCount: 2}}
+	drops := []everloot.LootSource{
+		{ItemID: 2776, SourceKind: everloot.KindObject, SourceID: 1734, Kills: 40, Drops: 40, Reporters: 3},
+		{ItemID: 7911, SourceKind: everloot.KindObject, SourceID: 2047, Kills: 9, Drops: 9, Reporters: 2}, // already a window yield: kept as it is
+		{ItemID: 7910, SourceKind: everloot.KindGathered, SourceID: 2047, Kills: 5, Drops: 5, Reporters: 2},
+		{ItemID: 1, SourceKind: everloot.KindCreature, SourceID: 2047, Kills: 5, Drops: 5, Reporters: 2}, // not a node source
+		{ItemID: 2, SourceKind: everloot.KindObject, SourceID: 999, Kills: 5, Drops: 5, Reporters: 2},    // not a kept node
+		{ItemID: 3, SourceKind: everloot.KindObject, SourceID: 1734, Kills: 5, Drops: 0, Reporters: 2},   // never dropped
+	}
+	rows, ys := BuildGathering(obs, yields, nil, nil, drops)
+	if len(rows) != 4 {
+		t.Fatalf("rows %+v", rows)
+	}
+	want := map[int32]struct {
+		prof  string
+		skill *int16
+	}{1734: {"Mining", i16(155)}, 2047: {"Mining", i16(230)}, 5: {"Mining", nil}, 6: {"Herbalism", i16(1)}}
+	for _, r := range rows {
+		w := want[r.NodeID]
+		if r.Profession != w.prof || (r.SkillRequired == nil) != (w.skill == nil) || (w.skill != nil && *r.SkillRequired != *w.skill) {
+			t.Errorf("node %d: %s %v", r.NodeID, r.Profession, r.SkillRequired)
+		}
+	}
+	got := map[[2]int32]GatheringYield{}
+	for _, y := range ys {
+		got[[2]int32{y.NodeID, y.ItemID}] = y
+	}
+	if len(ys) != 3 {
+		t.Fatalf("yields %+v", ys)
+	}
+	if y := got[[2]int32{1734, 2776}]; y.Windows != 40 || y.MinCount != 0 || y.Reporters != 3 {
+		t.Errorf("gold yield %+v", y)
+	}
+	if y := got[[2]int32{2047, 7911}]; y.MaxCount != 2 || y.Windows != 4 {
+		t.Errorf("window yield replaced %+v", y)
+	}
+	if _, ok := got[[2]int32{2047, 7910}]; !ok {
+		t.Error("gathered-kind drop row not used")
 	}
 }
