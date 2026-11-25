@@ -215,6 +215,15 @@ var Tables = []Table{
 		{"name", "", "Item set name."},
 		{"item_id", "", "items.id of a member of the set."},
 	}},
+	{"random_suffixes", tables.RandomSuffix{}, wago + "ItemRandomProperties, ItemRandomSuffix, SpellItemEnchantment (client build 3.4.3.54261: the 1.60.1 export carries no ItemRandom tables)", "One row per random suffix name (\"of the Eagle\") per client table and set of stats, with the stats it gives. Random suffixes are rolled when an item drops, so they are not in items. A name seen in both ItemRandomProperties and ItemRandomSuffix has a row per kind. Stat ids are the items.stat_types ids.", []Col{
+		{"suffix_id", "ItemRandomProperties, ItemRandomSuffix", "Lowest client id of the grouped suffixes; unique only together with kind."},
+		{"name", "ItemRandomProperties, ItemRandomSuffix", "Suffix name as the client spells it, for example \"of the Eagle\"."},
+		{"stats", "SpellItemEnchantment", "Stat type ids (stat_types.id) of the stat enchants the suffix applies, sorted; resistances and spell enchants are not listed."},
+		{"amounts", "SpellItemEnchantment EffectPointsMin", "kind properties: the amount of each stat, aligned with stats (the largest across the grouped suffixes); empty for kind suffix, whose amount scales with the item's level and is not in the client tables, and where any amount is zero."},
+		{"kind", "", "properties (ItemRandomProperties, fixed enchants) or suffix (ItemRandomSuffix, scaled by item level)."},
+		{"source", "", "Client table the row comes from."},
+		{"ids", "ItemRandomProperties, ItemRandomSuffix", "Every client id grouped into the row, sorted; the id a dropped item carries is one of these."},
+	}},
 	{"quest_lines", tables.QuestLineRow{}, wago + "QuestLine, QuestLineXQuest", "One row per quest of a quest line, in line order.", []Col{
 		{"line_id", "", "Quest line id (quests.quest_line_id)."},
 		{"name", "QuestLine", "Quest line name; null when QuestLine has no named row."},

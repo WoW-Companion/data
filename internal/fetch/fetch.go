@@ -36,6 +36,16 @@ var Tables = []string{"ItemSparse", "Item", "QuestV2", "QuestLineXQuest", "Quest
 	"ItemSet", "QuestLine",
 	"GameObjects", "Lock", "LockType", "ItemEffect", "ItemXItemEffect"}
 
+// RandomSuffixBuild is the client build the random suffix tables are read from. wago.tools
+// holds no ItemRandomProperties or ItemRandomSuffix for the dataset's build (1.60.1 is past
+// the client change that dropped them), so these three tables, and only these, come from the
+// newest published build that has them; the enchantment ids they point at belong to that
+// build's SpellItemEnchantment, which is read from the same build.
+const RandomSuffixBuild = "3.4.3.54261"
+
+// RandomSuffixTables are the client tables read at RandomSuffixBuild.
+var RandomSuffixTables = []string{"ItemRandomProperties", "ItemRandomSuffix", "SpellItemEnchantment"}
+
 // Provenance is the record kept beside the cached CSVs and stamped into every built table.
 type Provenance struct {
 	Source    string   `json:"source"`

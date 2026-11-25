@@ -84,6 +84,11 @@ func runFetch(args []string) error {
 	if err != nil {
 		return err
 	}
+	sprov, err := fetch.Build(fetch.BaseURL, fetch.RandomSuffixBuild, *cache, fetch.RandomSuffixTables)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("cached %d random suffix tables for build %s\n", len(sprov.Tables), sprov.Build)
 	ev, cor, de, status := everloot.FetchAll(everloot.BaseURL, everloot.BulkBase, filepath.Join(*cache, "everloot"), time.Now().UTC().Format("2006-01-02T15:04:05Z"), *build)
 	for _, st := range status {
 		fmt.Println(st.Line())
