@@ -50,8 +50,8 @@ type Item struct {
 	BuyPrice           *int32     `parquet:"buy_price,optional"`
 }
 
-// Armor, DmgMin and DmgMax stay null: this build's client tables hold no armor or damage
-// amount for an item, only per-level budget tables (docs/sources.md), and nothing is inferred.
+// Stat amounts, Armor, DmgMin and DmgMax are computed from the client's budget tables
+// (itemvalues.go, docs/sources.md); they are null where the tables give nothing.
 
 // Quest is one row of the quests table. The client's quest tables carry no name,
 // level or rewards; only what exists is kept. Level and MinLevel stay null: no allowed
@@ -75,8 +75,22 @@ type Row map[string]string
 // Required lists the columns each client table must carry in its header. A column the
 // export lacks is an error naming table and column, never a silent null or zero.
 var Required = map[string][]string{
-	"ItemSparse":         {"ID", "Display_lang", "ItemLevel", "RequiredLevel", "OverallQualityID", "InventoryType", "AllowableClass", "Bonding", "StatModifier_bonusStat_0", "StatPercentEditor_0", "ItemDelay", "SellPrice", "BuyPrice", "RequiredSkillRank"},
-	"Item":               {"ID", "ClassID", "SubclassID"},
+	"ItemSparse": {"ID", "Display_lang", "ItemLevel", "RequiredLevel", "OverallQualityID", "InventoryType", "AllowableClass", "Bonding", "StatModifier_bonusStat_0", "StatPercentEditor_0", "ItemDelay", "DmgVariance", "Flags_1", "SellPrice", "BuyPrice", "RequiredSkillRank"},
+	"Item":       {"ID", "ClassID", "SubclassID"},
+
+	"RandPropPoints":          {"ID", "Epic_0", "Epic_4", "Superior_0", "Superior_4", "Good_0", "Good_4"},
+	"ItemArmorTotal":          {"ItemLevel", "Cloth", "Leather", "Mail", "Plate"},
+	"ItemArmorQuality":        {"ID", "Qualitymod_0", "Qualitymod_6"},
+	"ItemArmorShield":         {"ItemLevel", "Quality_0", "Quality_6"},
+	"ArmorLocation":           {"ID", "Clothmodifier", "Leathermodifier", "Chainmodifier", "Platemodifier"},
+	"ItemDamageOneHand":       {"ItemLevel", "Quality_0", "Quality_6"},
+	"ItemDamageOneHandCaster": {"ItemLevel", "Quality_0", "Quality_6"},
+	"ItemDamageTwoHand":       {"ItemLevel", "Quality_0", "Quality_6"},
+	"ItemDamageTwoHandCaster": {"ItemLevel", "Quality_0", "Quality_6"},
+	"ItemDamageRanged":        {"ItemLevel", "Quality_0", "Quality_6"},
+	"ItemDamageThrown":        {"ItemLevel", "Quality_0", "Quality_6"},
+	"ItemDamageWand":          {"ItemLevel", "Quality_0", "Quality_6"},
+
 	"QuestV2":            {"ID", "UniqueBitFlag", "UiQuestDetailsThemeID"},
 	"QuestLineXQuest":    {"ID", "QuestID", "QuestLineID", "OrderIndex"},
 	"QuestLine":          {"ID", "Name_lang"},
@@ -207,7 +221,10 @@ func StatsStatusOf(stats []int16, classID, slot, quality int) string {
 }
 
 // BuildItems joins ItemSparse to Item and returns rows sorted by id.
-func BuildItems(sparse, items []Row) []Item {
+//
+// budgets, when not nil, fills stat amounts, armor and weapon damage from the client's
+// budget tables (itemvalues.go); without them those stay null.
+func BuildItems(sparse, items []Row, budgets *Budgets) []Item {
 	base := make(map[int]Row, len(items))
 	for _, r := range items {
 		base[r.int("ID", 0)] = r
@@ -220,6 +237,11 @@ func BuildItems(sparse, items []Row) []Item {
 		classID := b.int("ClassID", 0)
 		slot := r.int("InventoryType", 0)
 		quality := r.int("OverallQualityID", 0)
+		subclass := b.int("SubclassID", 0)
+		ilvl := r.int("ItemLevel", 0)
+		itemStats := ItemStats(r)
+		budgets.StatValues(r, itemStats, ilvl, quality, slot, classID, subclass)
+		dmgMin, dmgMax := budgets.DamageOf(r, ilvl, quality, slot, classID, subclass)
 		out = append(out, Item{
 			ID:                 int32(id),
 			Name:               r["Display_lang"],
@@ -233,7 +255,10 @@ func BuildItems(sparse, items []Row) []Item {
 			Bonding:            int8(r.int("Bonding", 0)),
 			StatTypes:          stats,
 			StatsStatus:        StatsStatusOf(stats, classID, slot, quality),
-			Stats:              ItemStats(r),
+			Stats:              itemStats,
+			Armor:              budgets.ArmorOf(ilvl, quality, slot, classID, subclass),
+			DmgMin:             dmgMin,
+			DmgMax:             dmgMax,
 			SpeedMS:            SpeedMS(r, classID),
 			SellPrice:          price(r, "SellPrice"),
 			BuyPrice:           price(r, "BuyPrice"),

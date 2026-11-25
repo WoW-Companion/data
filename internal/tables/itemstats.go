@@ -2,9 +2,8 @@ package tables
 
 import "strconv"
 
-// ItemStat is one stat of an item. Value is the stat amount; it is null when the
-// client tables hold no direct amount (docs/sources.md: ItemSparse stores a share of a
-// level budget, StatPercentEditor, not an amount, and no amount is inferred from it).
+// ItemStat is one stat of an item. Value is the stat amount computed from the level
+// budget (Budgets.StatValues); it is null when the budget tables give none.
 type ItemStat struct {
 	Type  int16  `parquet:"type"`
 	Value *int32 `parquet:"value,optional"`
@@ -37,8 +36,8 @@ var StatTypeLabels = []StatTypeRow{
 	{54, "Shadow Resistance"}, {55, "Nature Resistance"}, {56, "Arcane Resistance"},
 }
 
-// ItemStats lists the item's stat types in slot order. Values stay null: the client
-// tables carry no amount, only StatPercentEditor, a share of a level budget.
+// ItemStats lists the item's stat types in slot order, values null; Budgets.StatValues
+// fills them.
 func ItemStats(r Row) []ItemStat {
 	out := []ItemStat{}
 	for i := 0; i < statSlots; i++ {

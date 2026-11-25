@@ -34,7 +34,7 @@ const (
 
 // Tables lists every table in the order BuildDataset writes them.
 var Tables = []Table{
-	{"items", tables.Item{}, wago + "ItemSparse, Item", "One row per item the client lists, sorted by id.", []Col{
+	{"items", tables.Item{}, wago + "ItemSparse, Item, RandPropPoints, ItemArmorTotal, ItemArmorQuality, ItemArmorShield, ArmorLocation, ItemDamage*", "One row per item the client lists, sorted by id.", []Col{
 		{"id", "", "Item id."},
 		{"name", "", "Item name (ItemSparse Display_lang)."},
 		{"item_level", "", "Item level."},
@@ -47,10 +47,10 @@ var Tables = []Table{
 		{"bonding", "", "Bonding id (0 none, 1 on pickup, 2 on equip, 3 on use)."},
 		{"stat_types", "", "Stat type ids the item lists, in slot order; empty when none (see stat_types)."},
 		{"stats_status", "derived", "known when stats are listed, unknown when a stat-bearing piece lists none, none otherwise."},
-		{"stats", "", "One {type, value} per listed stat; value is always null, the client holds no amount."},
-		{"armor", "", "Always null: the client holds no per-item armor amount."},
-		{"dmg_min", "", "Always null: the client holds no per-item damage amount."},
-		{"dmg_max", "", "Always null: the client holds no per-item damage amount."},
+		{"stats", "", "One {type, value} per listed stat. value is StatPercentEditor/10000 of the level budget (RandPropPoints by item level, quality and slot), rounded; null for a poor or common item, a zero share or a level with no budget row."},
+		{"armor", "", "Computed: ItemArmorTotal for the level and material x ItemArmorQuality x ArmorLocation for the slot (ItemArmorShield for shields), rounded. Null for non-armor, jewellery, relics and a zero result."},
+		{"dmg_min", "", "Computed: the level's ItemDamage* damage per second x ItemDelay, spread by DmgVariance, rounded; null for non-weapons and items with no delay."},
+		{"dmg_max", "", "Computed as dmg_min, upper end of the range (avg x (1 + DmgVariance/2))."},
 		{"speed_ms", "", "Weapon speed in milliseconds (ItemDelay); null for non-weapons or a zero delay."},
 		{"sell_price", "ItemSparse SellPrice", "Vendor sell price in copper; null when the client stores zero."},
 		{"buy_price", "ItemSparse BuyPrice", "Vendor buy price in copper; null when the client stores zero."},

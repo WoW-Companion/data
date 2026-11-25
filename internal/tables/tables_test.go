@@ -108,7 +108,7 @@ func TestBuildItems(t *testing.T) {
 		{"ID": "10", "Display_lang": "Ring", "InventoryType": "11", "OverallQualityID": "2", "StatModifier_bonusStat_0": "5", "StatModifier_bonusStat_1": "-1", "Description_lang": "never kept"},
 	}
 	base := []Row{{"ID": "20", "ClassID": "4", "SubclassID": "1"}, {"ID": "10", "ClassID": "4", "SubclassID": "0"}}
-	got := BuildItems(sparse, base)
+	got := BuildItems(sparse, base, nil)
 	if len(got) != 2 || got[0].ID != 10 || got[1].ID != 20 {
 		t.Fatalf("not sorted by id: %+v", got)
 	}
@@ -217,7 +217,7 @@ func TestReadTableRequiredColumns(t *testing.T) {
 		{"missing in header-only file", "QuestV2", "ID,UniqueBitFlag\n", `QuestV2: required column "UiQuestDetailsThemeID" missing`},
 		{"item delay missing", "ItemSparse", "ID,Display_lang,ItemLevel,RequiredLevel,OverallQualityID,InventoryType,AllowableClass,Bonding,StatModifier_bonusStat_0,StatPercentEditor_0\n", `ItemSparse: required column "ItemDelay" missing`},
 		{"stat percent missing", "ItemSparse", "ID,Display_lang,ItemLevel,RequiredLevel,OverallQualityID,InventoryType,AllowableClass,Bonding,StatModifier_bonusStat_0,ItemDelay\n", `ItemSparse: required column "StatPercentEditor_0" missing`},
-		{"sell price missing", "ItemSparse", "ID,Display_lang,ItemLevel,RequiredLevel,OverallQualityID,InventoryType,AllowableClass,Bonding,StatModifier_bonusStat_0,StatPercentEditor_0,ItemDelay,BuyPrice\n", `ItemSparse: required column "SellPrice" missing`},
+		{"sell price missing", "ItemSparse", "ID,Display_lang,ItemLevel,RequiredLevel,OverallQualityID,InventoryType,AllowableClass,Bonding,StatModifier_bonusStat_0,StatPercentEditor_0,ItemDelay,DmgVariance,Flags_1,BuyPrice\n", `ItemSparse: required column "SellPrice" missing`},
 		{"item set slot missing", "ItemSet", "ID,Name_lang,ItemID_0\n", `ItemSet: required column "ItemID_16" missing`},
 		{"quest line order missing", "QuestLineXQuest", "ID,QuestID,QuestLineID\n", `QuestLineXQuest: required column "OrderIndex" missing`},
 		{"quest line name missing", "QuestLine", "ID\n", `QuestLine: required column "Name_lang" missing`},
