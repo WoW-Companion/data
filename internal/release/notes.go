@@ -29,6 +29,7 @@ func NotesAt(build, prevTag, changes, revision, date string) string {
 	b.WriteString("- Observed quests (quests_observed) and vendor offers (vendor_sources): Data from Everloot (https://everloot.app), CC BY-SA 4.0.\n")
 	b.WriteString("- Profession leveling routes (profession_routes, profession_tiers): facts (skill ranges, recipes, craft counts, materials, trainers) read from the WoW Forever leveling guides on wow-professions.com (https://www.wow-professions.com/forever/); no guide text is published.\n")
 	b.WriteString("- Talent builds and key talents (talent_builds, talent_priorities): follow the Icy Veins WoW Forever leveling guides (https://www.icy-veins.com/wow-forever/); rows not read from a guide are marked curated (unverified).\n")
+	b.WriteString("- UI maps (ui_maps): facts (ids, names, types, parents) from the client tables UiMap and UiMapAssignment, via wago.tools; no text is published beyond map names.\n")
 	b.WriteString("\nVerify: `wowc-data verify-manifest <dir>`, or compare the sha256 of each file with manifest.json. See docs/releases.md.\n")
 	return b.String()
 }

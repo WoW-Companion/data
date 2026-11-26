@@ -513,6 +513,19 @@ Where each profession's Journeyman, Expert and Artisan ranks are learned, from t
 | `source_url` | `string` | no | curated | The guide page. |
 | `fetched_at` | `string` | no | curated | When the page was fetched (UTC). |
 
+## ui_maps
+
+One row per UiMap the client lists, sorted by id, so every ui_map_id in quests, npcs, plans and the addon has a name (310 is Shadowfang Keep, 1458 is Undercity). Every row is kept, including any with an empty name. Source: wago.tools client table UiMap, UiMapAssignment, Map. File: `ui_maps.parquet`.
+
+| Column | Type | Null | Source | Meaning |
+| --- | --- | --- | --- | --- |
+| `ui_map_id` | `int32` | no | UiMap | UiMap id, as in quests.ui_map_id, npcs.zone_id and instances.entrance_zone_id. |
+| `name` | `string` | no | UiMap Name_lang | Map name; empty where the client has none. |
+| `type` | `string` | no | UiMap Type | Client enum label: cosmic, world, continent, zone, dungeon, micro or orphan (unknown for a value outside the enum). |
+| `type_id` | `int16` | no | UiMap Type | The client's numeric UiMap.Type. |
+| `parent_ui_map_id` | `int32` | yes | UiMap ParentUiMapID | Parent UiMap; null for a top-level map. |
+| `instance_map_id` | `int32` | yes | UiMapAssignment MapID | instances.map_id of the dungeon or raid the UiMap is assigned to (lowest assignment id); null for an open-world map. |
+
 ## names
 
 Prebuilt name index: one row per named item, npc, instance, recipe and item set, sorted by norm, with a Bloom filter on norm. Quests carry no name, so none are listed. An exact lookup reads the row groups whose norm min/max range and Bloom filter admit the name; a prefix lookup reads those whose min/max range overlaps the prefix (see layout.md). Source: derived from items, npcs, instances, recipes and item_sets. File: `names.parquet`.
