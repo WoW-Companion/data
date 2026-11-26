@@ -99,7 +99,7 @@ var Tables = []Table{
 		{"max_rank", "TraitNodeEntry", "Ranks of the node's first entry; null when it has none."},
 		{"prerequisite_node_ids", "TraitEdge", "Left-hand node of each edge pointing at the node, whatever the edge type."},
 	}},
-	{"talent_builds", tables.TalentBuildRow{}, curate + " validated against talent_nodes", "Curated talent builds: the nodes to take, in order, per class, spec and level band.", []Col{
+	{"talent_builds", tables.TalentBuildRow{}, curate + " validated against talent_nodes", "Talent builds: the nodes to take, in order, per class, spec and level band. Rows with source \"curated (unverified)\" are the project's old invented bands, kept only for specs whose Icy Veins WoW Forever leveling guide could not be read; rows read from the guide carry exact levels, one point per row (source_url and fetched_at filled).", []Col{
 		{"class", "", "Class name."},
 		{"spec", "", "Specialisation name."},
 		{"band", "", "Level band the step belongs to, low-high."},
@@ -107,7 +107,22 @@ var Tables = []Table{
 		{"node_id", "", "talent_nodes.node_id to spend points in."},
 		{"points", "", "Ranks to add at this step."},
 		{"rationale", "", "Short reason for the band's choices."},
-		{"source", "", "Always \"" + tables.BuildSource + "\"."},
+		{"source", "", "\"" + tables.BuildSource + "\" for the old bands, or \"" + tables.IcyVeinsSource + "\" for a row read from a guide."},
+		{"level", "", "Character level at which the point is spent; null on an unverified row."},
+		{"talent_name", "", "Name of the talent the point goes into; null on an unverified row."},
+		{"rank_after", "", "Rank of the talent after the point; null on an unverified row."},
+		{"source_url", "", "Guide page the row was read from; null on an unverified row."},
+		{"fetched_at", "", "When the guide was read; null on an unverified row."},
+	}},
+	{"talent_priorities", tables.TalentPriorityRow{}, "Icy Veins WoW Forever leveling guides (curated/talent_priorities.json), facts only; reasons in our own words", "Each spec's ranked key leveling talents, best first, with a one-line reason. Empty until a guide has been read.", []Col{
+		{"class", "", "Class name."},
+		{"spec", "", "Specialisation name."},
+		{"rank", "", "Position in the guide's key-talent list, from 1."},
+		{"node_id", "", "talent_nodes.node_id of the talent."},
+		{"talent_name", "", "Talent name."},
+		{"reason", "", "One line in our own words on why the talent matters while leveling."},
+		{"source_url", "", "Guide page the list was read from."},
+		{"fetched_at", "", "When the guide was read."},
 	}},
 	{"stat_types", tables.StatTypeRow{}, "constants in internal/tables/itemstats.go", "Labels for the item stat ids 0 to 56.", []Col{
 		{"id", "", "Stat type id, as in items.stat_types."},

@@ -96,7 +96,7 @@ One row per talent node. Source: wago.tools client table TraitNode and the trait
 
 ## talent_builds
 
-Curated talent builds: the nodes to take, in order, per class, spec and level band. Source: curated YAML (curated/talents) validated against talent_nodes. File: `talent_builds.parquet`.
+Talent builds: the nodes to take, in order, per class, spec and level band. Rows with source "curated (unverified)" are the project's old invented bands, kept only for specs whose Icy Veins WoW Forever leveling guide could not be read; rows read from the guide carry exact levels, one point per row (source_url and fetched_at filled). Source: curated YAML (curated/talents) validated against talent_nodes. File: `talent_builds.parquet`.
 
 | Column | Type | Null | Source | Meaning |
 | --- | --- | --- | --- | --- |
@@ -107,7 +107,27 @@ Curated talent builds: the nodes to take, in order, per class, spec and level ba
 | `node_id` | `int32` | no | table | talent_nodes.node_id to spend points in. |
 | `points` | `int16` | no | table | Ranks to add at this step. |
 | `rationale` | `string` | no | table | Short reason for the band's choices. |
-| `source` | `string` | no | table | Always "curated (advisor defaults)". |
+| `source` | `string` | no | table | "curated (unverified)" for the old bands, or "icy-veins.com WoW Forever leveling guides" for a row read from a guide. |
+| `level` | `int16` | yes | table | Character level at which the point is spent; null on an unverified row. |
+| `talent_name` | `string` | yes | table | Name of the talent the point goes into; null on an unverified row. |
+| `rank_after` | `int16` | yes | table | Rank of the talent after the point; null on an unverified row. |
+| `source_url` | `string` | yes | table | Guide page the row was read from; null on an unverified row. |
+| `fetched_at` | `string` | yes | table | When the guide was read; null on an unverified row. |
+
+## talent_priorities
+
+Each spec's ranked key leveling talents, best first, with a one-line reason. Empty until a guide has been read. Source: Icy Veins WoW Forever leveling guides (curated/talent_priorities.json), facts only; reasons in our own words. File: `talent_priorities.parquet`.
+
+| Column | Type | Null | Source | Meaning |
+| --- | --- | --- | --- | --- |
+| `class` | `string` | no | table | Class name. |
+| `spec` | `string` | no | table | Specialisation name. |
+| `rank` | `int16` | no | table | Position in the guide's key-talent list, from 1. |
+| `node_id` | `int32` | no | table | talent_nodes.node_id of the talent. |
+| `talent_name` | `string` | no | table | Talent name. |
+| `reason` | `string` | no | table | One line in our own words on why the talent matters while leveling. |
+| `source_url` | `string` | no | table | Guide page the list was read from. |
+| `fetched_at` | `string` | no | table | When the guide was read. |
 
 ## stat_types
 

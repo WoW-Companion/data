@@ -5,7 +5,7 @@ and level band, talent builds and profession routes. Each file records where its
 numbers came from. 
 ## talents/
 
-`talents/<class>/<spec>.yaml` holds an advisor-default talent build for one spec: level
+`talents/<class>/<spec>.yaml` holds an old, invented and unverified talent build for one spec (to be replaced by the Icy Veins WoW Forever leveling builds, the reference the Operator chose; none has been read yet): level
 bands (10-19, 20-29, 30-39), each with the points gained in that band in the order to spend
 them, and a short rationale written for this project. Every build is an advisor default, not
 authoritative. A step is `{node: <talent_nodes.node_id>, name: <node name>, points: <n>}`;
@@ -17,7 +17,7 @@ Survival), Druid (Balance, Feral Combat, Restoration), Mage (Arcane, Fire, Frost
 covered, which is every class in `talent_trees`.
 
 `make dataset` validates every file against `talent_trees` and `talent_nodes` and fails on any
-problem, then publishes the `talent_builds` table (source "curated (advisor defaults)").
+problem, then publishes the `talent_builds` table (source "curated (unverified)").
 `go test ./internal/tables` runs the same check when `dist/cache/<build>` exists. The checks:
 the group belongs to the class's tree; each node is in that group and carries the given name;
 points never exceed a node's max rank; the points spent through a band never exceed the points
@@ -47,3 +47,7 @@ Everloot's corroborated observation names one (`entrance_zone_source`). Maps wit
 ## profession_routes.json
 
 Each profession's 1-300 leveling route and its rank trainers, as facts read from the WoW Forever guides on wow-professions.com (the reference the Operator chose for profession advice). `scripts/extract_routes.py <dir of saved pages>` writes it; the notes in it are in our own words. The build resolves names to ids, prints what it cannot resolve and any gap in a main route, and publishes the `profession_routes` and `profession_tiers` tables (docs/sources.md). Edit the JSON by hand only for a fix the extractor cannot make; re-run the extractor when the guides change.
+
+## talent_priorities.json
+
+Optional. Per spec, the Icy Veins WoW Forever guide's ranked key leveling talents (`node_id`, `name`) with a one-line `reason` in our own words, plus `source_url` and a top-level `fetched_at`. Each node is checked against `talent_nodes` at `make dataset`; a missing file publishes an empty `talent_priorities` table.

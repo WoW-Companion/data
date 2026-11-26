@@ -10,7 +10,10 @@ import (
 )
 
 // BuildSource is the source column of every talent_builds row.
-const BuildSource = "curated (advisor defaults)"
+const BuildSource = "curated (unverified)"
+
+// IcyVeinsSource is the source of a row read from an Icy Veins WoW Forever leveling guide.
+const IcyVeinsSource = "icy-veins.com WoW Forever leveling guides"
 
 // FirstTalentLevel is the level of the first talent point. The client tables fetched here
 // carry no currency rules, so the points available at a level are an assumption: one point
@@ -55,6 +58,13 @@ type TalentBuildRow struct {
 	Points    int16  `parquet:"points"`
 	Rationale string `parquet:"rationale"`
 	Source    string `parquet:"source"`
+	// The columns below are filled only for rows read from an Icy Veins guide (one row per
+	// point, Points 1); null on a curated (unverified) row.
+	Level      *int16  `parquet:"level,optional"`
+	TalentName *string `parquet:"talent_name,optional"`
+	RankAfter  *int16  `parquet:"rank_after,optional"`
+	SourceURL  *string `parquet:"source_url,optional"`
+	FetchedAt  *string `parquet:"fetched_at,optional"`
 }
 
 // unquote strips a pair of double quotes, or returns the trimmed text.
