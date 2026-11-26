@@ -55,6 +55,7 @@ type Cached struct {
 	QuestLines []QuestLineRow
 	Npcs       []Npc
 	UiMaps     []Row
+	UiMapRows  []UiMap
 
 	TalentTrees []TalentTree
 	TalentNodes []TalentNode
@@ -129,6 +130,11 @@ func LoadCache(dir string) (Cached, error) {
 		ContentTuning: rows["ContentTuning"],
 	}
 	c.Instances = BuildInstances(iin)
+	instMaps := map[int32]bool{}
+	for _, i := range c.Instances {
+		instMaps[i.MapID] = true
+	}
+	c.UiMapRows = BuildUiMaps(rows["UiMap"], rows["UiMapAssignment"], instMaps)
 	c.InstanceBosses = BuildInstanceBosses(c.Instances, iin)
 	c.Nodes = BuildNodes(GatherInput{GameObjects: rows["GameObjects"], Locks: rows["Lock"], LockTypes: rows["LockType"]})
 	if err := loadRandomSuffixes(&c, filepath.Join(filepath.Dir(dir), fetch.RandomSuffixBuild)); err != nil {
@@ -477,6 +483,9 @@ func BuildDatasetFrom(cacheBuildDir, everlootFile, talentsDir, instancesFile, pr
 		return m, err
 	}
 	if err := add(writeTable(outDir, "profession_tiers.parquet", routeTiers, Layout(nil, []string{"profession", "tier"}, routeSrc, src))); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "ui_maps.parquet", c.UiMapRows, Layout(nil, []string{"ui_map_id"}, src))); err != nil {
 		return m, err
 	}
 	// names.parquet: the prebuilt name index. One row group per DefaultRowGroup rows

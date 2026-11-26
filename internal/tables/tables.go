@@ -96,7 +96,8 @@ var Required = map[string][]string{
 	"QuestLine":          {"ID", "Name_lang"},
 	"ItemSet":            {"ID", "Name_lang", "ItemID_0", "ItemID_16"},
 	"QuestPOIBlob":       {"ID", "QuestID", "MapID", "UiMapID"},
-	"UiMap":              {"ID", "Name_lang"},
+	"UiMap":              {"ID", "Name_lang", "ParentUiMapID", "Type"},
+	"UiMapAssignment":    {"ID", "UiMapID", "MapID"},
 	"Creature":           {"ID", "Name_lang", "Classification", "CreatureType", "CreatureFamily"},
 	"CreatureDifficulty": {"ID", "CreatureID", "MinLevel", "MaxLevel", "FactionTemplateID"},
 

@@ -29,7 +29,7 @@ const (
 var Delay = 2 * time.Second
 
 // Tables are the client tables the pipeline reads.
-var Tables = []string{"ItemSparse", "Item", "QuestV2", "QuestLineXQuest", "QuestPOIBlob", "UiMap", "Creature", "CreatureDifficulty",
+var Tables = []string{"ItemSparse", "Item", "QuestV2", "QuestLineXQuest", "QuestPOIBlob", "UiMap", "UiMapAssignment", "Creature", "CreatureDifficulty",
 	"TraitNode", "TraitNodeGroup", "TraitNodeGroupXTraitNode", "TraitNodeXTraitNodeEntry", "TraitNodeEntry", "TraitDefinition", "TraitEdge", "TraitCond", "SkillLineXTraitTree", "SkillRaceClassInfo", "ChrClasses", "SpellName",
 	"SkillLine", "SkillLineAbility", "Spell", "SpellLevels", "SpellReagents", "SpellEffect",
 	"Map", "DungeonEncounter", "MapDifficulty", "ContentTuning",

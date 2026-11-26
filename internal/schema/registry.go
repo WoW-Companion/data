@@ -383,6 +383,14 @@ var Tables = []Table{
 		{"source_url", "curated", "The guide page."},
 		{"fetched_at", "curated", "When the page was fetched (UTC)."},
 	}},
+	{"ui_maps", tables.UiMap{}, wago + "UiMap, UiMapAssignment, Map", "One row per UiMap the client lists, sorted by id, so every ui_map_id in quests, npcs, plans and the addon has a name (310 is Shadowfang Keep, 1458 is Undercity). Every row is kept, including any with an empty name.", []Col{
+		{"ui_map_id", "UiMap", "UiMap id, as in quests.ui_map_id, npcs.zone_id and instances.entrance_zone_id."},
+		{"name", "UiMap Name_lang", "Map name; empty where the client has none."},
+		{"type", "UiMap Type", "Client enum label: cosmic, world, continent, zone, dungeon, micro or orphan (unknown for a value outside the enum)."},
+		{"type_id", "UiMap Type", "The client's numeric UiMap.Type."},
+		{"parent_ui_map_id", "UiMap ParentUiMapID", "Parent UiMap; null for a top-level map."},
+		{"instance_map_id", "UiMapAssignment MapID", "instances.map_id of the dungeon or raid the UiMap is assigned to (lowest assignment id); null for an open-world map."},
+	}},
 	{"names", names.Row{}, "derived from items, npcs, instances, recipes and item_sets", "Prebuilt name index: one row per named item, npc, instance, recipe and item set, sorted by norm, with a Bloom filter on norm. Quests carry no name, so none are listed. An exact lookup reads the row groups whose norm min/max range and Bloom filter admit the name; a prefix lookup reads those whose min/max range overlaps the prefix (see layout.md).", []Col{
 		{"norm", "derived", "The name lowercased, accent-folded, apostrophes dropped and other punctuation turned into single spaces."},
 		{"name", "", "The name as the source table spells it."},
