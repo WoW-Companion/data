@@ -162,6 +162,39 @@ One row per class ability rank on a class skill line (Arms, Fury, Holy ...), onc
 | `superseded_spell_id` | `int32` | yes | SkillLineAbility SupercedesSpell | The previous rank this one replaces; null for a first rank. It may name a spell with no row here when that spell has no level. |
 | `trained` | `bool` | yes | none | Always null: the client tables do not say whether a trainer teaches a spell or it is learned automatically. |
 
+## weapon_skills
+
+One row per class and weapon skill (every class against every weapon skill a Weapon Master teaches), saying whether the class can learn it and whether it starts knowing it. Skill ids are client SkillLine ids. Defense, Dual Wield, Unarmed and Feral Combat are not listed. Source: wago.tools client table SkillLine, SkillRaceClassInfo, ChrClasses. File: `weapon_skills.parquet`.
+
+| Column | Type | Null | Source | Meaning |
+| --- | --- | --- | --- | --- |
+| `class_id` | `int32` | no | ChrClasses | Class id (ChrClasses.ID). |
+| `class_name` | `string` | no | ChrClasses | Class name. |
+| `skill_line_id` | `int32` | no | SkillLine | Weapon skill line id (Staves 136, Daggers 173, One-Handed Maces 54 ...). |
+| `skill_name` | `string` | no | SkillLine | Skill name; the client's Swords, Axes and Maces lines are named One-Handed Swords, One-Handed Axes and One-Handed Maces. |
+| `learnable` | `bool` | no | SkillRaceClassInfo | True when a SkillRaceClassInfo row lists the class for the skill: the class can learn it (from a Weapon Master) or already has it. |
+| `default_known` | `bool` | no | SkillRaceClassInfo Availability | True when a row for the class has Availability 1: known from character creation, for at least one race (the race masks are not published). |
+| `min_level` | `int16` | yes | SkillRaceClassInfo MinLevel | Lowest level the class can learn the skill (20 for Polearms); null when the client lists none. |
+
+## weapon_masters
+
+One row per Weapon Master NPC: where they stand and which weapon skills they teach, with the cost and level of each. The client tables carry no trainer offers, so these are curated facts (docs/sources.md). Source: curated Weapon Master facts (Wowhead Classic NPC pages) checked against weapon_skills; wago.tools client table SkillLine. File: `weapon_masters.parquet`.
+
+| Column | Type | Null | Source | Meaning |
+| --- | --- | --- | --- | --- |
+| `npc_id` | `int32` | no | curated | NPC id (npcs.id where the npc is listed there). |
+| `name` | `string` | no | curated | NPC name. |
+| `faction` | `string` | no | curated | Horde or Alliance. |
+| `city` | `string` | no | curated | City the master stands in. |
+| `place` | `string` | yes | curated | District of the city (Valley of Honor, Lower Rise, War Quarter); null where no source gave one. |
+| `zone_id` | `int32` | no | curated | UiMap id of the city. |
+| `x` | `float64` | no | curated | Map x position, percent of the city map. |
+| `y` | `float64` | no | curated | Map y position, percent of the city map. |
+| `skills` | `list<int32>` | no | curated | weapon_skills.skill_line_id of each skill taught. |
+| `cost_copper` | `list<int32>` | no | curated | Training cost in copper of each skill, aligned with skills (1000 = 10 silver; Polearms 10000). |
+| `min_level` | `list<int16>` | no | curated | Level needed to learn each skill, aligned with skills (Polearms 20, the rest 1). |
+| `source` | `string` | no | curated | Where the row comes from. |
+
 ## instances
 
 One row per dungeon or raid map. Level range: the client's content tuning where it holds one, else the curated typical range (an advisor default, not authoritative). Entrance zone: Everloot's observed zone where at least two installs agree and none differ, else the curated one. Source: wago.tools client table Map, MapDifficulty, ContentTuning, UiMap; curated instances.yaml (advisor defaults); Everloot instance_entrance records (CC BY-SA 4.0). File: `instances.parquet`.

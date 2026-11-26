@@ -646,3 +646,78 @@ func TestBuildRandomSuffixes(t *testing.T) {
 		}
 	}
 }
+
+func TestBuildWeaponSkillsAndMasters(t *testing.T) {
+	lines := []Row{
+		{"ID": "136", "DisplayName_lang": "Staves", "CategoryID": "6"},
+		{"ID": "44", "DisplayName_lang": "Axes", "CategoryID": "6"},
+		{"ID": "54", "DisplayName_lang": "Maces", "CategoryID": "6"},
+		{"ID": "173", "DisplayName_lang": "Daggers", "CategoryID": "6"},
+		{"ID": "229", "DisplayName_lang": "Polearms", "CategoryID": "6"},
+		{"ID": "95", "DisplayName_lang": "Defense", "CategoryID": "6"},
+		{"ID": "6", "DisplayName_lang": "Frost", "CategoryID": "7"},
+	}
+	classes := []Row{{"ID": "1", "Name_lang": "Warrior"}, {"ID": "4", "Name_lang": "Rogue"}, {"ID": "5", "Name_lang": "Priest"}, {"ID": "11", "Name_lang": "Druid"}}
+	rc := func(skill, mask, avail, lvl string) Row {
+		return Row{"SkillID": skill, "ClassMask": mask, "Availability": avail, "MinLevel": lvl}
+	}
+	got := BuildWeaponSkills(WeaponSkillInput{SkillLines: lines, Classes: classes, SkillClasses: []Row{
+		rc("136", "277", "0", "0"),   // warrior, hunter, priest, warlock learn Staves
+		rc("44", "9", "1", "0"),      // warrior, rogue
+		rc("173", "8", "1", "0"),     // rogue starts with Daggers
+		rc("229", "1024", "0", "20"), // druid Polearms at 20
+		rc("95", "-1", "1", "0"),     // Defense is not a weapon master skill
+	}})
+	by := map[[2]int32]WeaponSkill{}
+	for _, w := range got {
+		by[[2]int32{w.ClassID, w.SkillLineID}] = w
+	}
+	if len(got) != 4*5 {
+		t.Errorf("rows %d, want 20 (4 classes x 5 weapon skills)", len(got))
+	}
+	if w := by[[2]int32{5, 136}]; !w.Learnable || w.DefaultKnown {
+		t.Errorf("priest Staves: %+v", w)
+	}
+	if w := by[[2]int32{4, 44}]; !w.Learnable || !w.DefaultKnown || w.SkillName != "One-Handed Axes" {
+		t.Errorf("rogue One-Handed Axes: %+v", w)
+	}
+	if w := by[[2]int32{5, 173}]; w.Learnable {
+		t.Errorf("priest Daggers should not be learnable in this fixture: %+v", w)
+	}
+	if w := by[[2]int32{11, 229}]; !w.Learnable || w.MinLevel == nil || *w.MinLevel != 20 {
+		t.Errorf("druid Polearms: %+v", w)
+	}
+	if w := by[[2]int32{1, 54}]; w.SkillName != "One-Handed Maces" || w.Learnable {
+		t.Errorf("warrior Maces: %+v", w)
+	}
+
+	// the curated masters, checked against the full real skill set
+	all := []WeaponSkill{}
+	for _, id := range []int32{43, 44, 45, 46, 54, 55, 136, 160, 172, 173, 176, 226, 229, 473} {
+		all = append(all, WeaponSkill{SkillLineID: id})
+	}
+	masters := map[string]WeaponMaster{}
+	for _, m := range BuildWeaponMasters(all, nil) {
+		masters[m.Name] = m
+	}
+	if len(masters) != len(curatedMasters) {
+		t.Fatalf("masters %d, want %d", len(masters), len(curatedMasters))
+	}
+	for name, want := range map[string]bool{"Hanashi": true, "Ansekhwa": true, "Archibald": false} {
+		if has := slices.Contains(masters[name].Skills, 136); has != want {
+			t.Errorf("%s teaches Staves = %v, want %v", name, has, want)
+		}
+	}
+	a := masters["Archibald"]
+	for i, s := range a.Skills {
+		if want := s == 229; (a.MinLevel[i] == 20) != want || (a.CostCopper[i] == 10000) != want {
+			t.Errorf("Archibald skill %d: cost %d level %d", s, a.CostCopper[i], a.MinLevel[i])
+		}
+	}
+	if p := masters["Ansekhwa"].Place; p == nil || *p != "Lower Rise" {
+		t.Errorf("Ansekhwa place: %v", p)
+	}
+	if got := BuildWeaponMasters(all[:3], nil); len(got) != 0 {
+		t.Errorf("masters with unknown skills kept: %d", len(got))
+	}
+}

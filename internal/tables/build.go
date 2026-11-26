@@ -66,6 +66,9 @@ type Cached struct {
 
 	ClassSpells []ClassSpell
 
+	WeaponSkills  []WeaponSkill
+	WeaponMasters []WeaponMaster
+
 	Instances      []Instance
 	InstanceBosses []InstanceBoss
 	InstanceQuests []InstanceQuest
@@ -120,6 +123,7 @@ func LoadCache(dir string) (Cached, error) {
 		SkillLines: rows["SkillLine"], Abilities: rows["SkillLineAbility"], SkillClasses: rows["SkillRaceClassInfo"],
 		Classes: rows["ChrClasses"], SpellNames: rows["SpellName"], Spells: rows["Spell"], SpellLevels: rows["SpellLevels"],
 	})
+	c.WeaponSkills = BuildWeaponSkills(WeaponSkillInput{SkillLines: rows["SkillLine"], SkillClasses: rows["SkillRaceClassInfo"], Classes: rows["ChrClasses"]})
 	iin := InstanceInput{
 		Maps: rows["Map"], Encounters: rows["DungeonEncounter"], MapDifficulties: rows["MapDifficulty"],
 		ContentTuning: rows["ContentTuning"],
@@ -364,6 +368,13 @@ func BuildDatasetFrom(cacheBuildDir, everlootFile, talentsDir, instancesFile, pr
 		return m, err
 	}
 	if err := add(writeTable(outDir, "class_spells.parquet", c.ClassSpells, Layout(nil, []string{"class_id", "level", "spell_id", "skill_line_id"}, src))); err != nil {
+		return m, err
+	}
+	c.WeaponMasters = BuildWeaponMasters(c.WeaponSkills, c.Npcs)
+	if err := add(writeTable(outDir, "weapon_skills.parquet", c.WeaponSkills, Layout(nil, []string{"class_id", "skill_line_id"}, src))); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "weapon_masters.parquet", c.WeaponMasters, Layout(nil, []string{"npc_id"}, CuratedSource(c.Prov.Build, created), src))); err != nil {
 		return m, err
 	}
 	if err := add(writeTable(outDir, "instances.parquet", c.Instances, Layout(nil, []string{"map_id"}, src, CuratedSource(c.Prov.Build, created), CorpusSource(corpus, ev)))); err != nil {
