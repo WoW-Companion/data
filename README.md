@@ -14,7 +14,7 @@ Every table and column is documented in [`docs/schema.md`](docs/schema.md), and 
 
 ## Data sources and credit
 
-Loot sources, observed quests (`quests_observed`) and vendor offers (`vendor_sources`) come from Everloot (https://everloot.app), CC BY-SA 4.0. Game data comes from the WoW: Forever client's own tables. Credit: Blizzard game client data, retrieved via wago.tools. The random suffix names and stats (`random_suffixes`) come from the client tables ItemRandomProperties, ItemRandomSuffix and SpellItemEnchantment, retrieved via wago.tools the same way, from client build 3.4.3.54261 (see `docs/sources.md`). The underlying game data is Blizzard's. Only facts (ids, numbers, flags, slots, names) are published, never long-form text. See `docs/sources.md`.
+Loot sources, observed quests (`quests_observed`) and vendor offers (`vendor_sources`) come from Everloot (https://everloot.app), CC BY-SA 4.0. Game data comes from the WoW: Forever client's own tables. Credit: Blizzard game client data, retrieved via wago.tools. Weapon skills by class (`weapon_skills`) come from the client tables SkillLine, SkillRaceClassInfo and ChrClasses; the Weapon Masters (`weapon_masters`) are curated facts (see `docs/sources.md`). The random suffix names and stats (`random_suffixes`) come from the client tables ItemRandomProperties, ItemRandomSuffix and SpellItemEnchantment, retrieved via wago.tools the same way, from client build 3.4.3.54261 (see `docs/sources.md`). The underlying game data is Blizzard's. Only facts (ids, numbers, flags, slots, names) are published, never long-form text. See `docs/sources.md`.
 
 No game data is committed to the repository; `dist/` is git-ignored.
 

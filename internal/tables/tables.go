@@ -109,7 +109,7 @@ var Required = map[string][]string{
 	"TraitEdge":                {"LeftTraitNodeID", "RightTraitNodeID"},
 	"TraitCond":                {"TraitNodeGroupID", "SpentAmountRequired"},
 	"SkillLineXTraitTree":      {"SkillLineID", "TraitTreeID"},
-	"SkillRaceClassInfo":       {"SkillID", "ClassMask"},
+	"SkillRaceClassInfo":       {"SkillID", "ClassMask", "Availability", "MinLevel"},
 	"ChrClasses":               {"ID", "Name_lang"},
 	"SpellName":                {"ID", "Name_lang"},
 
