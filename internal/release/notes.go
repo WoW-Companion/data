@@ -27,6 +27,7 @@ func NotesAt(build, prevTag, changes, revision, date string) string {
 	b.WriteString("- Game data: Blizzard game client data, retrieved via wago.tools. The underlying game data is Blizzard's; only facts are published.\n")
 	b.WriteString("- Loot sources: Data from Everloot (https://everloot.app), CC BY-SA 4.0.\n")
 	b.WriteString("- Observed quests (quests_observed) and vendor offers (vendor_sources): Data from Everloot (https://everloot.app), CC BY-SA 4.0.\n")
+	b.WriteString("- Profession leveling routes (profession_routes, profession_tiers): facts (skill ranges, recipes, craft counts, materials, trainers) read from the WoW Forever leveling guides on wow-professions.com (https://www.wow-professions.com/forever/); no guide text is published.\n")
 	b.WriteString("\nVerify: `wowc-data verify-manifest <dir>`, or compare the sha256 of each file with manifest.json. See docs/releases.md.\n")
 	return b.String()
 }

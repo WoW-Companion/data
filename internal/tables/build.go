@@ -443,6 +443,31 @@ func BuildDatasetFrom(cacheBuildDir, everlootFile, talentsDir, instancesFile, pr
 	if err := add(writeTable(outDir, "profession_notes.parquet", profNotes.Rows, Layout(nil, []string{"section"}, profSrc))); err != nil {
 		return m, err
 	}
+	routesCur, err := LoadCuratedRoutes(filepath.Join(filepath.Dir(professionsFile), RoutesFile))
+	if err != nil {
+		return m, err
+	}
+	routes, routeTiers, routeRep := BuildProfessionRoutes(routesCur, c.Recipes, c.Items, c.Npcs, trainers)
+	fmt.Println(routeRep)
+	for _, msg := range routeRep.Messages {
+		fmt.Println("  " + msg)
+	}
+	for _, p := range routesCur.professionKey {
+		if gaps, top := RouteCoverage(routesCur.Professions[p].Steps); len(gaps) > 0 || top != 300 {
+			fmt.Printf("  %s route: gaps %v, reaches %d\n", p, gaps, top)
+		}
+	}
+	routeSrc := CuratedSource(c.Prov.Build, created)
+	routeSrc.Name = "wow-professions.com WoW Forever leveling guides (https://www.wow-professions.com/forever/), facts only"
+	if routesCur.FetchedAt != "" {
+		routeSrc.Retrieved = routesCur.FetchedAt
+	}
+	if err := add(writeTable(outDir, "profession_routes.parquet", routes, Layout(nil, []string{"profession", "step"}, routeSrc, src))); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "profession_tiers.parquet", routeTiers, Layout(nil, []string{"profession", "tier"}, routeSrc, src))); err != nil {
+		return m, err
+	}
 	// names.parquet: the prebuilt name index. One row group per DefaultRowGroup rows
 	// (docs/layout.md has the measurements) and a Bloom filter on norm for exact names.
 	nameRows := NameIndex(c)
