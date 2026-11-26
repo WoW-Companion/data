@@ -447,6 +447,52 @@ Curated profession notes in our own words: which professions are primary or seco
 | `text` | `string` | no | table | The note. |
 | `source` | `string` | no | table | Always "curated (advisor defaults)". |
 
+## profession_routes
+
+One row per step of each profession's 1-300 leveling path, following the efficient routes in the WoW Forever guides on wow-professions.com (the reference the Operator chose): skill range, recipe, number of crafts, materials per craft, where the recipe is learned. Option 0 is the guide's main route; options 1, 2, ... are the alternatives it gives for a range (alternative_of names the main step each replaces). Herbalism, Mining, Skinning and Fishing have gathering steps (kind gather) with zones instead of recipes; Mining's smelting shortcut is craft steps. A name that matches no dataset id keeps a null id, so the advisor can skip the row. Source: wow-professions.com WoW Forever leveling guides (curated/profession_routes.json), facts only; recipes and items resolved against recipes and items. File: `profession_routes.parquet`.
+
+| Column | Type | Null | Source | Meaning |
+| --- | --- | --- | --- | --- |
+| `profession` | `string` | no | curated | Profession name, as in recipes.skill_line_name. |
+| `step` | `int16` | no | curated | Order of the step within the profession, by skill range; main-route steps and their alternatives sit together. |
+| `option` | `int8` | no | curated | 0 on the main route; 1, 2, ... for each alternative route the guide gives. |
+| `kind` | `string` | no | curated | craft (make a recipe) or gather (pick herbs or ore, skin mobs, fish). |
+| `tier` | `string` | no | curated | Rank the step needs: Apprentice, Journeyman (points above 75), Expert (above 150) or Artisan (above 225). |
+| `skill_from` | `int16` | no | curated | Skill the step starts at. |
+| `skill_to` | `int16` | no | curated | Skill the step reaches. |
+| `recipe_spell_id` | `int32` | yes | recipes | recipes.spell_id of the recipe, matched by profession and name; null on gather steps and when the name matches no recipe or several. |
+| `recipe_name` | `string` | yes | curated | The recipe's name as the guide spells it; null on gather steps. |
+| `crafts` | `int16` | yes | curated | How many times to make it; null on gather steps. A guide's count is an estimate: recipes turn yellow, so a few more or fewer may do. |
+| `materials` | `list<struct{item_id int32?, name string, count int16}>` | no | curated | One {item_id, name, count} per material of one craft (count per craft, not the total); item_id is items.id by name, null when unmatched. On gather steps the herbs or ores the step picks, with count 0. |
+| `where` | `list<string>` | no | curated | Zones or places to gather in; empty on craft steps. |
+| `learned_from` | `string` | no | curated | Where the recipe comes from: trainer, vendor, drop (world drop), quest or item (a bought recipe item). |
+| `learned_by` | `list<string>` | no | curated | Vendors or quest givers the guide names, as "Name (place)"; empty for trainers. |
+| `learned_npc_ids` | `list<int32>` | no | npcs | npcs.id of each learned_by NPC found by name; shorter than learned_by when a name is not in npcs. |
+| `alternative_of` | `int16` | yes | curated | step of the main-route step this option replaces; null on the main route. |
+| `notes` | `string` | yes | curated | Short notes in our own words, such as the rank and level a step needs, or that a rod is Blacksmith-made. |
+| `source_url` | `string` | no | curated | The guide page the step is read from. |
+| `fetched_at` | `string` | no | curated | When the page was fetched (UTC). |
+
+## profession_tiers
+
+Where each profession's Journeyman, Expert and Artisan ranks are learned, from the guides: one row per trainer (or book or quest giver), or one row with no trainer where the guide names none. Expert Enchanting, for example: Hgarth in Stonetalon Mountains (Horde), Kitta Firewind in Elwynn Forest (Alliance), level 20, 50 silver. Source: wow-professions.com WoW Forever leveling guides (curated/profession_routes.json), facts only. File: `profession_tiers.parquet`.
+
+| Column | Type | Null | Source | Meaning |
+| --- | --- | --- | --- | --- |
+| `profession` | `string` | no | curated | Profession name. |
+| `tier` | `string` | no | curated | Journeyman, Expert or Artisan. |
+| `skill_required` | `int16` | yes | curated | Skill needed to learn the tier. |
+| `min_level` | `int16` | yes | curated | Character level needed; null where the guide gives none. |
+| `cost_copper` | `int64` | yes | curated | Cost in copper (50 silver = 5000); null where the guide gives none. |
+| `how` | `string` | no | curated | trainer, book (bought book or manual) or quest. |
+| `trainer_name` | `string` | yes | curated | Trainer, book vendor or quest giver; null where the guide names none. |
+| `npc_id` | `int32` | yes | trainers, npcs | NPC id by profession and name from trainers, else by name from npcs; null when not found. |
+| `faction` | `string` | yes | curated | Horde, Alliance or Both. |
+| `place` | `string` | yes | curated | City, zone or camp the NPC stands in. |
+| `note` | `string` | yes | curated | The book or quest to complete, in our own words. |
+| `source_url` | `string` | no | curated | The guide page. |
+| `fetched_at` | `string` | no | curated | When the page was fetched (UTC). |
+
 ## names
 
 Prebuilt name index: one row per named item, npc, instance, recipe and item set, sorted by norm, with a Bloom filter on norm. Quests carry no name, so none are listed. An exact lookup reads the row groups whose norm min/max range and Bloom filter admit the name; a prefix lookup reads those whose min/max range overlaps the prefix (see layout.md). Source: derived from items, npcs, instances, recipes and item_sets. File: `names.parquet`.

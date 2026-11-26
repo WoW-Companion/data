@@ -43,3 +43,7 @@ Everloot's corroborated observation names one (`entrance_zone_source`). Maps wit
 ## professions.yaml
 
 `professions.yaml` holds profession notes in our own words from conventional knowledge: each profession and whether it is primary or secondary, the rank tiers with skill caps and the character level each needs, pairings, feeders, special cases and rules of thumb (the skinning rule). It is an advisor default, not authoritative. Sections hold one flow map per line; every field of a section is required. `make dataset` checks the file and every profession name against the client's profession skill lines, and publishes it as `profession_notes`.
+
+## profession_routes.json
+
+Each profession's 1-300 leveling route and its rank trainers, as facts read from the WoW Forever guides on wow-professions.com (the reference the Operator chose for profession advice). `scripts/extract_routes.py <dir of saved pages>` writes it; the notes in it are in our own words. The build resolves names to ids, prints what it cannot resolve and any gap in a main route, and publishes the `profession_routes` and `profession_tiers` tables (docs/sources.md). Edit the JSON by hand only for a fix the extractor cannot make; re-run the extractor when the guides change.

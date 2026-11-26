@@ -1,0 +1,7237 @@
+{
+ "source": "wow-professions.com WoW Forever leveling guides",
+ "fetched_at": "2026-11-26T00:53:02Z",
+ "professions": {
+  "Alchemy": {
+   "source_url": "https://www.wow-professions.com/forever/alchemy-leveling-guide",
+   "tiers": [
+    {
+     "profession": "Alchemy",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Yelmak",
+     "place": "Orgrimmar",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Alchemy",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Doctor Marsh",
+     "place": "Undercity",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Alchemy",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Bena Winterhoof",
+     "place": "Thunder Bluff",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Alchemy",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Lilyssia Nightbreeze",
+     "place": "Stormwind City",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Alchemy",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Tally Berryfizz",
+     "place": "Ironforge",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Alchemy",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Sylvanna Forestmoon",
+     "place": "Darnassus",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Alchemy",
+     "tier": "Expert",
+     "skill_required": 125,
+     "min_level": 20,
+     "how": "trainer",
+     "cost_copper": 5000,
+     "note": "",
+     "trainer": "Doctor Herbert Halsey",
+     "place": "Undercity",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Alchemy",
+     "tier": "Expert",
+     "skill_required": 125,
+     "min_level": 20,
+     "how": "trainer",
+     "cost_copper": 5000,
+     "note": "",
+     "trainer": "Ainethil",
+     "place": "Darnassus",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Alchemy",
+     "tier": "Expert",
+     "skill_required": 125,
+     "min_level": 20,
+     "how": "trainer",
+     "cost_copper": 5000,
+     "note": "",
+     "trainer": "Master Mycologist Shurome",
+     "place": "Emerald Sanctuary, Felwood",
+     "faction": "Both"
+    },
+    {
+     "profession": "Alchemy",
+     "tier": "Artisan",
+     "skill_required": 200,
+     "min_level": 35,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Rogvar",
+     "place": "Stonard, Swamp of Sorrows",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Alchemy",
+     "tier": "Artisan",
+     "skill_required": 200,
+     "min_level": 35,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Kylanna Windwhisper",
+     "place": "Feathermoon Stronghold, Feralas",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Alchemy",
+     "tier": "Artisan",
+     "skill_required": 200,
+     "min_level": 35,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Master Mycologist Shurome",
+     "place": "Emerald Sanctuary, Felwood",
+     "faction": "Both"
+    }
+   ],
+   "steps": [
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 1,
+     "skill_to": 10,
+     "recipe": "Elixir of Minor Force",
+     "crafts": 9,
+     "materials": [
+      {
+       "item": "Silverleaf",
+       "count": 1
+      },
+      {
+       "item": "Empty Vial",
+       "count": 1
+      }
+     ],
+     "step": 1,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/alchemy-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 10,
+     "skill_to": 55,
+     "recipe": "Elixir of Minor Defense",
+     "crafts": 45,
+     "materials": [
+      {
+       "item": "Silverleaf",
+       "count": 1
+      },
+      {
+       "item": "Peacebloom",
+       "count": 1
+      },
+      {
+       "item": "Empty Vial",
+       "count": 1
+      }
+     ],
+     "step": 2,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/alchemy-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 55,
+     "skill_to": 65,
+     "recipe": "Minor Mana Potion",
+     "crafts": 10,
+     "materials": [
+      {
+       "item": "Mageroyal",
+       "count": 1
+      },
+      {
+       "item": "Peacebloom",
+       "count": 1
+      },
+      {
+       "item": "Empty Vial",
+       "count": 1
+      }
+     ],
+     "step": 3,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/alchemy-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 65,
+     "skill_to": 90,
+     "recipe": "Elixir of Minor Fortitude",
+     "crafts": 28,
+     "materials": [
+      {
+       "item": "Earthroot",
+       "count": 2
+      },
+      {
+       "item": "Peacebloom",
+       "count": 1
+      },
+      {
+       "item": "Empty Vial",
+       "count": 1
+      }
+     ],
+     "step": 4,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/alchemy-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 90,
+     "skill_to": 120,
+     "recipe": "Elixir of Wisdom",
+     "crafts": 30,
+     "materials": [
+      {
+       "item": "Mageroyal",
+       "count": 1
+      },
+      {
+       "item": "Briarthorn",
+       "count": 2
+      },
+      {
+       "item": "Empty Vial",
+       "count": 1
+      }
+     ],
+     "step": 5,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/alchemy-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 120,
+     "skill_to": 130,
+     "recipe": "Lesser Mana Potion",
+     "crafts": 10,
+     "materials": [
+      {
+       "item": "Mageroyal",
+       "count": 1
+      },
+      {
+       "item": "Stranglekelp",
+       "count": 1
+      },
+      {
+       "item": "Empty Vial",
+       "count": 1
+      }
+     ],
+     "step": 6,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/alchemy-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 130,
+     "skill_to": 150,
+     "recipe": "Fire Oil",
+     "crafts": 20,
+     "materials": [
+      {
+       "item": "Firefin Snapper",
+       "count": 2
+      },
+      {
+       "item": "Empty Vial",
+       "count": 1
+      }
+     ],
+     "step": 7,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/alchemy-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 150,
+     "skill_to": 165,
+     "recipe": "Elixir of Fire Power",
+     "crafts": 15,
+     "materials": [
+      {
+       "item": "Fire Oil",
+       "count": 2
+      },
+      {
+       "item": "Kingsblood",
+       "count": 1
+      },
+      {
+       "item": "Leaded Vial",
+       "count": 1
+      }
+     ],
+     "step": 8,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/alchemy-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 165,
+     "skill_to": 195,
+     "recipe": "Mana Potion",
+     "crafts": 36,
+     "materials": [
+      {
+       "item": "Stranglekelp",
+       "count": 1
+      },
+      {
+       "item": "Kingsblood",
+       "count": 1
+      },
+      {
+       "item": "Leaded Vial",
+       "count": 1
+      }
+     ],
+     "step": 9,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/alchemy-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 195,
+     "skill_to": 225,
+     "recipe": "Nature Protection Potion",
+     "crafts": 36,
+     "materials": [
+      {
+       "item": "Liferoot",
+       "count": 1
+      },
+      {
+       "item": "Stranglekelp",
+       "count": 1
+      },
+      {
+       "item": "Leaded Vial",
+       "count": 1
+      }
+     ],
+     "step": 10,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Bronk",
+       "place": "Feralas"
+      },
+      {
+       "name": "Logannas",
+       "place": "Feralas"
+      },
+      {
+       "name": "Glyx Brewright",
+       "place": "Stranglethorn Vale"
+      },
+      {
+       "name": "Alchemist Pestlezugg",
+       "place": "Tanaris"
+      }
+     ],
+     "notes": "recipe binds when picked up; needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/alchemy-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 225,
+     "skill_to": 235,
+     "recipe": "Nature Protection Potion",
+     "crafts": 26,
+     "materials": [
+      {
+       "item": "Liferoot",
+       "count": 1
+      },
+      {
+       "item": "Stranglekelp",
+       "count": 1
+      },
+      {
+       "item": "Leaded Vial",
+       "count": 1
+      }
+     ],
+     "step": 11,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Bronk",
+       "place": "Feralas"
+      },
+      {
+       "name": "Logannas",
+       "place": "Feralas"
+      },
+      {
+       "name": "Glyx Brewright",
+       "place": "Stranglethorn Vale"
+      },
+      {
+       "name": "Alchemist Pestlezugg",
+       "place": "Tanaris"
+      }
+     ],
+     "notes": "recipe binds when picked up; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/alchemy-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 235,
+     "skill_to": 250,
+     "recipe": "Elixir of Greater Intellect",
+     "crafts": 15,
+     "materials": [
+      {
+       "item": "Blindweed",
+       "count": 1
+      },
+      {
+       "item": "Khadgar's Whisker",
+       "count": 1
+      },
+      {
+       "item": "Crystal Vial",
+       "count": 1
+      }
+     ],
+     "step": 12,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/alchemy-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 250,
+     "skill_to": 260,
+     "recipe": "Stonescale Oil",
+     "crafts": 47,
+     "materials": [
+      {
+       "item": "Stonescale Eel",
+       "count": 1
+      },
+      {
+       "item": "Leaded Vial",
+       "count": 1
+      }
+     ],
+     "step": 13,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/alchemy-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 260,
+     "skill_to": 265,
+     "recipe": "Elixir of Greater Intellect",
+     "crafts": 10,
+     "materials": [
+      {
+       "item": "Blindweed",
+       "count": 1
+      },
+      {
+       "item": "Khadgar's Whisker",
+       "count": 1
+      },
+      {
+       "item": "Crystal Vial",
+       "count": 1
+      }
+     ],
+     "step": 14,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/alchemy-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 265,
+     "skill_to": 300,
+     "recipe": "Elixir of Greater Defense",
+     "crafts": 44,
+     "materials": [
+      {
+       "item": "Stonescale Oil",
+       "count": 2
+      },
+      {
+       "item": "Sungrass",
+       "count": 1
+      },
+      {
+       "item": "Crystal Vial",
+       "count": 1
+      }
+     ],
+     "step": 15,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Kor'geld",
+       "place": "Orgrimmar"
+      },
+      {
+       "name": "Soolie Berryfizz",
+       "place": "Ironforge"
+      }
+     ],
+     "notes": "sold as Recipe: Elixir of Superior Defense; needs Artisan, level 35; keep the Stonescale Oil from the earlier step",
+     "source_url": "https://www.wow-professions.com/forever/alchemy-leveling-guide"
+    },
+    {
+     "option": 1,
+     "tier": "Artisan",
+     "skill_from": 265,
+     "skill_to": 300,
+     "recipe": "Superior Mana Potion",
+     "crafts": 55,
+     "materials": [
+      {
+       "item": "Sungrass",
+       "count": 2
+      },
+      {
+       "item": "Blindweed",
+       "count": 2
+      },
+      {
+       "item": "Crystal Vial",
+       "count": 1
+      }
+     ],
+     "step": 16,
+     "kind": "craft",
+     "alternative_of": 15,
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Algernon",
+       "place": "Undercity"
+      },
+      {
+       "name": "Ulthir",
+       "place": "Darnassus"
+      }
+     ],
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/alchemy-leveling-guide"
+    }
+   ]
+  },
+  "Blacksmithing": {
+   "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide",
+   "tiers": [
+    {
+     "profession": "Blacksmithing",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Snarl",
+     "place": "Orgrimmar",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Blacksmithing",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "James Van Brunt",
+     "place": "Undercity",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Blacksmithing",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Karn Stonehoof",
+     "place": "Thunder Bluff",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Blacksmithing",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Angus Hammerhand",
+     "place": "Tirisfal Glades",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Blacksmithing",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Daeann Steelwind",
+     "place": "Zephras Isle",
+     "faction": "Both"
+    },
+    {
+     "profession": "Blacksmithing",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Therum Deepforge",
+     "place": "Stormwind City",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Blacksmithing",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Rotgath Stonebeard",
+     "place": "Ironforge",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Blacksmithing",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Daeann Steelwind",
+     "place": "Zephras Isle",
+     "faction": "Both"
+    },
+    {
+     "profession": "Blacksmithing",
+     "tier": "Expert",
+     "skill_required": 125,
+     "min_level": 20,
+     "how": "trainer",
+     "cost_copper": 5000,
+     "note": "",
+     "trainer": "Saru Steelfury",
+     "place": "Orgrimmar",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Blacksmithing",
+     "tier": "Expert",
+     "skill_required": 125,
+     "min_level": 20,
+     "how": "trainer",
+     "cost_copper": 5000,
+     "note": "",
+     "trainer": "Bengus Deepforge",
+     "place": "Ironforge",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Blacksmithing",
+     "tier": "Artisan",
+     "skill_required": 200,
+     "min_level": 35,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Brikk Keencraft",
+     "place": "Booty Bay, Stranglethorn Vale",
+     "faction": "Both"
+    }
+   ],
+   "steps": [
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 1,
+     "skill_to": 25,
+     "recipe": "Rough Sharpening Stone",
+     "crafts": 30,
+     "materials": [
+      {
+       "item": "Rough Stone",
+       "count": 1
+      }
+     ],
+     "step": 1,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 25,
+     "skill_to": 50,
+     "recipe": "Rough Grinding Stone",
+     "crafts": 30,
+     "materials": [
+      {
+       "item": "Rough Stone",
+       "count": 2
+      }
+     ],
+     "step": 2,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 50,
+     "skill_to": 75,
+     "recipe": "Coarse Grinding Stone",
+     "crafts": 36,
+     "materials": [
+      {
+       "item": "Coarse Stone",
+       "count": 2
+      }
+     ],
+     "step": 3,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 75,
+     "skill_to": 80,
+     "recipe": "Silver Rod",
+     "crafts": 5,
+     "materials": [
+      {
+       "item": "Silver Bar",
+       "count": 1
+      },
+      {
+       "item": "Rough Grinding Stone",
+       "count": 2
+      }
+     ],
+     "step": 4,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 80,
+     "skill_to": 95,
+     "recipe": "Rough Bronze Leggings",
+     "crafts": 15,
+     "materials": [
+      {
+       "item": "Bronze Bar",
+       "count": 6
+      }
+     ],
+     "step": 5,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 95,
+     "skill_to": 100,
+     "recipe": "Patterned Bronze Bracers",
+     "crafts": 5,
+     "materials": [
+      {
+       "item": "Bronze Bar",
+       "count": 5
+      },
+      {
+       "item": "Coarse Grinding Stone",
+       "count": 2
+      }
+     ],
+     "step": 6,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 100,
+     "skill_to": 112,
+     "recipe": "Heavy Grinding Stone",
+     "crafts": 20,
+     "materials": [
+      {
+       "item": "Heavy Stone",
+       "count": 3
+      }
+     ],
+     "step": 7,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 112,
+     "skill_to": 125,
+     "recipe": "Patterned Bronze Bracers",
+     "crafts": 13,
+     "materials": [
+      {
+       "item": "Bronze Bar",
+       "count": 5
+      },
+      {
+       "item": "Coarse Grinding Stone",
+       "count": 2
+      }
+     ],
+     "step": 8,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 125,
+     "skill_to": 140,
+     "recipe": "Silvered Bronze Gauntlets",
+     "crafts": 15,
+     "materials": [
+      {
+       "item": "Bronze Bar",
+       "count": 8
+      },
+      {
+       "item": "Silver Bar",
+       "count": 1
+      },
+      {
+       "item": "Coarse Grinding Stone",
+       "count": 2
+      }
+     ],
+     "step": 9,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 1,
+     "tier": "Journeyman",
+     "skill_from": 125,
+     "skill_to": 140,
+     "recipe": "Bronze Warhammer",
+     "crafts": 15,
+     "materials": [
+      {
+       "item": "Bronze Bar",
+       "count": 8
+      },
+      {
+       "item": "Strong Flux",
+       "count": 1
+      },
+      {
+       "item": "Medium Leather",
+       "count": 1
+      }
+     ],
+     "step": 10,
+     "kind": "craft",
+     "alternative_of": 9,
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 140,
+     "skill_to": 175,
+     "recipe": "Green Iron Bracers",
+     "crafts": 40,
+     "materials": [
+      {
+       "item": "Iron Bar",
+       "count": 6
+      },
+      {
+       "item": "Green Dye",
+       "count": 1
+      }
+     ],
+     "step": 11,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 175,
+     "skill_to": 180,
+     "recipe": "Solid Grinding Stone",
+     "crafts": 8,
+     "materials": [
+      {
+       "item": "Solid Stone",
+       "count": 4
+      }
+     ],
+     "step": 12,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 180,
+     "skill_to": 195,
+     "recipe": "Golden Scale Bracers",
+     "crafts": 20,
+     "materials": [
+      {
+       "item": "Steel Bar",
+       "count": 5
+      },
+      {
+       "item": "Heavy Grinding Stone",
+       "count": 2
+      }
+     ],
+     "step": 13,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 195,
+     "skill_to": 210,
+     "recipe": "Mithril Plate Pants",
+     "crafts": 17,
+     "materials": [
+      {
+       "item": "Mithril Bar",
+       "count": 12
+      }
+     ],
+     "step": 14,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 210,
+     "skill_to": 215,
+     "recipe": "Heavy Mithril Axe",
+     "crafts": 6,
+     "materials": [
+      {
+       "item": "Mithril Bar",
+       "count": 12
+      },
+      {
+       "item": "Citrine",
+       "count": 2
+      },
+      {
+       "item": "Solid Grinding Stone",
+       "count": 1
+      },
+      {
+       "item": "Heavy Leather",
+       "count": 4
+      }
+     ],
+     "step": 15,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 3,
+     "tier": "Expert",
+     "skill_from": 210,
+     "skill_to": 225,
+     "recipe": "Mithril Spurs",
+     "crafts": 15,
+     "materials": [
+      {
+       "item": "Mithril Bar",
+       "count": 4
+      },
+      {
+       "item": "Solid Grinding Stone",
+       "count": 3
+      }
+     ],
+     "step": 16,
+     "kind": "craft",
+     "alternative_of": 17,
+     "learned_from": "drop",
+     "notes": "plans are a world drop; buy on the AH; needs Expert, level 20; cheaper than the main route if the plans are on the AH",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 215,
+     "skill_to": 225,
+     "recipe": "Mithril Coif",
+     "crafts": 10,
+     "materials": [
+      {
+       "item": "Mithril Bar",
+       "count": 10
+      },
+      {
+       "item": "Mageweave Cloth",
+       "count": 6
+      }
+     ],
+     "step": 17,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 225,
+     "skill_to": 235,
+     "recipe": "Dense Sharpening Stone",
+     "crafts": 16,
+     "materials": [
+      {
+       "item": "Dense Stone",
+       "count": 1
+      }
+     ],
+     "step": 18,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 3,
+     "tier": "Artisan",
+     "skill_from": 225,
+     "skill_to": 235,
+     "recipe": "Dense Sharpening Stone",
+     "crafts": 16,
+     "materials": [
+      {
+       "item": "Dense Stone",
+       "count": 1
+      }
+     ],
+     "step": 19,
+     "kind": "craft",
+     "alternative_of": 18,
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 235,
+     "skill_to": 240,
+     "recipe": "Heavy Mithril Boots",
+     "crafts": 11,
+     "materials": [
+      {
+       "item": "Mithril Bar",
+       "count": 14
+      },
+      {
+       "item": "Thick Leather",
+       "count": 4
+      }
+     ],
+     "step": 20,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 3,
+     "tier": "Artisan",
+     "skill_from": 235,
+     "skill_to": 245,
+     "recipe": "Mithril Spurs",
+     "crafts": 28,
+     "materials": [
+      {
+       "item": "Mithril Bar",
+       "count": 4
+      },
+      {
+       "item": "Solid Grinding Stone",
+       "count": 3
+      }
+     ],
+     "step": 21,
+     "kind": "craft",
+     "alternative_of": 20,
+     "learned_from": "drop",
+     "notes": "plans are a world drop; buy on the AH; needs Artisan, level 35; cheaper than the main route if the plans are on the AH",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 240,
+     "skill_to": 245,
+     "recipe": "Imperial Plate Belt",
+     "crafts": 5,
+     "materials": [
+      {
+       "item": "Thorium Bar",
+       "count": 22
+      },
+      {
+       "item": "Rugged Leather",
+       "count": 6
+      },
+      {
+       "item": "Aquamarine",
+       "count": 1
+      }
+     ],
+     "step": 22,
+     "kind": "craft",
+     "learned_from": "quest",
+     "learned_by": [
+      {
+       "name": "Derotain Mudsipper",
+       "place": "Tanaris"
+      }
+     ],
+     "notes": "quest needs level 50 and 20 Thorium Bar; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 2,
+     "tier": "Artisan",
+     "skill_from": 240,
+     "skill_to": 245,
+     "recipe": "Dazzling Mithril Rapier",
+     "crafts": 27,
+     "materials": [
+      {
+       "item": "Mithril Bar",
+       "count": 14
+      },
+      {
+       "item": "Aquamarine",
+       "count": 1
+      },
+      {
+       "item": "Lesser Moonstone",
+       "count": 2
+      },
+      {
+       "item": "Moss Agate",
+       "count": 2
+      },
+      {
+       "item": "Solid Grinding Stone",
+       "count": 1
+      },
+      {
+       "item": "Mageweave Cloth",
+       "count": 2
+      }
+     ],
+     "step": 23,
+     "kind": "craft",
+     "alternative_of": 22,
+     "learned_from": "drop",
+     "notes": "plans are a world drop; buy on the AH; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 2,
+     "tier": "Artisan",
+     "skill_from": 240,
+     "skill_to": 245,
+     "recipe": "Runed Mithril Hammer",
+     "crafts": 20,
+     "materials": [
+      {
+       "item": "Mithril Bar",
+       "count": 18
+      },
+      {
+       "item": "Core of Earth",
+       "count": 2
+      },
+      {
+       "item": "Solid Grinding Stone",
+       "count": 1
+      },
+      {
+       "item": "Thick Leather",
+       "count": 4
+      }
+     ],
+     "step": 24,
+     "kind": "craft",
+     "alternative_of": 22,
+     "learned_from": "drop",
+     "notes": "plans are a world drop; buy on the AH; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 2,
+     "tier": "Artisan",
+     "skill_from": 240,
+     "skill_to": 245,
+     "recipe": "Thorium Bracers",
+     "crafts": 17,
+     "materials": [
+      {
+       "item": "Thorium Bar",
+       "count": 12
+      },
+      {
+       "item": "Blue Power Crystal",
+       "count": 4
+      }
+     ],
+     "step": 25,
+     "kind": "craft",
+     "alternative_of": 22,
+     "learned_from": "drop",
+     "notes": "plans are a world drop; buy on the AH; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 245,
+     "skill_to": 270,
+     "recipe": "Imperial Plate Bracers",
+     "crafts": 27,
+     "materials": [
+      {
+       "item": "Thorium Bar",
+       "count": 20
+      },
+      {
+       "item": "Star Ruby",
+       "count": 1
+      }
+     ],
+     "step": 26,
+     "kind": "craft",
+     "learned_from": "quest",
+     "learned_by": [
+      {
+       "name": "Derotain Mudsipper",
+       "place": "Tanaris"
+      }
+     ],
+     "notes": "quest needs level 50 and 20 Thorium Bar; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 6,
+     "tier": "Artisan",
+     "skill_from": 245,
+     "skill_to": 270,
+     "recipe": "Thorium Belt",
+     "crafts": 16,
+     "materials": [
+      {
+       "item": "Thorium Bar",
+       "count": 12
+      },
+      {
+       "item": "Red Power Crystal",
+       "count": 4
+      }
+     ],
+     "step": 27,
+     "kind": "craft",
+     "alternative_of": 26,
+     "learned_from": "drop",
+     "notes": "plans are a world drop; buy on the AH; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 6,
+     "tier": "Artisan",
+     "skill_from": 245,
+     "skill_to": 270,
+     "recipe": "Imperial Plate Bracers",
+     "crafts": 17,
+     "materials": [
+      {
+       "item": "Thorium Bar",
+       "count": 20
+      },
+      {
+       "item": "Star Ruby",
+       "count": 1
+      }
+     ],
+     "step": 28,
+     "kind": "craft",
+     "alternative_of": 26,
+     "learned_from": "quest",
+     "learned_by": [
+      {
+       "name": "Derotain Mudsipper",
+       "place": "Tanaris"
+      }
+     ],
+     "notes": "quest needs level 50 and 20 Thorium Bar; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 270,
+     "skill_to": 290,
+     "recipe": "Imperial Plate Boots",
+     "crafts": 20,
+     "materials": [
+      {
+       "item": "Thorium Bar",
+       "count": 34
+      },
+      {
+       "item": "Star Ruby",
+       "count": 1
+      },
+      {
+       "item": "Aquamarine",
+       "count": 1
+      }
+     ],
+     "step": 29,
+     "kind": "craft",
+     "learned_from": "quest",
+     "learned_by": [
+      {
+       "name": "Derotain Mudsipper",
+       "place": "Tanaris"
+      }
+     ],
+     "notes": "quest needs 100 Thorium Bar; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 7,
+     "tier": "Artisan",
+     "skill_from": 270,
+     "skill_to": 275,
+     "recipe": "Imperial Plate Bracers",
+     "crafts": 11,
+     "materials": [
+      {
+       "item": "Thorium Bar",
+       "count": 20
+      },
+      {
+       "item": "Star Ruby",
+       "count": 1
+      }
+     ],
+     "step": 30,
+     "kind": "craft",
+     "alternative_of": 29,
+     "learned_from": "quest",
+     "learned_by": [
+      {
+       "name": "Derotain Mudsipper",
+       "place": "Tanaris"
+      }
+     ],
+     "notes": "quest needs level 50 and 20 Thorium Bar; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 9,
+     "tier": "Artisan",
+     "skill_from": 270,
+     "skill_to": 290,
+     "recipe": "Radiant Boots",
+     "crafts": 22,
+     "materials": [
+      {
+       "item": "Thorium Bar",
+       "count": 14
+      },
+      {
+       "item": "Heart of Fire",
+       "count": 4
+      }
+     ],
+     "step": 31,
+     "kind": "craft",
+     "alternative_of": 29,
+     "learned_from": "drop",
+     "notes": "plans are a world drop; buy on the AH; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 7,
+     "tier": "Artisan",
+     "skill_from": 275,
+     "skill_to": 300,
+     "recipe": "Thorium Leggings",
+     "crafts": 27,
+     "materials": [
+      {
+       "item": "Thorium Bar",
+       "count": 26
+      },
+      {
+       "item": "Red Power Crystal",
+       "count": 4
+      }
+     ],
+     "step": 32,
+     "kind": "craft",
+     "alternative_of": 29,
+     "learned_from": "item",
+     "notes": "plans bought on the AH; learned at 275; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 290,
+     "skill_to": 300,
+     "recipe": "Imperial Plate Leggings",
+     "crafts": 10,
+     "materials": [
+      {
+       "item": "Thorium Bar",
+       "count": 44
+      },
+      {
+       "item": "Star Ruby",
+       "count": 2
+      }
+     ],
+     "step": 33,
+     "kind": "craft",
+     "learned_from": "quest",
+     "learned_by": [
+      {
+       "name": "Derotain Mudsipper",
+       "place": "Tanaris"
+      }
+     ],
+     "notes": "quest needs 100 Thorium Bar; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    },
+    {
+     "option": 9,
+     "tier": "Artisan",
+     "skill_from": 290,
+     "skill_to": 300,
+     "recipe": "Radiant Leggings",
+     "crafts": 10,
+     "materials": [
+      {
+       "item": "Thorium Bar",
+       "count": 20
+      },
+      {
+       "item": "Heart of Fire",
+       "count": 4
+      }
+     ],
+     "step": 34,
+     "kind": "craft",
+     "alternative_of": 33,
+     "learned_from": "drop",
+     "notes": "plans are a world drop; buy on the AH; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/blacksmithing-leveling-guide"
+    }
+   ]
+  },
+  "Enchanting": {
+   "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide",
+   "tiers": [
+    {
+     "profession": "Enchanting",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Godan",
+     "place": "Orgrimmar",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Enchanting",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Lavinia Crowe",
+     "place": "Undercity",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Enchanting",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Teg Dawnstrider",
+     "place": "Thunder Bluff",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Enchanting",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Lucan Cordell",
+     "place": "Stormwind City",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Enchanting",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Gimble Thistlefuzz",
+     "place": "Ironforge",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Enchanting",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Taladan",
+     "place": "Darnassus",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Enchanting",
+     "tier": "Expert",
+     "skill_required": 125,
+     "min_level": 20,
+     "how": "trainer",
+     "cost_copper": 5000,
+     "note": "",
+     "trainer": "Hgarth",
+     "place": "Sun Rock Retreat, Stonetalon Mountains",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Enchanting",
+     "tier": "Expert",
+     "skill_required": 125,
+     "min_level": 20,
+     "how": "trainer",
+     "cost_copper": 5000,
+     "note": "",
+     "trainer": "Kitta Firewind",
+     "place": "Tower of Azora, Elwynn Forest",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Enchanting",
+     "tier": "Artisan",
+     "skill_required": 200,
+     "min_level": 35,
+     "how": "trainer",
+     "cost_copper": 50000,
+     "note": "",
+     "trainer": "Annora",
+     "place": "Uldaman",
+     "faction": "Both"
+    }
+   ],
+   "steps": [
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 1,
+     "skill_to": 2,
+     "recipe": "Runed Copper Rod",
+     "crafts": 1,
+     "materials": [
+      {
+       "item": "Copper Rod",
+       "count": 1
+      },
+      {
+       "item": "Mote of Magic",
+       "count": 1
+      }
+     ],
+     "step": 1,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "rod is Blacksmith-made; buy on the AH; copper rod and Mote of Magic come from the Enchanting supply vendor",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 2,
+     "skill_to": 20,
+     "recipe": "Enchant Bracer - Inferior Stamina",
+     "crafts": 18,
+     "materials": [
+      {
+       "item": "Mote of Magic",
+       "count": 1
+      }
+     ],
+     "step": 2,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "disenchanting also gives skill points until about 60",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 20,
+     "skill_to": 70,
+     "recipe": "Enchant Chest - Inferior Stamina",
+     "crafts": 50,
+     "materials": [
+      {
+       "item": "Strange Dust",
+       "count": 1
+      }
+     ],
+     "step": 3,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 1,
+     "tier": "Apprentice",
+     "skill_from": 20,
+     "skill_to": 70,
+     "recipe": "Enchant Bracer - Minor Deflect",
+     "crafts": 50,
+     "materials": [
+      {
+       "item": "Lesser Magic Essence",
+       "count": 1
+      }
+     ],
+     "step": 4,
+     "kind": "craft",
+     "alternative_of": 3,
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 70,
+     "skill_to": 109,
+     "recipe": "Enchant Chest - Minor Absorption",
+     "crafts": 49,
+     "materials": [
+      {
+       "item": "Lesser Magic Essence",
+       "count": 1
+      }
+     ],
+     "step": 5,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 3,
+     "tier": "Journeyman",
+     "skill_from": 70,
+     "skill_to": 85,
+     "recipe": "Enchant Chest - Inferior Stamina",
+     "crafts": 21,
+     "materials": [
+      {
+       "item": "Strange Dust",
+       "count": 1
+      }
+     ],
+     "step": 6,
+     "kind": "craft",
+     "alternative_of": 5,
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 3,
+     "tier": "Journeyman",
+     "skill_from": 85,
+     "skill_to": 100,
+     "recipe": "Enchant Bracer - Minor Stamina",
+     "crafts": 15,
+     "materials": [
+      {
+       "item": "Strange Dust",
+       "count": 2
+      }
+     ],
+     "step": 7,
+     "kind": "craft",
+     "alternative_of": 5,
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 3,
+     "tier": "Journeyman",
+     "skill_from": 100,
+     "skill_to": 109,
+     "recipe": "Enchant Cloak - Minor Protection",
+     "crafts": 9,
+     "materials": [
+      {
+       "item": "Strange Dust",
+       "count": 2
+      }
+     ],
+     "step": 8,
+     "kind": "craft",
+     "alternative_of": 5,
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 109,
+     "skill_to": 110,
+     "recipe": "Runed Silver Rod",
+     "crafts": 1,
+     "materials": [
+      {
+       "item": "Silver Rod",
+       "count": 1
+      },
+      {
+       "item": "Strange Dust",
+       "count": 3
+      },
+      {
+       "item": "Lesser Magic Essence",
+       "count": 4
+      },
+      {
+       "item": "Shadowgem",
+       "count": 1
+      }
+     ],
+     "step": 9,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10; rod is Blacksmith-made; buy on the AH",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 3,
+     "tier": "Journeyman",
+     "skill_from": 109,
+     "skill_to": 110,
+     "recipe": "Runed Silver Rod",
+     "crafts": 1,
+     "materials": [
+      {
+       "item": "Silver Rod",
+       "count": 1
+      },
+      {
+       "item": "Strange Dust",
+       "count": 3
+      },
+      {
+       "item": "Lesser Magic Essence",
+       "count": 4
+      },
+      {
+       "item": "Shadowgem",
+       "count": 1
+      }
+     ],
+     "step": 10,
+     "kind": "craft",
+     "alternative_of": 9,
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10; rod is Blacksmith-made; buy on the AH",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 110,
+     "skill_to": 125,
+     "recipe": "Greater Magic Wand",
+     "crafts": 23,
+     "materials": [
+      {
+       "item": "Simple Wood",
+       "count": 1
+      },
+      {
+       "item": "Lesser Magic Essence",
+       "count": 2
+      }
+     ],
+     "step": 11,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 3,
+     "tier": "Journeyman",
+     "skill_from": 110,
+     "skill_to": 130,
+     "recipe": "Enchant Cloak - Minor Protection",
+     "crafts": 29,
+     "materials": [
+      {
+       "item": "Strange Dust",
+       "count": 2
+      }
+     ],
+     "step": 12,
+     "kind": "craft",
+     "alternative_of": 11,
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 125,
+     "skill_to": 150,
+     "recipe": "Enchant 2H Weapon - Lesser Intellect",
+     "crafts": 37,
+     "materials": [
+      {
+       "item": "Lesser Magic Essence",
+       "count": 4
+      }
+     ],
+     "step": 13,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Kithas",
+       "place": "Orgrimmar"
+      },
+      {
+       "name": "Nata Dawnstrider",
+       "place": "Thunder Bluff"
+      },
+      {
+       "name": "Leo Sarn",
+       "place": "Silverpine Forest"
+      },
+      {
+       "name": "Tilli Thistlefuzz",
+       "place": "Ironforge"
+      }
+     ],
+     "notes": "formula, 5 silver; needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 2,
+     "tier": "Journeyman",
+     "skill_from": 125,
+     "skill_to": 150,
+     "recipe": "Enchant Boots - Minor Stamina",
+     "crafts": 25,
+     "materials": [
+      {
+       "item": "Strange Dust",
+       "count": 4
+      }
+     ],
+     "step": 14,
+     "kind": "craft",
+     "alternative_of": 13,
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 3,
+     "tier": "Journeyman",
+     "skill_from": 130,
+     "skill_to": 150,
+     "recipe": "Enchant Boots - Minor Stamina",
+     "crafts": 20,
+     "materials": [
+      {
+       "item": "Strange Dust",
+       "count": 4
+      }
+     ],
+     "step": 15,
+     "kind": "craft",
+     "alternative_of": 13,
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 4,
+     "tier": "Journeyman",
+     "skill_from": 130,
+     "skill_to": 150,
+     "recipe": "Enchant Bracer - Lesser Stamina",
+     "crafts": 20,
+     "materials": [
+      {
+       "item": "Soul Dust",
+       "count": 1
+      }
+     ],
+     "step": 16,
+     "kind": "craft",
+     "alternative_of": 13,
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 150,
+     "skill_to": 151,
+     "recipe": "Runed Golden Rod",
+     "crafts": 1,
+     "materials": [
+      {
+       "item": "Golden Rod",
+       "count": 1
+      },
+      {
+       "item": "Iridescent Pearl",
+       "count": 1
+      },
+      {
+       "item": "Greater Astral Essence",
+       "count": 1
+      },
+      {
+       "item": "Soul Dust",
+       "count": 1
+      }
+     ],
+     "step": 17,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20; rod is Blacksmith-made; buy on the AH",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 151,
+     "skill_to": 165,
+     "recipe": "Minor Mana Oil",
+     "crafts": 16,
+     "materials": [
+      {
+       "item": "Soul Dust",
+       "count": 1
+      },
+      {
+       "item": "Maple Seed",
+       "count": 2
+      },
+      {
+       "item": "Leaded Vial",
+       "count": 1
+      }
+     ],
+     "step": 18,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Kithas",
+       "place": "Orgrimmar"
+      },
+      {
+       "name": "Nata Dawnstrider",
+       "place": "Thunder Bluff"
+      },
+      {
+       "name": "Thaddeus Webb",
+       "place": "Undercity"
+      },
+      {
+       "name": "Vaean",
+       "place": "Darnassus"
+      },
+      {
+       "name": "Tilli Thistlefuzz",
+       "place": "Ironforge"
+      },
+      {
+       "name": "Jessara Cordell",
+       "place": "Stormwind City"
+      }
+     ],
+     "notes": "formula, 30 silver; needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 165,
+     "skill_to": 200,
+     "recipe": "Enchant Boots - Lesser Agility",
+     "crafts": 44,
+     "materials": [
+      {
+       "item": "Soul Dust",
+       "count": 1
+      }
+     ],
+     "step": 19,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 5,
+     "tier": "Expert",
+     "skill_from": 165,
+     "skill_to": 200,
+     "recipe": "Enchant Bracer - Strength",
+     "crafts": 15,
+     "materials": [
+      {
+       "item": "Vision Dust",
+       "count": 1
+      }
+     ],
+     "step": 20,
+     "kind": "craft",
+     "alternative_of": 19,
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 200,
+     "skill_to": 201,
+     "recipe": "Runed Truesilver Rod",
+     "crafts": 1,
+     "materials": [
+      {
+       "item": "Truesilver Rod",
+       "count": 1
+      },
+      {
+       "item": "Black Pearl",
+       "count": 1
+      },
+      {
+       "item": "Greater Mystic Essence",
+       "count": 1
+      },
+      {
+       "item": "Vision Dust",
+       "count": 1
+      }
+     ],
+     "step": 21,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20; rod is Blacksmith-made; buy on the AH",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 201,
+     "skill_to": 220,
+     "recipe": "Lesser Wizard Oil",
+     "crafts": 25,
+     "materials": [
+      {
+       "item": "Vision Dust",
+       "count": 1
+      },
+      {
+       "item": "Stranglethorn Seed",
+       "count": 2
+      },
+      {
+       "item": "Leaded Vial",
+       "count": 1
+      }
+     ],
+     "step": 22,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "notes": "formula, 40 silver, from the Enchanting Supplies vendor in every capital; needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 220,
+     "skill_to": 225,
+     "recipe": "Enchant Cloak - Greater Defense",
+     "crafts": 5,
+     "materials": [
+      {
+       "item": "Vision Dust",
+       "count": 1
+      }
+     ],
+     "step": 23,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 225,
+     "skill_to": 250,
+     "recipe": "Enchant Gloves - Agility",
+     "crafts": 34,
+     "materials": [
+      {
+       "item": "Vision Dust",
+       "count": 1
+      }
+     ],
+     "step": 24,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 250,
+     "skill_to": 270,
+     "recipe": "Lesser Mana Oil",
+     "crafts": 26,
+     "materials": [
+      {
+       "item": "Dream Dust",
+       "count": 1
+      },
+      {
+       "item": "Purple Lotus",
+       "count": 1
+      },
+      {
+       "item": "Crystal Vial",
+       "count": 1
+      }
+     ],
+     "step": 25,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Kania",
+       "place": "Silithus"
+      }
+     ],
+     "notes": "formula, 1 gold; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 6,
+     "tier": "Artisan",
+     "skill_from": 250,
+     "skill_to": 270,
+     "recipe": "Enchant Bracer - Greater Strength",
+     "crafts": 23,
+     "materials": [
+      {
+       "item": "Dream Dust",
+       "count": 1
+      },
+      {
+       "item": "Lesser Nether Essence",
+       "count": 2
+      }
+     ],
+     "step": 26,
+     "kind": "craft",
+     "alternative_of": 25,
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 270,
+     "skill_to": 275,
+     "recipe": "Enchant Shield - Greater Stamina",
+     "crafts": 5,
+     "materials": [
+      {
+       "item": "Dream Dust",
+       "count": 6
+      }
+     ],
+     "step": 27,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Daniel Bartlett",
+       "place": "Undercity"
+      },
+      {
+       "name": "Mythrin'dir",
+       "place": "Darnassus"
+      }
+     ],
+     "notes": "formula binds when picked up, 1 gold 20 silver; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 275,
+     "skill_to": 295,
+     "recipe": "Wizard Oil",
+     "crafts": 26,
+     "materials": [
+      {
+       "item": "Illusion Dust",
+       "count": 3
+      },
+      {
+       "item": "Firebloom",
+       "count": 2
+      },
+      {
+       "item": "Crystal Vial",
+       "count": 1
+      }
+     ],
+     "step": 28,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Kania",
+       "place": "Silithus"
+      }
+     ],
+     "notes": "formula, 2 gold; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 295,
+     "skill_to": 299,
+     "recipe": "Enchant Shield - Greater Stamina",
+     "crafts": 8,
+     "materials": [
+      {
+       "item": "Dream Dust",
+       "count": 6
+      }
+     ],
+     "step": 29,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Daniel Bartlett",
+       "place": "Undercity"
+      },
+      {
+       "name": "Mythrin'dir",
+       "place": "Darnassus"
+      }
+     ],
+     "notes": "formula binds when picked up, 1 gold 20 silver; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 299,
+     "skill_to": 300,
+     "recipe": "Runed Arcanite Rod",
+     "crafts": 1,
+     "materials": [
+      {
+       "item": "Arcanite Rod",
+       "count": 1
+      },
+      {
+       "item": "Golden Pearl",
+       "count": 1
+      },
+      {
+       "item": "Illusion Dust",
+       "count": 10
+      },
+      {
+       "item": "Greater Eternal Essence",
+       "count": 4
+      },
+      {
+       "item": "Small Brilliant Shard",
+       "count": 4
+      },
+      {
+       "item": "Large Brilliant Shard",
+       "count": 2
+      }
+     ],
+     "step": 30,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Lorelae Wintersong",
+       "place": "Moonglade"
+      }
+     ],
+     "notes": "formula binds when picked up, 2 gold 20 silver; needs Artisan, level 35; rod is Blacksmith-made; buy on the AH",
+     "source_url": "https://www.wow-professions.com/forever/enchanting-leveling-guide"
+    }
+   ]
+  },
+  "Engineering": {
+   "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide",
+   "tiers": [
+    {
+     "profession": "Engineering",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Nogg",
+     "place": "Orgrimmar",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Engineering",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Franklin Lloyd",
+     "place": "Undercity",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Engineering",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Lilliam Sparkspindle",
+     "place": "Stormwind City",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Engineering",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Trixie Quikswitch",
+     "place": "Ironforge",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Engineering",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Finbus Geargrind",
+     "place": "Duskwood",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Engineering",
+     "tier": "Expert",
+     "skill_required": 125,
+     "min_level": 20,
+     "how": "trainer",
+     "cost_copper": 5000,
+     "note": "",
+     "trainer": "Roxxik",
+     "place": "Orgrimmar",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Engineering",
+     "tier": "Expert",
+     "skill_required": 125,
+     "min_level": 20,
+     "how": "trainer",
+     "cost_copper": 5000,
+     "note": "",
+     "trainer": "Springspindle Fizzlegear",
+     "place": "Ironforge",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Engineering",
+     "tier": "Artisan",
+     "skill_required": 200,
+     "min_level": 35,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Buzzek Bracketswing",
+     "place": "Gadgetzan, Tanaris",
+     "faction": "Both"
+    },
+    {
+     "profession": "Engineering",
+     "tier": "Artisan",
+     "skill_required": 200,
+     "min_level": 35,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Kaylaena Springwhisper",
+     "place": "Mount Hyjal",
+     "faction": "Both"
+    }
+   ],
+   "steps": [
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 1,
+     "skill_to": 35,
+     "recipe": "Rough Blasting Powder",
+     "crafts": 56,
+     "materials": [
+      {
+       "item": "Rough Stone",
+       "count": 1
+      }
+     ],
+     "step": 1,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 35,
+     "skill_to": 55,
+     "recipe": "Handful of Copper Bolts",
+     "crafts": 28,
+     "materials": [
+      {
+       "item": "Copper Bar",
+       "count": 1
+      }
+     ],
+     "step": 2,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 55,
+     "skill_to": 56,
+     "recipe": "Arclight Spanner",
+     "crafts": 1,
+     "materials": [
+      {
+       "item": "Copper Bar",
+       "count": 6
+      }
+     ],
+     "step": 3,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 56,
+     "skill_to": 75,
+     "recipe": "Rough Copper Bomb",
+     "crafts": 28,
+     "materials": [
+      {
+       "item": "Copper Bar",
+       "count": 1
+      },
+      {
+       "item": "Handful of Copper Bolts",
+       "count": 1
+      },
+      {
+       "item": "Rough Blasting Powder",
+       "count": 2
+      },
+      {
+       "item": "Linen Cloth",
+       "count": 1
+      }
+     ],
+     "step": 4,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 75,
+     "skill_to": 90,
+     "recipe": "Coarse Blasting Powder",
+     "crafts": 51,
+     "materials": [
+      {
+       "item": "Coarse Stone",
+       "count": 1
+      }
+     ],
+     "step": 5,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 90,
+     "skill_to": 100,
+     "recipe": "Coarse Dynamite",
+     "crafts": 17,
+     "materials": [
+      {
+       "item": "Coarse Blasting Powder",
+       "count": 3
+      },
+      {
+       "item": "Linen Cloth",
+       "count": 1
+      }
+     ],
+     "step": 6,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 100,
+     "skill_to": 105,
+     "recipe": "Silver Contact",
+     "crafts": 5,
+     "materials": [
+      {
+       "item": "Silver Bar",
+       "count": 1
+      }
+     ],
+     "step": 7,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 1,
+     "tier": "Journeyman",
+     "skill_from": 100,
+     "skill_to": 105,
+     "recipe": "Flying Tiger Goggles",
+     "crafts": 5,
+     "materials": [
+      {
+       "item": "Light Leather",
+       "count": 6
+      },
+      {
+       "item": "Tigerseye",
+       "count": 2
+      }
+     ],
+     "step": 8,
+     "kind": "craft",
+     "alternative_of": 7,
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 105,
+     "skill_to": 125,
+     "recipe": "Bronze Tube",
+     "crafts": 25,
+     "materials": [
+      {
+       "item": "Bronze Bar",
+       "count": 2
+      },
+      {
+       "item": "Weak Flux",
+       "count": 1
+      }
+     ],
+     "step": 9,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 125,
+     "skill_to": 135,
+     "recipe": "Standard Scope",
+     "crafts": 10,
+     "materials": [
+      {
+       "item": "Bronze Tube",
+       "count": 1
+      },
+      {
+       "item": "Moss Agate",
+       "count": 1
+      }
+     ],
+     "step": 10,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 135,
+     "skill_to": 150,
+     "recipe": "Heavy Blasting Powder",
+     "crafts": 40,
+     "materials": [
+      {
+       "item": "Heavy Stone",
+       "count": 1
+      }
+     ],
+     "step": 11,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 135,
+     "skill_to": 150,
+     "recipe": "Whirring Bronze Gizmo",
+     "crafts": 15,
+     "materials": [
+      {
+       "item": "Bronze Bar",
+       "count": 2
+      },
+      {
+       "item": "Wool Cloth",
+       "count": 1
+      }
+     ],
+     "step": 12,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 150,
+     "skill_to": 160,
+     "recipe": "Bronze Framework",
+     "crafts": 15,
+     "materials": [
+      {
+       "item": "Bronze Bar",
+       "count": 2
+      },
+      {
+       "item": "Medium Leather",
+       "count": 1
+      },
+      {
+       "item": "Wool Cloth",
+       "count": 1
+      }
+     ],
+     "step": 13,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 160,
+     "skill_to": 175,
+     "recipe": "Explosive Sheep",
+     "crafts": 15,
+     "materials": [
+      {
+       "item": "Heavy Blasting Powder",
+       "count": 2
+      },
+      {
+       "item": "Whirring Bronze Gizmo",
+       "count": 1
+      },
+      {
+       "item": "Bronze Framework",
+       "count": 1
+      },
+      {
+       "item": "Wool Cloth",
+       "count": 2
+      }
+     ],
+     "step": 14,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 175,
+     "skill_to": 193,
+     "recipe": "Solid Blasting Powder",
+     "crafts": 61,
+     "materials": [
+      {
+       "item": "Solid Stone",
+       "count": 2
+      }
+     ],
+     "step": 15,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 193,
+     "skill_to": 195,
+     "recipe": "Gyromatic Micro-Adjustor",
+     "crafts": 1,
+     "materials": [
+      {
+       "item": "Steel Bar",
+       "count": 4
+      }
+     ],
+     "step": 16,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 193,
+     "skill_to": 195,
+     "recipe": "Iron Grenade",
+     "crafts": 3,
+     "materials": [
+      {
+       "item": "Iron Bar",
+       "count": 1
+      },
+      {
+       "item": "Heavy Blasting Powder",
+       "count": 1
+      },
+      {
+       "item": "Silk Cloth",
+       "count": 1
+      }
+     ],
+     "step": 17,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 195,
+     "skill_to": 200,
+     "recipe": "Mithril Tube",
+     "crafts": 6,
+     "materials": [
+      {
+       "item": "Mithril Bar",
+       "count": 3
+      }
+     ],
+     "step": 18,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 200,
+     "skill_to": 215,
+     "recipe": "Unstable Trigger",
+     "crafts": 21,
+     "materials": [
+      {
+       "item": "Mithril Bar",
+       "count": 1
+      },
+      {
+       "item": "Mageweave Cloth",
+       "count": 1
+      },
+      {
+       "item": "Solid Blasting Powder",
+       "count": 1
+      }
+     ],
+     "step": 19,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 215,
+     "skill_to": 238,
+     "recipe": "Mithril Casing",
+     "crafts": 40,
+     "materials": [
+      {
+       "item": "Mithril Bar",
+       "count": 3
+      }
+     ],
+     "step": 20,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 238,
+     "skill_to": 250,
+     "recipe": "Hi-Explosive Bomb",
+     "crafts": 20,
+     "materials": [
+      {
+       "item": "Mithril Casing",
+       "count": 2
+      },
+      {
+       "item": "Unstable Trigger",
+       "count": 1
+      },
+      {
+       "item": "Solid Blasting Powder",
+       "count": 2
+      }
+     ],
+     "step": 21,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 250,
+     "skill_to": 260,
+     "recipe": "Dense Blasting Powder",
+     "crafts": 44,
+     "materials": [
+      {
+       "item": "Dense Stone",
+       "count": 2
+      }
+     ],
+     "step": 22,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 260,
+     "skill_to": 280,
+     "recipe": "Thorium Widget",
+     "crafts": 20,
+     "materials": [
+      {
+       "item": "Thorium Bar",
+       "count": 3
+      },
+      {
+       "item": "Runecloth",
+       "count": 1
+      }
+     ],
+     "step": 23,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Sovik",
+       "place": "Orgrimmar"
+      },
+      {
+       "name": "Gearcutter Cogspinner",
+       "place": "Ironforge"
+      }
+     ],
+     "notes": "schematic; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 2,
+     "tier": "Artisan",
+     "skill_from": 260,
+     "skill_to": 280,
+     "recipe": "Thorium Widget",
+     "crafts": 10,
+     "materials": [
+      {
+       "item": "Thorium Bar",
+       "count": 3
+      },
+      {
+       "item": "Runecloth",
+       "count": 1
+      }
+     ],
+     "step": 24,
+     "kind": "craft",
+     "alternative_of": 23,
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Sovik",
+       "place": "Orgrimmar"
+      },
+      {
+       "name": "Gearcutter Cogspinner",
+       "place": "Ironforge"
+      }
+     ],
+     "notes": "schematic; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 2,
+     "tier": "Artisan",
+     "skill_from": 260,
+     "skill_to": 280,
+     "recipe": "Thorium Grenade",
+     "crafts": 10,
+     "materials": [
+      {
+       "item": "Thorium Widget",
+       "count": 1
+      },
+      {
+       "item": "Thorium Bar",
+       "count": 3
+      },
+      {
+       "item": "Dense Blasting Powder",
+       "count": 3
+      },
+      {
+       "item": "Runecloth",
+       "count": 3
+      }
+     ],
+     "step": 25,
+     "kind": "craft",
+     "alternative_of": 23,
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Sovik",
+       "place": "Orgrimmar"
+      },
+      {
+       "name": "Gearcutter Cogspinner",
+       "place": "Ironforge"
+      }
+     ],
+     "notes": "schematic; needs Artisan, level 35; PvP-ruleset variant of the widget step",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 280,
+     "skill_to": 300,
+     "recipe": "Thorium Tube",
+     "crafts": 21,
+     "materials": [
+      {
+       "item": "Thorium Bar",
+       "count": 6
+      }
+     ],
+     "step": 26,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Xizzer Fizzbolt",
+       "place": "Winterspring"
+      },
+      {
+       "name": "Kor'gar",
+       "place": "Riverglades"
+      }
+     ],
+     "notes": "schematic binds when picked up; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 3,
+     "tier": "Artisan",
+     "skill_from": 280,
+     "skill_to": 300,
+     "recipe": "Thorium Shells",
+     "crafts": 15,
+     "materials": [
+      {
+       "item": "Thorium Bar",
+       "count": 2
+      },
+      {
+       "item": "Dense Blasting Powder",
+       "count": 1
+      }
+     ],
+     "step": 27,
+     "kind": "craft",
+     "alternative_of": 26,
+     "learned_from": "drop",
+     "notes": "schematic is a world drop; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    }
+   ]
+  },
+  "Herbalism": {
+   "source_url": "https://www.wow-professions.com/forever/herbalism-leveling-guide",
+   "tiers": [
+    {
+     "profession": "Herbalism",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": null,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": ""
+    },
+    {
+     "profession": "Herbalism",
+     "tier": "Expert",
+     "skill_required": 125,
+     "min_level": 20,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": ""
+    },
+    {
+     "profession": "Herbalism",
+     "tier": "Artisan",
+     "skill_required": 200,
+     "min_level": 35,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": ""
+    }
+   ],
+   "steps": [
+    {
+     "step": 1,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Apprentice",
+     "skill_from": 1,
+     "skill_to": 70,
+     "materials": [
+      {
+       "item": "Peacebloom",
+       "count": 0
+      },
+      {
+       "item": "Silverleaf",
+       "count": 0
+      },
+      {
+       "item": "Earthroot",
+       "count": 0
+      }
+     ],
+     "where": [
+      "Durotar",
+      "Mulgore",
+      "Tirisfal Glades",
+      "Elwynn Forest",
+      "Dun Morogh",
+      "Teldrassil",
+      "Zephras Isle"
+     ],
+     "learned_from": "trainer",
+     "notes": "any starting zone; Earthroot needs skill 15",
+     "source_url": "https://www.wow-professions.com/forever/herbalism-leveling-guide",
+     "crafts": null
+    },
+    {
+     "step": 2,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Journeyman",
+     "skill_from": 70,
+     "skill_to": 115,
+     "materials": [
+      {
+       "item": "Mageroyal",
+       "count": 0
+      },
+      {
+       "item": "Briarthorn",
+       "count": 0
+      },
+      {
+       "item": "Stranglekelp",
+       "count": 0
+      }
+     ],
+     "where": [
+      "Silverpine Forest",
+      "Loch Modan",
+      "Darkshore"
+     ],
+     "learned_from": "trainer",
+     "notes": "Stranglekelp needs skill 85; needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/herbalism-leveling-guide",
+     "crafts": null
+    },
+    {
+     "step": 3,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Expert",
+     "skill_from": 115,
+     "skill_to": 170,
+     "materials": [
+      {
+       "item": "Bruiseweed",
+       "count": 0
+      },
+      {
+       "item": "Wild Steelbloom",
+       "count": 0
+      },
+      {
+       "item": "Stranglekelp",
+       "count": 0
+      },
+      {
+       "item": "Kingsblood",
+       "count": 0
+      },
+      {
+       "item": "Liferoot",
+       "count": 0
+      }
+     ],
+     "where": [
+      "Hillsbrad Foothills",
+      "Stonetalon Mountains",
+      "Arathi Highlands"
+     ],
+     "learned_from": "trainer",
+     "notes": "Kingsblood needs skill 125, Liferoot 150; needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/herbalism-leveling-guide",
+     "crafts": null
+    },
+    {
+     "step": 4,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Expert",
+     "skill_from": 170,
+     "skill_to": 205,
+     "materials": [
+      {
+       "item": "Kingsblood",
+       "count": 0
+      },
+      {
+       "item": "Liferoot",
+       "count": 0
+      },
+      {
+       "item": "Fadeleaf",
+       "count": 0
+      },
+      {
+       "item": "Goldthorn",
+       "count": 0
+      },
+      {
+       "item": "Khadgar's Whisker",
+       "count": 0
+      }
+     ],
+     "where": [
+      "Stranglethorn Vale",
+      "Arathi Highlands"
+     ],
+     "learned_from": "trainer",
+     "notes": "Khadgar's Whisker needs skill 185; needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/herbalism-leveling-guide",
+     "crafts": null
+    },
+    {
+     "step": 5,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Artisan",
+     "skill_from": 205,
+     "skill_to": 230,
+     "materials": [
+      {
+       "item": "Purple Lotus",
+       "count": 0
+      },
+      {
+       "item": "Firebloom",
+       "count": 0
+      }
+     ],
+     "where": [
+      "Tanaris",
+      "Searing Gorge"
+     ],
+     "learned_from": "trainer",
+     "notes": "learn Artisan Herbalism (skill 200) before leaving; no trainer there; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/herbalism-leveling-guide",
+     "crafts": null
+    },
+    {
+     "step": 6,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Artisan",
+     "skill_from": 230,
+     "skill_to": 270,
+     "materials": [
+      {
+       "item": "Sungrass",
+       "count": 0
+      },
+      {
+       "item": "Purple Lotus",
+       "count": 0
+      },
+      {
+       "item": "Ghost Mushroom",
+       "count": 0
+      },
+      {
+       "item": "Golden Sansam",
+       "count": 0
+      }
+     ],
+     "where": [
+      "The Hinterlands"
+     ],
+     "learned_from": "trainer",
+     "notes": "Ghost Mushroom needs skill 245; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/herbalism-leveling-guide",
+     "crafts": null
+    },
+    {
+     "step": 7,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Artisan",
+     "skill_from": 270,
+     "skill_to": 300,
+     "materials": [
+      {
+       "item": "Sungrass",
+       "count": 0
+      },
+      {
+       "item": "Gromsblood",
+       "count": 0
+      },
+      {
+       "item": "Golden Sansam",
+       "count": 0
+      },
+      {
+       "item": "Dreamfoil",
+       "count": 0
+      },
+      {
+       "item": "Mountain Silversage",
+       "count": 0
+      },
+      {
+       "item": "Plaguebloom",
+       "count": 0
+      }
+     ],
+     "where": [
+      "Felwood"
+     ],
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/herbalism-leveling-guide",
+     "crafts": null
+    }
+   ]
+  },
+  "Leatherworking": {
+   "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide",
+   "tiers": [
+    {
+     "profession": "Leatherworking",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Karolek",
+     "place": "Orgrimmar",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Leatherworking",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Arthur Moore",
+     "place": "Undercity",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Leatherworking",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Tarn",
+     "place": "Thunder Bluff",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Leatherworking",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Simon Tanner",
+     "place": "Stormwind City",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Leatherworking",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Fimble Finespindle",
+     "place": "Ironforge",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Leatherworking",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Faldron",
+     "place": "Darnassus",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Leatherworking",
+     "tier": "Expert",
+     "skill_required": 125,
+     "min_level": 20,
+     "how": "trainer",
+     "cost_copper": 5000,
+     "note": "",
+     "trainer": "Una",
+     "place": "Thunder Bluff",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Leatherworking",
+     "tier": "Expert",
+     "skill_required": 125,
+     "min_level": 20,
+     "how": "trainer",
+     "cost_copper": 5000,
+     "note": "",
+     "trainer": "Telonis",
+     "place": "Darnassus",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Leatherworking",
+     "tier": "Artisan",
+     "skill_required": 200,
+     "min_level": 35,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Hahrana Ironhide",
+     "place": "Camp Mojache, Feralas",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Leatherworking",
+     "tier": "Artisan",
+     "skill_required": 200,
+     "min_level": 35,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Drakk Stonehand",
+     "place": "Aerie Peak, The Hinterlands",
+     "faction": "Alliance"
+    }
+   ],
+   "steps": [
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 1,
+     "skill_to": 30,
+     "recipe": "Light Leather",
+     "crafts": 35,
+     "materials": [
+      {
+       "item": "Ruined Leather Scraps",
+       "count": 3
+      }
+     ],
+     "step": 1,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 30,
+     "skill_to": 40,
+     "recipe": "Cured Light Hide",
+     "crafts": 10,
+     "materials": [
+      {
+       "item": "Light Hide",
+       "count": 1
+      },
+      {
+       "item": "Salt",
+       "count": 1
+      }
+     ],
+     "step": 2,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 1,
+     "tier": "Apprentice",
+     "skill_from": 30,
+     "skill_to": 40,
+     "recipe": "Light Armor Kit",
+     "crafts": 14,
+     "materials": [
+      {
+       "item": "Light Leather",
+       "count": 1
+      }
+     ],
+     "step": 3,
+     "kind": "craft",
+     "alternative_of": 2,
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 40,
+     "skill_to": 60,
+     "recipe": "Embossed Leather Gloves",
+     "crafts": 20,
+     "materials": [
+      {
+       "item": "Light Leather",
+       "count": 3
+      },
+      {
+       "item": "Coarse Thread",
+       "count": 2
+      }
+     ],
+     "step": 4,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 60,
+     "skill_to": 70,
+     "recipe": "Embossed Leather Gloves",
+     "crafts": 10,
+     "materials": [
+      {
+       "item": "Light Leather",
+       "count": 3
+      },
+      {
+       "item": "Coarse Thread",
+       "count": 2
+      }
+     ],
+     "step": 5,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 70,
+     "skill_to": 80,
+     "recipe": "Embossed Leather Pants",
+     "crafts": 10,
+     "materials": [
+      {
+       "item": "Cured Light Hide",
+       "count": 1
+      },
+      {
+       "item": "Light Leather",
+       "count": 6
+      },
+      {
+       "item": "Coarse Thread",
+       "count": 2
+      }
+     ],
+     "step": 6,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 2,
+     "tier": "Journeyman",
+     "skill_from": 70,
+     "skill_to": 80,
+     "recipe": "Embossed Leather Gloves",
+     "crafts": 14,
+     "materials": [
+      {
+       "item": "Light Leather",
+       "count": 3
+      },
+      {
+       "item": "Coarse Thread",
+       "count": 2
+      }
+     ],
+     "step": 7,
+     "kind": "craft",
+     "alternative_of": 6,
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 80,
+     "skill_to": 95,
+     "recipe": "Cured Medium Hide",
+     "crafts": 20,
+     "materials": [
+      {
+       "item": "Medium Hide",
+       "count": 1
+      },
+      {
+       "item": "Salt",
+       "count": 1
+      }
+     ],
+     "step": 8,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 3,
+     "tier": "Journeyman",
+     "skill_from": 80,
+     "skill_to": 95,
+     "recipe": "Fine Leather Belt",
+     "crafts": 19,
+     "materials": [
+      {
+       "item": "Light Leather",
+       "count": 6
+      },
+      {
+       "item": "Coarse Thread",
+       "count": 2
+      }
+     ],
+     "step": 9,
+     "kind": "craft",
+     "alternative_of": 8,
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 95,
+     "skill_to": 105,
+     "recipe": "Fine Leather Belt",
+     "crafts": 22,
+     "materials": [
+      {
+       "item": "Light Leather",
+       "count": 6
+      },
+      {
+       "item": "Coarse Thread",
+       "count": 2
+      }
+     ],
+     "step": 10,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 105,
+     "skill_to": 125,
+     "recipe": "Dark Leather Belt",
+     "crafts": 20,
+     "materials": [
+      {
+       "item": "Fine Leather Belt",
+       "count": 1
+      },
+      {
+       "item": "Cured Medium Hide",
+       "count": 1
+      },
+      {
+       "item": "Fine Thread",
+       "count": 2
+      },
+      {
+       "item": "Gray Dye",
+       "count": 1
+      }
+     ],
+     "step": 11,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 4,
+     "tier": "Journeyman",
+     "skill_from": 105,
+     "skill_to": 125,
+     "recipe": "Dark Leather Pants",
+     "crafts": 16,
+     "materials": [
+      {
+       "item": "Medium Leather",
+       "count": 12
+      },
+      {
+       "item": "Gray Dye",
+       "count": 1
+      },
+      {
+       "item": "Fine Thread",
+       "count": 1
+      }
+     ],
+     "step": 12,
+     "kind": "craft",
+     "alternative_of": 11,
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 4,
+     "tier": "Journeyman",
+     "skill_from": 105,
+     "skill_to": 125,
+     "recipe": "Hillman's Leather Gloves",
+     "crafts": 5,
+     "materials": [
+      {
+       "item": "Medium Leather",
+       "count": 14
+      },
+      {
+       "item": "Fine Thread",
+       "count": 4
+      }
+     ],
+     "step": 13,
+     "kind": "craft",
+     "alternative_of": 11,
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 125,
+     "skill_to": 130,
+     "recipe": "Heavy Leather",
+     "crafts": 8,
+     "materials": [
+      {
+       "item": "Medium Leather",
+       "count": 5
+      }
+     ],
+     "step": 14,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 130,
+     "skill_to": 143,
+     "recipe": "Cured Heavy Hide",
+     "crafts": 25,
+     "materials": [
+      {
+       "item": "Heavy Hide",
+       "count": 1
+      },
+      {
+       "item": "Salt",
+       "count": 3
+      }
+     ],
+     "step": 15,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 5,
+     "tier": "Journeyman",
+     "skill_from": 130,
+     "skill_to": 143,
+     "recipe": "Hillman's Leather Gloves",
+     "crafts": 21,
+     "materials": [
+      {
+       "item": "Medium Leather",
+       "count": 14
+      },
+      {
+       "item": "Fine Thread",
+       "count": 4
+      }
+     ],
+     "step": 16,
+     "kind": "craft",
+     "alternative_of": 15,
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 143,
+     "skill_to": 150,
+     "recipe": "Hillman's Leather Gloves",
+     "crafts": 8,
+     "materials": [
+      {
+       "item": "Medium Leather",
+       "count": 14
+      },
+      {
+       "item": "Fine Thread",
+       "count": 4
+      }
+     ],
+     "step": 17,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 150,
+     "skill_to": 165,
+     "recipe": "Barbaric Shoulders",
+     "crafts": 15,
+     "materials": [
+      {
+       "item": "Heavy Leather",
+       "count": 8
+      },
+      {
+       "item": "Cured Heavy Hide",
+       "count": 1
+      },
+      {
+       "item": "Fine Thread",
+       "count": 2
+      }
+     ],
+     "step": 18,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 6,
+     "tier": "Expert",
+     "skill_from": 150,
+     "skill_to": 165,
+     "recipe": "Barbaric Leggings",
+     "crafts": 15,
+     "materials": [
+      {
+       "item": "Heavy Leather",
+       "count": 10
+      },
+      {
+       "item": "Moss Agate",
+       "count": 1
+      },
+      {
+       "item": "Fine Thread",
+       "count": 2
+      }
+     ],
+     "step": 19,
+     "kind": "craft",
+     "alternative_of": 18,
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Jandia",
+       "place": "Freewind Post"
+      },
+      {
+       "name": "Lardan",
+       "place": "Astranaar"
+      }
+     ],
+     "notes": "pattern; needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 165,
+     "skill_to": 175,
+     "recipe": "Guardian Gloves",
+     "crafts": 10,
+     "materials": [
+      {
+       "item": "Heavy Leather",
+       "count": 4
+      },
+      {
+       "item": "Cured Heavy Hide",
+       "count": 1
+      },
+      {
+       "item": "Silken Thread",
+       "count": 1
+      }
+     ],
+     "step": 20,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 7,
+     "tier": "Expert",
+     "skill_from": 165,
+     "skill_to": 175,
+     "recipe": "Barbaric Harness",
+     "crafts": 10,
+     "materials": [
+      {
+       "item": "Heavy Leather",
+       "count": 14
+      },
+      {
+       "item": "Fine Thread",
+       "count": 2
+      },
+      {
+       "item": "Iron Buckle",
+       "count": 1
+      }
+     ],
+     "step": 21,
+     "kind": "craft",
+     "alternative_of": 20,
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 175,
+     "skill_to": 185,
+     "recipe": "Barbaric Harness",
+     "crafts": 10,
+     "materials": [
+      {
+       "item": "Heavy Leather",
+       "count": 14
+      },
+      {
+       "item": "Fine Thread",
+       "count": 2
+      },
+      {
+       "item": "Iron Buckle",
+       "count": 1
+      }
+     ],
+     "step": 22,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 8,
+     "tier": "Expert",
+     "skill_from": 175,
+     "skill_to": 185,
+     "recipe": "Thick Armor Kit",
+     "crafts": 10,
+     "materials": [
+      {
+       "item": "Thick Leather",
+       "count": 5
+      },
+      {
+       "item": "Silken Thread",
+       "count": 1
+      }
+     ],
+     "step": 23,
+     "kind": "craft",
+     "alternative_of": 22,
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 185,
+     "skill_to": 205,
+     "recipe": "Nightscape Headband",
+     "crafts": 22,
+     "materials": [
+      {
+       "item": "Thick Leather",
+       "count": 5
+      },
+      {
+       "item": "Silken Thread",
+       "count": 2
+      }
+     ],
+     "step": 24,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 205,
+     "skill_to": 235,
+     "recipe": "Nightscape Pants",
+     "crafts": 36,
+     "materials": [
+      {
+       "item": "Thick Leather",
+       "count": 14
+      },
+      {
+       "item": "Silken Thread",
+       "count": 4
+      }
+     ],
+     "step": 25,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 235,
+     "skill_to": 265,
+     "recipe": "Wicked Leather Gauntlets",
+     "crafts": 36,
+     "materials": [
+      {
+       "item": "Rugged Leather",
+       "count": 8
+      },
+      {
+       "item": "Black Dye",
+       "count": 1
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 26,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Werg Thickblade",
+       "place": "Tirisfal Glades"
+      },
+      {
+       "name": "Leonard Porter",
+       "place": "Western Plaguelands"
+      }
+     ],
+     "notes": "pattern; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 9,
+     "tier": "Artisan",
+     "skill_from": 235,
+     "skill_to": 265,
+     "recipe": "Blue Suede Shoes",
+     "crafts": 36,
+     "materials": [
+      {
+       "item": "Rugged Leather",
+       "count": 8
+      },
+      {
+       "item": "Blue Dye",
+       "count": 1
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 27,
+     "kind": "craft",
+     "alternative_of": 26,
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 10,
+     "tier": "Artisan",
+     "skill_from": 235,
+     "skill_to": 255,
+     "recipe": "Wicked Leather Gauntlets",
+     "crafts": 20,
+     "materials": [
+      {
+       "item": "Rugged Leather",
+       "count": 8
+      },
+      {
+       "item": "Black Dye",
+       "count": 1
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 28,
+     "kind": "craft",
+     "alternative_of": 26,
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Werg Thickblade",
+       "place": "Tirisfal Glades"
+      },
+      {
+       "name": "Leonard Porter",
+       "place": "Western Plaguelands"
+      }
+     ],
+     "notes": "pattern; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 11,
+     "tier": "Artisan",
+     "skill_from": 235,
+     "skill_to": 255,
+     "recipe": "Wicked Leather Gauntlets",
+     "crafts": 20,
+     "materials": [
+      {
+       "item": "Rugged Leather",
+       "count": 8
+      },
+      {
+       "item": "Black Dye",
+       "count": 1
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 29,
+     "kind": "craft",
+     "alternative_of": 26,
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Werg Thickblade",
+       "place": "Tirisfal Glades"
+      },
+      {
+       "name": "Leonard Porter",
+       "place": "Western Plaguelands"
+      }
+     ],
+     "notes": "pattern; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 10,
+     "tier": "Artisan",
+     "skill_from": 255,
+     "skill_to": 265,
+     "recipe": "Wicked Leather Headband",
+     "crafts": 10,
+     "materials": [
+      {
+       "item": "Rugged Leather",
+       "count": 12
+      },
+      {
+       "item": "Black Dye",
+       "count": 1
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 30,
+     "kind": "craft",
+     "alternative_of": 26,
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 11,
+     "tier": "Artisan",
+     "skill_from": 255,
+     "skill_to": 265,
+     "recipe": "Charged Scorpid Bracers",
+     "crafts": 10,
+     "materials": [
+      {
+       "item": "Rugged Leather",
+       "count": 2
+      },
+      {
+       "item": "Heavy Scorpid Scale",
+       "count": 4
+      },
+      {
+       "item": "Elemental Air",
+       "count": 2
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 31,
+     "kind": "craft",
+     "alternative_of": 26,
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 265,
+     "skill_to": 300,
+     "recipe": "Runic Leather Headband",
+     "crafts": 49,
+     "materials": [
+      {
+       "item": "Rugged Leather",
+       "count": 14
+      },
+      {
+       "item": "Runecloth",
+       "count": 10
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 32,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Jase Farlane",
+       "place": "Eastern Plaguelands"
+      }
+     ],
+     "notes": "pattern; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 12,
+     "tier": "Artisan",
+     "skill_from": 265,
+     "skill_to": 275,
+     "recipe": "Wicked Leather Headband",
+     "crafts": 10,
+     "materials": [
+      {
+       "item": "Rugged Leather",
+       "count": 12
+      },
+      {
+       "item": "Black Dye",
+       "count": 1
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 33,
+     "kind": "craft",
+     "alternative_of": 32,
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 13,
+     "tier": "Artisan",
+     "skill_from": 265,
+     "skill_to": 270,
+     "recipe": "Runic Leather Headband",
+     "crafts": 5,
+     "materials": [
+      {
+       "item": "Rugged Leather",
+       "count": 14
+      },
+      {
+       "item": "Runecloth",
+       "count": 10
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 34,
+     "kind": "craft",
+     "alternative_of": 32,
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Jase Farlane",
+       "place": "Eastern Plaguelands"
+      }
+     ],
+     "notes": "pattern; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 14,
+     "tier": "Artisan",
+     "skill_from": 265,
+     "skill_to": 275,
+     "recipe": "Runic Leather Headband",
+     "crafts": 10,
+     "materials": [
+      {
+       "item": "Rugged Leather",
+       "count": 14
+      },
+      {
+       "item": "Runecloth",
+       "count": 10
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 35,
+     "kind": "craft",
+     "alternative_of": 32,
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Jase Farlane",
+       "place": "Eastern Plaguelands"
+      }
+     ],
+     "notes": "pattern; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 15,
+     "tier": "Artisan",
+     "skill_from": 265,
+     "skill_to": 295,
+     "recipe": "Runic Leather Headband",
+     "crafts": 36,
+     "materials": [
+      {
+       "item": "Rugged Leather",
+       "count": 14
+      },
+      {
+       "item": "Runecloth",
+       "count": 10
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 36,
+     "kind": "craft",
+     "alternative_of": 32,
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Jase Farlane",
+       "place": "Eastern Plaguelands"
+      }
+     ],
+     "notes": "pattern; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 13,
+     "tier": "Artisan",
+     "skill_from": 270,
+     "skill_to": 300,
+     "recipe": "Tooled Leather Bracers",
+     "crafts": 36,
+     "materials": [
+      {
+       "item": "Rugged Leather",
+       "count": 10
+      },
+      {
+       "item": "Orange Dye",
+       "count": 1
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 37,
+     "kind": "craft",
+     "alternative_of": 32,
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 12,
+     "tier": "Artisan",
+     "skill_from": 275,
+     "skill_to": 300,
+     "recipe": "Runic Leather Headband",
+     "crafts": 39,
+     "materials": [
+      {
+       "item": "Rugged Leather",
+       "count": 14
+      },
+      {
+       "item": "Runecloth",
+       "count": 10
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 38,
+     "kind": "craft",
+     "alternative_of": 32,
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Jase Farlane",
+       "place": "Eastern Plaguelands"
+      }
+     ],
+     "notes": "pattern; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 14,
+     "tier": "Artisan",
+     "skill_from": 275,
+     "skill_to": 300,
+     "recipe": "Blue Suede Bracers",
+     "crafts": 27,
+     "materials": [
+      {
+       "item": "Rugged Leather",
+       "count": 10
+      },
+      {
+       "item": "Blue Dye",
+       "count": 1
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 39,
+     "kind": "craft",
+     "alternative_of": 32,
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 15,
+     "tier": "Artisan",
+     "skill_from": 295,
+     "skill_to": 300,
+     "recipe": "Wicked Leather Belt",
+     "crafts": 7,
+     "materials": [
+      {
+       "item": "Rugged Leather",
+       "count": 14
+      },
+      {
+       "item": "Black Dye",
+       "count": 2
+      },
+      {
+       "item": "Rune Thread",
+       "count": 2
+      }
+     ],
+     "step": 40,
+     "kind": "craft",
+     "alternative_of": 32,
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 16,
+     "tier": "Artisan",
+     "skill_from": 295,
+     "skill_to": 300,
+     "recipe": "Blue Suede Hat",
+     "crafts": 20,
+     "materials": [
+      {
+       "item": "Rugged Leather",
+       "count": 16
+      },
+      {
+       "item": "Blue Dye",
+       "count": 4
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 41,
+     "kind": "craft",
+     "alternative_of": 32,
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    }
+   ]
+  },
+  "Mining": {
+   "source_url": "https://www.wow-professions.com/forever/mining-leveling-guide",
+   "tiers": [
+    {
+     "profession": "Mining",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": null,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": ""
+    },
+    {
+     "profession": "Mining",
+     "tier": "Expert",
+     "skill_required": 125,
+     "min_level": 20,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": ""
+    },
+    {
+     "profession": "Mining",
+     "tier": "Artisan",
+     "skill_required": 200,
+     "min_level": 35,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": ""
+    }
+   ],
+   "steps": [
+    {
+     "step": 1,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Apprentice",
+     "skill_from": 1,
+     "skill_to": 65,
+     "materials": [
+      {
+       "item": "Copper Ore",
+       "count": 0
+      }
+     ],
+     "where": [
+      "Durotar",
+      "Mulgore",
+      "Tirisfal Glades",
+      "Elwynn Forest",
+      "Dun Morogh",
+      "Teldrassil",
+      "Zephras Isle"
+     ],
+     "learned_from": "trainer",
+     "notes": "any starting zone; carry a Mining Pick",
+     "source_url": "https://www.wow-professions.com/forever/mining-leveling-guide",
+     "crafts": null
+    },
+    {
+     "step": 2,
+     "option": 1,
+     "kind": "craft",
+     "tier": "Apprentice",
+     "skill_from": 1,
+     "skill_to": 65,
+     "recipe": "Smelt Copper",
+     "crafts": 130,
+     "materials": [
+      {
+       "item": "Copper Ore",
+       "count": 1
+      }
+     ],
+     "where": [],
+     "learned_from": "trainer",
+     "notes": "buy ore on the AH; smelt 120-140 times, keep 70 Copper Bar",
+     "alternative_of": 1,
+     "source_url": "https://www.wow-professions.com/forever/mining-leveling-guide"
+    },
+    {
+     "step": 3,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Journeyman",
+     "skill_from": 65,
+     "skill_to": 125,
+     "materials": [
+      {
+       "item": "Tin Ore",
+       "count": 0
+      },
+      {
+       "item": "Copper Ore",
+       "count": 0
+      },
+      {
+       "item": "Silver Ore",
+       "count": 0
+      }
+     ],
+     "where": [
+      "Wetlands",
+      "Silverpine Forest",
+      "Westfall",
+      "Hillsbrad Foothills",
+      "The Barrens",
+      "Ashenvale",
+      "Stonetalon Mountains"
+     ],
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/mining-leveling-guide",
+     "crafts": null
+    },
+    {
+     "step": 4,
+     "option": 1,
+     "kind": "craft",
+     "tier": "Apprentice",
+     "skill_from": 65,
+     "skill_to": 75,
+     "recipe": "Smelt Tin",
+     "crafts": 70,
+     "materials": [
+      {
+       "item": "Tin Ore",
+       "count": 1
+      }
+     ],
+     "where": [],
+     "learned_from": "trainer",
+     "notes": "learn Journeyman Mining first; keep all 70 Tin Bar for Bronze",
+     "alternative_of": 3,
+     "source_url": "https://www.wow-professions.com/forever/mining-leveling-guide"
+    },
+    {
+     "step": 5,
+     "option": 1,
+     "kind": "craft",
+     "tier": "Journeyman",
+     "skill_from": 75,
+     "skill_to": 105,
+     "recipe": "Smelt Bronze",
+     "crafts": 70,
+     "materials": [
+      {
+       "item": "Copper Bar",
+       "count": 1
+      },
+      {
+       "item": "Tin Bar",
+       "count": 1
+      }
+     ],
+     "where": [],
+     "learned_from": "trainer",
+     "notes": "uses the bars from the two steps above; may end between 100 and 110; needs Journeyman, level 10",
+     "alternative_of": 3,
+     "source_url": "https://www.wow-professions.com/forever/mining-leveling-guide"
+    },
+    {
+     "step": 6,
+     "option": 1,
+     "kind": "craft",
+     "tier": "Journeyman",
+     "skill_from": 105,
+     "skill_to": 120,
+     "recipe": "Smelt Silver",
+     "crafts": 40,
+     "materials": [
+      {
+       "item": "Silver Ore",
+       "count": 1
+      }
+     ],
+     "where": [],
+     "learned_from": "trainer",
+     "notes": "price Silver Ore and Silver Bar first; the guide suggests mining from 120; needs Journeyman, level 10",
+     "alternative_of": 3,
+     "source_url": "https://www.wow-professions.com/forever/mining-leveling-guide"
+    },
+    {
+     "step": 7,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Expert",
+     "skill_from": 125,
+     "skill_to": 175,
+     "materials": [
+      {
+       "item": "Iron Ore",
+       "count": 0
+      },
+      {
+       "item": "Tin Ore",
+       "count": 0
+      },
+      {
+       "item": "Gold Ore",
+       "count": 0
+      }
+     ],
+     "where": [
+      "Arathi Highlands",
+      "Thousand Needles",
+      "Desolace"
+     ],
+     "learned_from": "trainer",
+     "notes": "Expert Mining needs skill 125; needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/mining-leveling-guide",
+     "crafts": null
+    },
+    {
+     "step": 8,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Artisan",
+     "skill_from": 175,
+     "skill_to": 245,
+     "materials": [
+      {
+       "item": "Mithril Ore",
+       "count": 0
+      },
+      {
+       "item": "Truesilver Ore",
+       "count": 0
+      }
+     ],
+     "where": [
+      "The Hinterlands",
+      "Tanaris"
+     ],
+     "learned_from": "trainer",
+     "notes": "Artisan Mining needs skill 200; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/mining-leveling-guide",
+     "crafts": null
+    },
+    {
+     "step": 9,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Artisan",
+     "skill_from": 245,
+     "skill_to": 275,
+     "materials": [
+      {
+       "item": "Mithril Ore",
+       "count": 0
+      },
+      {
+       "item": "Truesilver Ore",
+       "count": 0
+      },
+      {
+       "item": "Thorium Ore",
+       "count": 0
+      }
+     ],
+     "where": [
+      "Un'Goro Crater",
+      "Blasted Lands",
+      "Felwood"
+     ],
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/mining-leveling-guide",
+     "crafts": null
+    },
+    {
+     "step": 10,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Artisan",
+     "skill_from": 275,
+     "skill_to": 300,
+     "materials": [
+      {
+       "item": "Thorium Ore",
+       "count": 0
+      },
+      {
+       "item": "Mithril Ore",
+       "count": 0
+      }
+     ],
+     "where": [
+      "Un'Goro Crater",
+      "Eastern Plaguelands",
+      "Winterspring",
+      "Burning Steppes"
+     ],
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/mining-leveling-guide",
+     "crafts": null
+    }
+   ]
+  },
+  "Skinning": {
+   "source_url": "https://www.wow-professions.com/forever/skinning-leveling-guide",
+   "tiers": [
+    {
+     "profession": "Skinning",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": null,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": ""
+    },
+    {
+     "profession": "Skinning",
+     "tier": "Expert",
+     "skill_required": 125,
+     "min_level": 20,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": ""
+    },
+    {
+     "profession": "Skinning",
+     "tier": "Artisan",
+     "skill_required": 200,
+     "min_level": 35,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": ""
+    }
+   ],
+   "steps": [
+    {
+     "step": 1,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Apprentice",
+     "skill_from": 1,
+     "skill_to": 75,
+     "materials": [],
+     "where": [
+      "Valley of Trials, Durotar",
+      "Northshire Valley, Elwynn Forest"
+     ],
+     "learned_from": "trainer",
+     "notes": "skin any level 1-2 mob in a starting zone; carry a Skinning Knife",
+     "source_url": "https://www.wow-professions.com/forever/skinning-leveling-guide",
+     "crafts": null
+    },
+    {
+     "step": 2,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Journeyman",
+     "skill_from": 75,
+     "skill_to": 130,
+     "materials": [],
+     "where": [
+      "Northwatch Hold area, Wetlands",
+      "Loch Modan"
+     ],
+     "learned_from": "trainer",
+     "notes": "skin level 16-18 mobs: Scytheclaw raptors, boars, bears; Expert Skinning is learned at 125; needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/skinning-leveling-guide",
+     "crafts": null
+    },
+    {
+     "step": 3,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Journeyman",
+     "skill_from": 130,
+     "skill_to": 150,
+     "materials": [],
+     "where": [
+      "Wetlands (Whelgar's Excavation Site)"
+     ],
+     "learned_from": "trainer",
+     "notes": "skin level 25-27 raptors and razormaws; needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/skinning-leveling-guide",
+     "crafts": null
+    },
+    {
+     "step": 4,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Expert",
+     "skill_from": 150,
+     "skill_to": 160,
+     "materials": [],
+     "where": [
+      "Hillsbrad Foothills (in front of the yeti cave)"
+     ],
+     "learned_from": "trainer",
+     "notes": "skin level 22-24 bears and lions; needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/skinning-leveling-guide",
+     "crafts": null
+    },
+    {
+     "step": 5,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Expert",
+     "skill_from": 160,
+     "skill_to": 225,
+     "materials": [],
+     "where": [
+      "Hillsbrad Foothills (Foothill Caverns)",
+      "Duskwood (Rotting Orchard)"
+     ],
+     "learned_from": "trainer",
+     "notes": "skin level 30-32 yetis; or level 26-29 Nightbane worgen in Duskwood; needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/skinning-leveling-guide",
+     "crafts": null
+    },
+    {
+     "step": 6,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Artisan",
+     "skill_from": 225,
+     "skill_to": 280,
+     "materials": [],
+     "where": [
+      "Feral Scar area"
+     ],
+     "learned_from": "trainer",
+     "notes": "skin level 43-46 yetis and scars; Artisan Skinning needs skill 200; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/skinning-leveling-guide",
+     "crafts": null
+    },
+    {
+     "step": 7,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Artisan",
+     "skill_from": 280,
+     "skill_to": 300,
+     "materials": [],
+     "where": [
+      "Un'Goro Crater"
+     ],
+     "learned_from": "trainer",
+     "notes": "skin level 50-55 diemetradon and pterrordax; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/skinning-leveling-guide",
+     "crafts": null
+    }
+   ]
+  },
+  "Tailoring": {
+   "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide",
+   "tiers": [
+    {
+     "profession": "Tailoring",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Magar",
+     "place": "Orgrimmar",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Tailoring",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Rhiannon Davis",
+     "place": "Undercity",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Tailoring",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Tepa",
+     "place": "Thunder Bluff",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Tailoring",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Sellandus",
+     "place": "Stormwind City",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Tailoring",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Jormund Stonebrow",
+     "place": "Ironforge",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Tailoring",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Me'lynn",
+     "place": "Darnassus",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Tailoring",
+     "tier": "Expert",
+     "skill_required": 125,
+     "min_level": 20,
+     "how": "trainer",
+     "cost_copper": 5000,
+     "note": "",
+     "trainer": "Josef Gregorian",
+     "place": "Undercity",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Tailoring",
+     "tier": "Expert",
+     "skill_required": 125,
+     "min_level": 20,
+     "how": "trainer",
+     "cost_copper": 5000,
+     "note": "",
+     "trainer": "Georgio Bolero",
+     "place": "Stormwind City",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Tailoring",
+     "tier": "Artisan",
+     "skill_required": 200,
+     "min_level": 35,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Daryl Stack",
+     "place": "Tarren Mill, Hillsbrad Foothills",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Tailoring",
+     "tier": "Artisan",
+     "skill_required": 200,
+     "min_level": 35,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": "",
+     "trainer": "Timothy Worthington",
+     "place": "Theramore Isle, Dustwallow Marsh",
+     "faction": "Alliance"
+    }
+   ],
+   "steps": [
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 1,
+     "skill_to": 30,
+     "recipe": "Bolt of Linen Cloth",
+     "crafts": 30,
+     "materials": [
+      {
+       "item": "Linen Cloth",
+       "count": 2
+      }
+     ],
+     "step": 1,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 30,
+     "skill_to": 55,
+     "recipe": "Linen Belt",
+     "crafts": 28,
+     "materials": [
+      {
+       "item": "Bolt of Linen Cloth",
+       "count": 1
+      },
+      {
+       "item": "Coarse Thread",
+       "count": 1
+      }
+     ],
+     "step": 2,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 55,
+     "skill_to": 80,
+     "recipe": "Bolt of Woolen Cloth",
+     "crafts": 37,
+     "materials": [
+      {
+       "item": "Wool Cloth",
+       "count": 3
+      }
+     ],
+     "step": 3,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 80,
+     "skill_to": 95,
+     "recipe": "Woolen Cape",
+     "crafts": 22,
+     "materials": [
+      {
+       "item": "Bolt of Woolen Cloth",
+       "count": 1
+      },
+      {
+       "item": "Fine Thread",
+       "count": 1
+      }
+     ],
+     "step": 4,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 95,
+     "skill_to": 100,
+     "recipe": "Double-stitched Woolen Shoulders",
+     "crafts": 5,
+     "materials": [
+      {
+       "item": "Bolt of Woolen Cloth",
+       "count": 3
+      },
+      {
+       "item": "Fine Thread",
+       "count": 2
+      }
+     ],
+     "step": 5,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 100,
+     "skill_to": 120,
+     "recipe": "Bolt of Silk Cloth",
+     "crafts": 54,
+     "materials": [
+      {
+       "item": "Silk Cloth",
+       "count": 4
+      }
+     ],
+     "step": 6,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 120,
+     "skill_to": 125,
+     "recipe": "Azure Silk Hood",
+     "crafts": 5,
+     "materials": [
+      {
+       "item": "Bolt of Silk Cloth",
+       "count": 2
+      },
+      {
+       "item": "Blue Dye",
+       "count": 2
+      },
+      {
+       "item": "Fine Thread",
+       "count": 1
+      }
+     ],
+     "step": 7,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 125,
+     "skill_to": 140,
+     "recipe": "Small Silk Pack",
+     "crafts": 15,
+     "materials": [
+      {
+       "item": "Bolt of Silk Cloth",
+       "count": 3
+      },
+      {
+       "item": "Heavy Leather",
+       "count": 2
+      },
+      {
+       "item": "Fine Thread",
+       "count": 3
+      }
+     ],
+     "step": 8,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 140,
+     "skill_to": 150,
+     "recipe": "Bolt of Mageweave",
+     "crafts": 23,
+     "materials": [
+      {
+       "item": "Mageweave Cloth",
+       "count": 5
+      }
+     ],
+     "step": 9,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 150,
+     "skill_to": 170,
+     "recipe": "Crimson Silk Vest",
+     "crafts": 20,
+     "materials": [
+      {
+       "item": "Bolt of Silk Cloth",
+       "count": 4
+      },
+      {
+       "item": "Red Dye",
+       "count": 2
+      },
+      {
+       "item": "Fine Thread",
+       "count": 2
+      }
+     ],
+     "step": 10,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 170,
+     "skill_to": 185,
+     "recipe": "Crimson Silk Pantaloons",
+     "crafts": 17,
+     "materials": [
+      {
+       "item": "Bolt of Silk Cloth",
+       "count": 4
+      },
+      {
+       "item": "Red Dye",
+       "count": 2
+      },
+      {
+       "item": "Silken Thread",
+       "count": 2
+      }
+     ],
+     "step": 11,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 185,
+     "skill_to": 200,
+     "recipe": "Black Mageweave Leggings",
+     "crafts": 22,
+     "materials": [
+      {
+       "item": "Bolt of Mageweave",
+       "count": 2
+      },
+      {
+       "item": "Silken Thread",
+       "count": 3
+      }
+     ],
+     "step": 12,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 200,
+     "skill_to": 205,
+     "recipe": "Black Mageweave Shoulders",
+     "crafts": 5,
+     "materials": [
+      {
+       "item": "Bolt of Mageweave",
+       "count": 3
+      },
+      {
+       "item": "Heavy Silken Thread",
+       "count": 2
+      }
+     ],
+     "step": 13,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 205,
+     "skill_to": 215,
+     "recipe": "Bolt of Runecloth",
+     "crafts": 23,
+     "materials": [
+      {
+       "item": "Runecloth",
+       "count": 5
+      }
+     ],
+     "step": 14,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 215,
+     "skill_to": 225,
+     "recipe": "Red Mageweave Bag",
+     "crafts": 17,
+     "materials": [
+      {
+       "item": "Bolt of Mageweave",
+       "count": 5
+      },
+      {
+       "item": "Red Dye",
+       "count": 2
+      },
+      {
+       "item": "Heavy Silken Thread",
+       "count": 2
+      }
+     ],
+     "step": 15,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 1,
+     "tier": "Expert",
+     "skill_from": 215,
+     "skill_to": 225,
+     "recipe": "Runecloth Belt",
+     "crafts": 10,
+     "materials": [
+      {
+       "item": "Bolt of Runecloth",
+       "count": 3
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 16,
+     "kind": "craft",
+     "alternative_of": 15,
+     "learned_from": "trainer",
+     "notes": "needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 225,
+     "skill_to": 240,
+     "recipe": "Runecloth Belt",
+     "crafts": 24,
+     "materials": [
+      {
+       "item": "Bolt of Runecloth",
+       "count": 3
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 17,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 240,
+     "skill_to": 250,
+     "recipe": "Runecloth Gloves",
+     "crafts": 11,
+     "materials": [
+      {
+       "item": "Bolt of Runecloth",
+       "count": 4
+      },
+      {
+       "item": "Rugged Leather",
+       "count": 4
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 18,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Qia",
+       "place": "Winterspring"
+      }
+     ],
+     "notes": "pattern; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 2,
+     "tier": "Artisan",
+     "skill_from": 240,
+     "skill_to": 250,
+     "recipe": "Brightcloth Cloak",
+     "crafts": 11,
+     "materials": [
+      {
+       "item": "Bolt of Runecloth",
+       "count": 4
+      },
+      {
+       "item": "Gold Bar",
+       "count": 2
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 19,
+     "kind": "craft",
+     "alternative_of": 18,
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 250,
+     "skill_to": 280,
+     "recipe": "Runecloth Cuffs",
+     "crafts": 39,
+     "materials": [
+      {
+       "item": "Bolt of Runecloth",
+       "count": 5
+      },
+      {
+       "item": "Ironweb Spider Silk",
+       "count": 1
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 20,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 3,
+     "tier": "Artisan",
+     "skill_from": 250,
+     "skill_to": 280,
+     "recipe": "Runecloth Gloves",
+     "crafts": 19,
+     "materials": [
+      {
+       "item": "Bolt of Runecloth",
+       "count": 4
+      },
+      {
+       "item": "Rugged Leather",
+       "count": 4
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 21,
+     "kind": "craft",
+     "alternative_of": 20,
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Qia",
+       "place": "Winterspring"
+      }
+     ],
+     "notes": "pattern; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 3,
+     "tier": "Artisan",
+     "skill_from": 250,
+     "skill_to": 280,
+     "recipe": "Runecloth Shoulders",
+     "crafts": 21,
+     "materials": [
+      {
+       "item": "Bolt of Runecloth",
+       "count": 7
+      },
+      {
+       "item": "Ironweb Spider Silk",
+       "count": 2
+      },
+      {
+       "item": "Rugged Leather",
+       "count": 4
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 22,
+     "kind": "craft",
+     "alternative_of": 20,
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 280,
+     "skill_to": 300,
+     "recipe": "Runecloth Shoulders",
+     "crafts": 58,
+     "materials": [
+      {
+       "item": "Bolt of Runecloth",
+       "count": 7
+      },
+      {
+       "item": "Ironweb Spider Silk",
+       "count": 2
+      },
+      {
+       "item": "Rugged Leather",
+       "count": 4
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 23,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 4,
+     "tier": "Artisan",
+     "skill_from": 280,
+     "skill_to": 300,
+     "recipe": "Wizardweave Turban",
+     "crafts": 58,
+     "materials": [
+      {
+       "item": "Bolt of Runecloth",
+       "count": 6
+      },
+      {
+       "item": "Dream Dust",
+       "count": 4
+      },
+      {
+       "item": "Star Ruby",
+       "count": 1
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 24,
+     "kind": "craft",
+     "alternative_of": 23,
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 5,
+     "tier": "Artisan",
+     "skill_from": 280,
+     "skill_to": 290,
+     "recipe": "Runecloth Headband",
+     "crafts": 42,
+     "materials": [
+      {
+       "item": "Bolt of Runecloth",
+       "count": 4
+      },
+      {
+       "item": "Ironweb Spider Silk",
+       "count": 2
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 25,
+     "kind": "craft",
+     "alternative_of": 23,
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 6,
+     "tier": "Artisan",
+     "skill_from": 280,
+     "skill_to": 290,
+     "recipe": "Runecloth Cuffs",
+     "crafts": 42,
+     "materials": [
+      {
+       "item": "Bolt of Runecloth",
+       "count": 5
+      },
+      {
+       "item": "Ironweb Spider Silk",
+       "count": 1
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 26,
+     "kind": "craft",
+     "alternative_of": 23,
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 7,
+     "tier": "Artisan",
+     "skill_from": 285,
+     "skill_to": 290,
+     "recipe": "Swarmtender's Gloves",
+     "crafts": 5,
+     "materials": [
+      {
+       "item": "Bolt of Runecloth",
+       "count": 4
+      },
+      {
+       "item": "Small Brilliant Shard",
+       "count": 1
+      },
+      {
+       "item": "Essence of Water",
+       "count": 3,
+       "note": "or Essence of Air"
+      },
+      {
+       "item": "Rune Thread",
+       "count": 6
+      }
+     ],
+     "step": 27,
+     "kind": "craft",
+     "alternative_of": 23,
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35; the guide also names Venomspew Gloves; Essence of Water or Essence of Air",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 7,
+     "tier": "Artisan",
+     "skill_from": 290,
+     "skill_to": 295,
+     "recipe": "Swarmtender's Cord",
+     "crafts": 5,
+     "materials": [
+      {
+       "item": "Bolt of Runecloth",
+       "count": 6
+      },
+      {
+       "item": "Small Brilliant Shard",
+       "count": 1
+      },
+      {
+       "item": "Essence of Water",
+       "count": 3,
+       "note": "or Essence of Air"
+      },
+      {
+       "item": "Rune Thread",
+       "count": 6
+      }
+     ],
+     "step": 28,
+     "kind": "craft",
+     "alternative_of": 23,
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35; the guide also names Venomspew Cord; Essence of Water or Essence of Air",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    },
+    {
+     "option": 7,
+     "tier": "Artisan",
+     "skill_from": 295,
+     "skill_to": 300,
+     "recipe": "Swarmtender's Footpads",
+     "crafts": 18,
+     "materials": [
+      {
+       "item": "Bolt of Runecloth",
+       "count": 5
+      },
+      {
+       "item": "Small Brilliant Shard",
+       "count": 1
+      },
+      {
+       "item": "Essence of Water",
+       "count": 3,
+       "note": "or Essence of Air"
+      },
+      {
+       "item": "Rune Thread",
+       "count": 6
+      }
+     ],
+     "step": 29,
+     "kind": "craft",
+     "alternative_of": 23,
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35; the guide also names Venomspew Footpads; Essence of Water or Essence of Air",
+     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
+    }
+   ]
+  },
+  "Cooking": {
+   "source_url": "https://www.wow-professions.com/forever/cooking-leveling-guide",
+   "tiers": [
+    {
+     "profession": "Cooking",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": null,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": ""
+    },
+    {
+     "profession": "Cooking",
+     "tier": "Expert",
+     "skill_required": 125,
+     "min_level": 20,
+     "how": "book",
+     "cost_copper": null,
+     "note": "Expert Cookbook",
+     "trainer": "Wulan",
+     "place": "Shadowprey Village, Desolace",
+     "faction": "Horde"
+    },
+    {
+     "profession": "Cooking",
+     "tier": "Expert",
+     "skill_required": 125,
+     "min_level": 20,
+     "how": "book",
+     "cost_copper": null,
+     "note": "Expert Cookbook",
+     "trainer": "Shandrina",
+     "place": "Mystral Lake, Ashenvale",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "Cooking",
+     "tier": "Artisan",
+     "skill_required": 225,
+     "min_level": 35,
+     "how": "quest",
+     "cost_copper": null,
+     "note": "Clamlette Surprise quest",
+     "trainer": "Dirge Quikcleave",
+     "place": "Gadgetzan, Tanaris",
+     "faction": "Both"
+    }
+   ],
+   "steps": [
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 1,
+     "skill_to": 50,
+     "recipe": "Brilliant Smallfish",
+     "crafts": 55,
+     "materials": [
+      {
+       "item": "Raw Brilliant Smallfish",
+       "count": 1
+      }
+     ],
+     "step": 1,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Harn Longcast",
+       "place": "Mulgore"
+      },
+      {
+       "name": "Sewa Mistrunner",
+       "place": "Thunder Bluff"
+      },
+      {
+       "name": "Martine Tramblay",
+       "place": "Tirisfal Glades"
+      },
+      {
+       "name": "Lizbeth Cromwell",
+       "place": "Undercity"
+      },
+      {
+       "name": "Gretta Ganter",
+       "place": "Dun Morogh"
+      },
+      {
+       "name": "Tharynn Bouden",
+       "place": "Elwynn Forest"
+      },
+      {
+       "name": "Khara Deepwater",
+       "place": "Loch Modan"
+      },
+      {
+       "name": "Catherine Leland",
+       "place": "Stormwind City"
+      },
+      {
+       "name": "Nyoma",
+       "place": "Teldrassil"
+      }
+     ],
+     "notes": "recipe",
+     "source_url": "https://www.wow-professions.com/forever/cooking-leveling-guide"
+    },
+    {
+     "option": 1,
+     "tier": "Apprentice",
+     "skill_from": 1,
+     "skill_to": 50,
+     "recipe": "Slitherskin Mackerel",
+     "crafts": 55,
+     "materials": [
+      {
+       "item": "Raw Slitherskin Mackerel",
+       "count": 1
+      }
+     ],
+     "step": 2,
+     "kind": "craft",
+     "alternative_of": 1,
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Zansoa",
+       "place": "Durotar"
+      },
+      {
+       "name": "Martine Tramblay",
+       "place": "Tirisfal Glades"
+      },
+      {
+       "name": "Tansy Puddlefizz",
+       "place": "Ironforge"
+      },
+      {
+       "name": "Nessa Shadowsong",
+       "place": "Teldrassil"
+      },
+      {
+       "name": "Kriggon Talsone",
+       "place": "Westfall"
+      }
+     ],
+     "notes": "recipe",
+     "source_url": "https://www.wow-professions.com/forever/cooking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 50,
+     "skill_to": 100,
+     "recipe": "Longjaw Mud Snapper",
+     "crafts": 55,
+     "materials": [
+      {
+       "item": "Raw Longjaw Mud Snapper",
+       "count": 1
+      }
+     ],
+     "step": 3,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Harn Longcast",
+       "place": "Mulgore"
+      },
+      {
+       "name": "Killian Sanatha",
+       "place": "Silverpine Forest"
+      },
+      {
+       "name": "Naal Mistrunner",
+       "place": "Thunder Bluff"
+      },
+      {
+       "name": "Lizbeth Cromwell",
+       "place": "Undercity"
+      },
+      {
+       "name": "Tharynn Bouden",
+       "place": "Elwynn Forest"
+      },
+      {
+       "name": "Tansy Puddlefizz",
+       "place": "Ironforge"
+      },
+      {
+       "name": "Khara Deepwater",
+       "place": "Loch Modan"
+      },
+      {
+       "name": "Nyoma",
+       "place": "Teldrassil"
+      }
+     ],
+     "notes": "recipe; needs Journeyman",
+     "source_url": "https://www.wow-professions.com/forever/cooking-leveling-guide"
+    },
+    {
+     "option": 2,
+     "tier": "Journeyman",
+     "skill_from": 50,
+     "skill_to": 100,
+     "recipe": "Rainbow Fin Albacore",
+     "crafts": 55,
+     "materials": [
+      {
+       "item": "Raw Rainbow Fin Albacore",
+       "count": 1
+      }
+     ],
+     "step": 4,
+     "kind": "craft",
+     "alternative_of": 3,
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Zansoa",
+       "place": "Durotar"
+      },
+      {
+       "name": "Shankys",
+       "place": "Orgrimmar"
+      },
+      {
+       "name": "Killian Sanatha",
+       "place": "Silverpine Forest"
+      },
+      {
+       "name": "Ronald Burch",
+       "place": "Undercity"
+      },
+      {
+       "name": "Heldan Galesong",
+       "place": "Darkshore"
+      },
+      {
+       "name": "Catherine Leland",
+       "place": "Stormwind City"
+      },
+      {
+       "name": "Nessa Shadowsong",
+       "place": "Teldrassil"
+      },
+      {
+       "name": "Kriggon Talsone",
+       "place": "Westfall"
+      },
+      {
+       "name": "Stuart Fleming",
+       "place": "Wetlands"
+      },
+      {
+       "name": "Kilxx",
+       "place": "The Barrens"
+      }
+     ],
+     "notes": "recipe; needs Journeyman",
+     "source_url": "https://www.wow-professions.com/forever/cooking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 100,
+     "skill_to": 150,
+     "recipe": "Bristle Whisker Catfish",
+     "crafts": 53,
+     "materials": [
+      {
+       "item": "Raw Bristle Whisker Catfish",
+       "count": 1
+      }
+     ],
+     "step": 5,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Derak Nightfall",
+       "place": "Hillsbrad Foothills"
+      },
+      {
+       "name": "Naal Mistrunner",
+       "place": "Thunder Bluff"
+      },
+      {
+       "name": "Ronald Burch",
+       "place": "Undercity"
+      },
+      {
+       "name": "Lindea Rabonne",
+       "place": "Hillsbrad Foothills"
+      },
+      {
+       "name": "Catherine Leland",
+       "place": "Stormwind City"
+      },
+      {
+       "name": "Kilxx",
+       "place": "The Barrens"
+      }
+     ],
+     "notes": "recipe; needs Journeyman",
+     "source_url": "https://www.wow-professions.com/forever/cooking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 150,
+     "skill_to": 175,
+     "recipe": "Goblin Deviled Clams",
+     "crafts": 28,
+     "materials": [
+      {
+       "item": "Tangy Clam Meat",
+       "count": 1
+      },
+      {
+       "item": "Hot Spices",
+       "count": 1
+      }
+     ],
+     "step": 6,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert",
+     "source_url": "https://www.wow-professions.com/forever/cooking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 175,
+     "skill_to": 225,
+     "recipe": "Roast Raptor",
+     "crafts": 55,
+     "materials": [
+      {
+       "item": "Raptor Flesh",
+       "count": 1
+      },
+      {
+       "item": "Hot Spices",
+       "count": 1
+      }
+     ],
+     "step": 7,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Keena",
+       "place": "Arathi Highlands"
+      },
+      {
+       "name": "Ogg'marr",
+       "place": "Dustwallow Marsh"
+      },
+      {
+       "name": "Nerrist",
+       "place": "Stranglethorn Vale"
+      },
+      {
+       "name": "Hammon Karwn",
+       "place": "Arathi Highlands"
+      },
+      {
+       "name": "Helenia Olden",
+       "place": "Dustwallow Marsh"
+      }
+     ],
+     "notes": "recipe; needs Expert; usually the cheaper of the two",
+     "source_url": "https://www.wow-professions.com/forever/cooking-leveling-guide"
+    },
+    {
+     "option": 3,
+     "tier": "Expert",
+     "skill_from": 175,
+     "skill_to": 225,
+     "recipe": "Mithril Headed Trout",
+     "crafts": 55,
+     "materials": [
+      {
+       "item": "Raw Mithril Head Trout",
+       "count": 1
+      }
+     ],
+     "step": 8,
+     "kind": "craft",
+     "alternative_of": 7,
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Wik'Tar",
+       "place": "Ashenvale"
+      },
+      {
+       "name": "Wulan",
+       "place": "Desolace"
+      },
+      {
+       "name": "Shankys",
+       "place": "Orgrimmar"
+      },
+      {
+       "name": "Lizbeth Cromwell",
+       "place": "Undercity"
+      },
+      {
+       "name": "Heldan Galesong",
+       "place": "Darkshore"
+      },
+      {
+       "name": "Lindea Rabonne",
+       "place": "Hillsbrad Foothills"
+      },
+      {
+       "name": "Tansy Puddlefizz",
+       "place": "Ironforge"
+      },
+      {
+       "name": "Stuart Fleming",
+       "place": "Wetlands"
+      },
+      {
+       "name": "Kelsey Yance",
+       "place": "Stranglethorn Vale"
+      }
+     ],
+     "notes": "recipe; needs Expert",
+     "source_url": "https://www.wow-professions.com/forever/cooking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 225,
+     "skill_to": 285,
+     "recipe": "Spotted Yellowtail",
+     "crafts": 72,
+     "materials": [
+      {
+       "item": "Raw Spotted Yellowtail",
+       "count": 1
+      }
+     ],
+     "step": 9,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Gikkix",
+       "place": "Steamwheedle Port"
+      }
+     ],
+     "notes": "recipe; also bought on leaving Tanaris; needs Artisan",
+     "source_url": "https://www.wow-professions.com/forever/cooking-leveling-guide"
+    },
+    {
+     "option": 4,
+     "tier": "Artisan",
+     "skill_from": 225,
+     "skill_to": 285,
+     "recipe": "Filet of Redgill",
+     "crafts": 72,
+     "materials": [
+      {
+       "item": "Raw Redgill",
+       "count": 1
+      }
+     ],
+     "step": 10,
+     "kind": "craft",
+     "alternative_of": 9,
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Kelsey Yance",
+       "place": "Stranglethorn Vale"
+      }
+     ],
+     "notes": "recipe; needs Artisan",
+     "source_url": "https://www.wow-professions.com/forever/cooking-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 285,
+     "skill_to": 300,
+     "recipe": "Nightfin Soup",
+     "crafts": 18,
+     "materials": [
+      {
+       "item": "Raw Nightfin Snapper",
+       "count": 1
+      },
+      {
+       "item": "Refreshing Spring Water",
+       "count": 1
+      }
+     ],
+     "step": 11,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Gikkix",
+       "place": "Steamwheedle Port"
+      }
+     ],
+     "notes": "recipe; needs Artisan",
+     "source_url": "https://www.wow-professions.com/forever/cooking-leveling-guide"
+    }
+   ]
+  },
+  "First Aid": {
+   "source_url": "https://www.wow-professions.com/forever/first-aid-leveling-guide",
+   "tiers": [
+    {
+     "profession": "First Aid",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": null,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": ""
+    },
+    {
+     "profession": "First Aid",
+     "tier": "Expert",
+     "skill_required": 125,
+     "min_level": 20,
+     "how": "book",
+     "cost_copper": null,
+     "note": "Expert First Aid - Under Wraps book",
+     "trainer": "Deneb Walker",
+     "place": "Arathi Highlands",
+     "faction": "Alliance"
+    },
+    {
+     "profession": "First Aid",
+     "tier": "Expert",
+     "skill_required": 125,
+     "min_level": 20,
+     "how": "book",
+     "cost_copper": null,
+     "note": "Expert First Aid - Under Wraps book",
+     "trainer": "Balai Lok'Wein",
+     "place": "Dustwallow Marsh",
+     "faction": "Horde"
+    },
+    {
+     "profession": "First Aid",
+     "tier": "Artisan",
+     "skill_required": 225,
+     "min_level": 35,
+     "how": "quest",
+     "cost_copper": null,
+     "note": "Triage quest",
+     "trainer": "Doctor Gregory Victor",
+     "place": "Hammerfall, Arathi Highlands",
+     "faction": "Both"
+    }
+   ],
+   "steps": [
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 1,
+     "skill_to": 40,
+     "recipe": "Linen Bandage",
+     "crafts": 50,
+     "materials": [
+      {
+       "item": "Linen Cloth",
+       "count": 1
+      }
+     ],
+     "step": 1,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/first-aid-leveling-guide"
+    },
+    {
+     "option": 4,
+     "tier": "Apprentice",
+     "skill_from": 1,
+     "skill_to": 75,
+     "recipe": "Minor Healing Potion",
+     "crafts": 86,
+     "materials": [
+      {
+       "item": "Peacebloom",
+       "count": 1
+      },
+      {
+       "item": "Mild Spices",
+       "count": 1
+      },
+      {
+       "item": "Empty Vial",
+       "count": 1
+      }
+     ],
+     "step": 2,
+     "kind": "craft",
+     "alternative_of": 1,
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/first-aid-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Apprentice",
+     "skill_from": 40,
+     "skill_to": 75,
+     "recipe": "Heavy Linen Bandage",
+     "crafts": 47,
+     "materials": [
+      {
+       "item": "Linen Cloth",
+       "count": 2
+      }
+     ],
+     "step": 3,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "",
+     "source_url": "https://www.wow-professions.com/forever/first-aid-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 75,
+     "skill_to": 80,
+     "recipe": "Heavy Linen Bandage",
+     "crafts": 13,
+     "materials": [
+      {
+       "item": "Linen Cloth",
+       "count": 2
+      }
+     ],
+     "step": 4,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman",
+     "source_url": "https://www.wow-professions.com/forever/first-aid-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 80,
+     "skill_to": 90,
+     "recipe": "Wool Bandage",
+     "crafts": 12,
+     "materials": [
+      {
+       "item": "Wool Cloth",
+       "count": 1
+      }
+     ],
+     "step": 5,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman",
+     "source_url": "https://www.wow-professions.com/forever/first-aid-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 90,
+     "skill_to": 115,
+     "recipe": "Wool Bandage",
+     "crafts": 40,
+     "materials": [
+      {
+       "item": "Wool Cloth",
+       "count": 1
+      }
+     ],
+     "step": 6,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman",
+     "source_url": "https://www.wow-professions.com/forever/first-aid-leveling-guide"
+    },
+    {
+     "option": 2,
+     "tier": "Journeyman",
+     "skill_from": 90,
+     "skill_to": 125,
+     "recipe": "Simple Poultice",
+     "crafts": 54,
+     "materials": [
+      {
+       "item": "Spider Ichor",
+       "count": 1
+      },
+      {
+       "item": "Mild Spices",
+       "count": 1
+      },
+      {
+       "item": "Bottle of Dalaran Noir",
+       "count": 1
+      }
+     ],
+     "step": 7,
+     "kind": "craft",
+     "alternative_of": 6,
+     "learned_from": "trainer",
+     "notes": "needs Journeyman",
+     "source_url": "https://www.wow-professions.com/forever/first-aid-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Journeyman",
+     "skill_from": 115,
+     "skill_to": 150,
+     "recipe": "Heavy Wool Bandage",
+     "crafts": 51,
+     "materials": [
+      {
+       "item": "Wool Cloth",
+       "count": 2
+      }
+     ],
+     "step": 8,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Journeyman",
+     "source_url": "https://www.wow-professions.com/forever/first-aid-leveling-guide"
+    },
+    {
+     "option": 2,
+     "tier": "Journeyman",
+     "skill_from": 125,
+     "skill_to": 150,
+     "recipe": "Healing Potion",
+     "crafts": 31,
+     "materials": [
+      {
+       "item": "Bruiseweed",
+       "count": 1
+      },
+      {
+       "item": "Hot Spices",
+       "count": 1
+      },
+      {
+       "item": "Leaded Vial",
+       "count": 1
+      }
+     ],
+     "step": 9,
+     "kind": "craft",
+     "alternative_of": 8,
+     "learned_from": "trainer",
+     "notes": "needs Journeyman",
+     "source_url": "https://www.wow-professions.com/forever/first-aid-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 150,
+     "skill_to": 180,
+     "recipe": "Silk Bandage",
+     "crafts": 44,
+     "materials": [
+      {
+       "item": "Silk Cloth",
+       "count": 1
+      }
+     ],
+     "step": 10,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Expert",
+     "source_url": "https://www.wow-professions.com/forever/first-aid-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 180,
+     "skill_to": 210,
+     "recipe": "Heavy Silk Bandage",
+     "crafts": 44,
+     "materials": [
+      {
+       "item": "Silk Cloth",
+       "count": 2
+      }
+     ],
+     "step": 11,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Deneb Walker",
+       "place": "Arathi Highlands"
+      },
+      {
+       "name": "Balai Lok'Wein",
+       "place": "Dustwallow Marsh"
+      }
+     ],
+     "notes": "manual, sold with the Expert book; needs Expert",
+     "source_url": "https://www.wow-professions.com/forever/first-aid-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Expert",
+     "skill_from": 210,
+     "skill_to": 225,
+     "recipe": "Mageweave Bandage",
+     "crafts": 19,
+     "materials": [
+      {
+       "item": "Mageweave Cloth",
+       "count": 1
+      }
+     ],
+     "step": 12,
+     "kind": "craft",
+     "learned_from": "quest",
+     "learned_by": [
+      {
+       "name": "Doctor Gregory Victor",
+       "place": "Arathi Highlands"
+      }
+     ],
+     "notes": "taught by the Triage quest doctor; needs Expert",
+     "source_url": "https://www.wow-professions.com/forever/first-aid-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 225,
+     "skill_to": 240,
+     "recipe": "Mageweave Bandage",
+     "crafts": 26,
+     "materials": [
+      {
+       "item": "Mageweave Cloth",
+       "count": 1
+      }
+     ],
+     "step": 13,
+     "kind": "craft",
+     "learned_from": "quest",
+     "learned_by": [
+      {
+       "name": "Doctor Gregory Victor",
+       "place": "Arathi Highlands"
+      }
+     ],
+     "notes": "taught by the Triage quest doctor; needs Artisan",
+     "source_url": "https://www.wow-professions.com/forever/first-aid-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 240,
+     "skill_to": 260,
+     "recipe": "Heavy Mageweave Bandage",
+     "crafts": 30,
+     "materials": [
+      {
+       "item": "Mageweave Cloth",
+       "count": 2
+      }
+     ],
+     "step": 14,
+     "kind": "craft",
+     "learned_from": "quest",
+     "learned_by": [
+      {
+       "name": "Doctor Gregory Victor",
+       "place": "Arathi Highlands"
+      }
+     ],
+     "notes": "taught by the Triage quest doctor at 240; needs Artisan",
+     "source_url": "https://www.wow-professions.com/forever/first-aid-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 260,
+     "skill_to": 290,
+     "recipe": "Runecloth Bandage",
+     "crafts": 44,
+     "materials": [
+      {
+       "item": "Runecloth",
+       "count": 1
+      }
+     ],
+     "step": 15,
+     "kind": "craft",
+     "learned_from": "quest",
+     "learned_by": [
+      {
+       "name": "Doctor Gregory Victor",
+       "place": "Arathi Highlands"
+      }
+     ],
+     "notes": "taught by the Triage quest doctor at 260; needs Artisan",
+     "source_url": "https://www.wow-professions.com/forever/first-aid-leveling-guide"
+    },
+    {
+     "option": 3,
+     "tier": "Artisan",
+     "skill_from": 260,
+     "skill_to": 290,
+     "recipe": "Major Healing Potion",
+     "crafts": 30,
+     "materials": [
+      {
+       "item": "Golden Sansam",
+       "count": 1
+      },
+      {
+       "item": "Soothing Spices",
+       "count": 3
+      },
+      {
+       "item": "Crystal Vial",
+       "count": 1
+      }
+     ],
+     "step": 16,
+     "kind": "craft",
+     "alternative_of": 15,
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Pexmit",
+       "place": "Mount Hyjal"
+      }
+     ],
+     "notes": "manual, 8 gold; needs Artisan; only if you want sellable potions; stop the bandages at 275",
+     "source_url": "https://www.wow-professions.com/forever/first-aid-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 290,
+     "skill_to": 300,
+     "recipe": "Heavy Runecloth Bandage",
+     "crafts": 12,
+     "materials": [
+      {
+       "item": "Runecloth",
+       "count": 2
+      }
+     ],
+     "step": 17,
+     "kind": "craft",
+     "learned_from": "quest",
+     "learned_by": [
+      {
+       "name": "Doctor Gregory Victor",
+       "place": "Arathi Highlands"
+      }
+     ],
+     "notes": "taught by the Triage quest doctor at 290; needs Artisan",
+     "source_url": "https://www.wow-professions.com/forever/first-aid-leveling-guide"
+    }
+   ]
+  },
+  "Fishing": {
+   "source_url": "https://www.wow-professions.com/forever/fishing-leveling-guide",
+   "tiers": [
+    {
+     "profession": "Fishing",
+     "tier": "Journeyman",
+     "skill_required": 50,
+     "min_level": 10,
+     "how": "trainer",
+     "cost_copper": null,
+     "note": ""
+    },
+    {
+     "profession": "Fishing",
+     "tier": "Expert",
+     "skill_required": 125,
+     "min_level": 20,
+     "how": "book",
+     "cost_copper": null,
+     "note": "Expert Fishing - The Bass and You book",
+     "trainer": "Old Man Heming",
+     "place": "Booty Bay, Stranglethorn Vale",
+     "faction": "Both"
+    },
+    {
+     "profession": "Fishing",
+     "tier": "Artisan",
+     "skill_required": 225,
+     "min_level": 35,
+     "how": "quest",
+     "cost_copper": null,
+     "note": "Nat Pagle, Angler Extreme quest",
+     "trainer": "Nat Pagle",
+     "place": "Dustwallow Marsh",
+     "faction": "Both"
+    }
+   ],
+   "steps": [
+    {
+     "step": 1,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Apprentice",
+     "skill_from": 1,
+     "skill_to": 75,
+     "materials": [],
+     "where": [
+      "any starting zone lake, pond or river"
+     ],
+     "learned_from": "trainer",
+     "notes": "buy a Fishing Pole and Shiny Baubles at a Fishing Supply vendor",
+     "source_url": "https://www.wow-professions.com/forever/fishing-leveling-guide",
+     "crafts": null
+    },
+    {
+     "step": 2,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Journeyman",
+     "skill_from": 75,
+     "skill_to": 150,
+     "materials": [],
+     "where": [
+      "Darnassus",
+      "Stormwind City",
+      "Orgrimmar",
+      "Undercity",
+      "Thunder Bluff"
+     ],
+     "learned_from": "trainer",
+     "notes": "learn Journeyman Fishing first; any capital city, or The Barrens, Darkshore, Ironforge, Loch Modan, Silverpine Forest, Westfall; needs Journeyman, level 10",
+     "source_url": "https://www.wow-professions.com/forever/fishing-leveling-guide",
+     "crafts": null
+    },
+    {
+     "step": 3,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Expert",
+     "skill_from": 150,
+     "skill_to": 225,
+     "materials": [],
+     "where": [
+      "Dustwallow Marsh"
+     ],
+     "learned_from": "trainer",
+     "notes": "learn Expert Fishing (book, Booty Bay); also Alterac Mountains, Arathi Highlands, Desolace, Stranglethorn Vale, Swamp of Sorrows, Thousand Needles; use Bright Baubles; needs Expert, level 20",
+     "source_url": "https://www.wow-professions.com/forever/fishing-leveling-guide",
+     "crafts": null
+    },
+    {
+     "step": 4,
+     "option": 0,
+     "kind": "gather",
+     "tier": "Artisan",
+     "skill_from": 225,
+     "skill_to": 300,
+     "materials": [],
+     "where": [
+      "Felwood",
+      "Feralas",
+      "The Hinterlands",
+      "Tanaris",
+      "Un'Goro Crater",
+      "Western Plaguelands"
+     ],
+     "learned_from": "trainer",
+     "notes": "needs the Nat Pagle Artisan quest first; use Bright Baubles; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/fishing-leveling-guide",
+     "crafts": null
+    }
+   ]
+  }
+ }
+}
