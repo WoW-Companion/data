@@ -333,6 +333,14 @@ func BuildDatasetFrom(cacheBuildDir, everlootFile, talentsDir, instancesFile, pr
 	if err != nil {
 		return manifest.Manifest{}, err
 	}
+	prios, err := LoadTalentPriorities(filepath.Dir(talentsDir))
+	if err != nil {
+		return manifest.Manifest{}, err
+	}
+	prioRows, err := BuildTalentPriorities(prios, c.TalentNodes)
+	if err != nil {
+		return manifest.Manifest{}, err
+	}
 	src := SourceFrom(c.Prov)
 	byID := Layout(nil, []string{"id"}, src) // no Bloom filters: see docs/spikes/parquet-layout.md
 	m := manifest.Manifest{DatasetVersion: c.Prov.Build, GameBuild: c.Prov.Build, Created: created, Revision: revision}
@@ -356,6 +364,9 @@ func BuildDatasetFrom(cacheBuildDir, everlootFile, talentsDir, instancesFile, pr
 		return m, err
 	}
 	if err := add(writeTable(outDir, "talent_builds.parquet", buildRows, Layout(nil, []string{"class", "spec", "order"}, CuratedSource(c.Prov.Build, created), src))); err != nil {
+		return m, err
+	}
+	if err := add(writeTable(outDir, "talent_priorities.parquet", prioRows, Layout(nil, []string{"class", "spec", "rank"}, CuratedSource(c.Prov.Build, created), src))); err != nil {
 		return m, err
 	}
 	if err := add(writeTable(outDir, "stat_types.parquet", StatTypeTable(), Layout(nil, []string{"id"}, src))); err != nil {

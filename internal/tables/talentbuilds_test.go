@@ -116,7 +116,7 @@ func TestBuildTalentBuildsRows(t *testing.T) {
 	good, _ := ParseTalentBuild("f.yaml", goodBuild)
 	good.Bands = good.Bands[:1]
 	rows, err := BuildTalentBuilds([]TalentBuild{good}, trees, nodes)
-	if err != nil || len(rows) != 2 || rows[1].Order != 2 || rows[1].Band != "10-19" || rows[1].Source != "curated (advisor defaults)" || rows[0].Spec != "Test: Spec" {
+	if err != nil || len(rows) != 2 || rows[1].Order != 2 || rows[1].Band != "10-19" || rows[1].Source != "curated (unverified)" || rows[0].Spec != "Test: Spec" {
 		t.Fatalf("rows %+v err %v", rows, err)
 	}
 	good.Bands[0].Steps[0].NodeID = 77
@@ -155,5 +155,30 @@ func TestCuratedTalentBuildsAgainstCache(t *testing.T) {
 	}
 	if _, err := BuildTalentBuilds(builds, c.TalentTrees, c.TalentNodes); err != nil {
 		t.Error(err)
+	}
+}
+
+// No curated row may pose as a default for a spec an Icy Veins guide covers: the source of
+// every row is either the guide or "curated (unverified)".
+func TestBuildSourceIsUnverified(t *testing.T) {
+	if BuildSource != "curated (unverified)" || strings.Contains(BuildSource, "advisor defaults") {
+		t.Errorf("BuildSource %q", BuildSource)
+	}
+}
+
+func TestBuildTalentPriorities(t *testing.T) {
+	_, nodes := buildFixture()
+	good := CuratedPriorities{FetchedAt: "t", Specs: []CuratedPrioSpec{{Class: "Priest", Spec: "S", SourceURL: "u",
+		Talents: []CuratedPrioItem{{1, "Alpha", "core"}, {2, "Beta", "next"}}}}}
+	rows, err := BuildTalentPriorities(good, nodes)
+	if err != nil || len(rows) != 2 || rows[0].Rank != 1 || rows[0].TalentName != "Alpha" || rows[1].Rank != 2 {
+		t.Fatalf("rows %+v err %v", rows, err)
+	}
+	good.Specs[0].Talents[1] = CuratedPrioItem{9, "Nope", ""}
+	if _, err := BuildTalentPriorities(good, nodes); err == nil || !strings.Contains(err.Error(), "not in the talent tables") || !strings.Contains(err.Error(), "no reason") {
+		t.Errorf("err %v", err)
+	}
+	if c, err := LoadTalentPriorities(t.TempDir()); err != nil || len(c.Specs) != 0 {
+		t.Errorf("missing file: %+v %v", c, err)
 	}
 }

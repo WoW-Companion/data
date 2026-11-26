@@ -93,7 +93,7 @@ Tables fetched: `TraitNode`, `TraitNodeGroup`, `TraitNodeGroupXTraitNode`, `Trai
 
 ## Curated talent builds
 
-`curated/talents/` is hand-written for this project (no guide-site text) and published as `talent_builds`, with the source "curated (advisor defaults)". Node ids, names and max ranks are checked against the talent tables above at every `make dataset`. See `curated/README.md`.
+`curated/talents/` is hand-written for this project (no guide-site text) and published as `talent_builds`, with the source "curated (unverified)": these are the project's old invented bands, not authoritative, and are being replaced by the Icy Veins WoW Forever leveling builds (https://www.icy-veins.com/wow-forever/), the reference the Operator chose for talent advice. A spec's rows read from its guide carry the source "icy-veins.com WoW Forever leveling guides", exact levels, one point per row, and the page URL and fetch time; its key leveling talents, ranked, are published as `talent_priorities` (from `curated/talent_priorities.json`, reasons in our own words, no guide prose). **Status: icy-veins.com answered every request from this build machine with a Cloudflare 403 challenge, so no guide has been read yet: all 27 specs are still "curated (unverified)" and `talent_priorities` is empty.** Node ids, names and max ranks are checked against the talent tables above at every `make dataset`. See `curated/README.md`.
 
 ## Quest level, minimum level and zone (survey)
 
