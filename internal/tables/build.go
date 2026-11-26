@@ -315,6 +315,13 @@ func BuildDatasetFrom(cacheBuildDir, everlootFile, talentsDir, instancesFile, pr
 	fmt.Printf("everloot names dropped for not being English: %d\n", everloot.DroppedNames.Load())
 	byTrainer, byItem, byBoth := ApplyLearnedFrom(c.Recipes, c.RecipeItems, TrainedSpells(trainerSpells))
 	ls := ApplyLearnSkills(c.Recipes, c.RecipeItems, trainerSpells)
+	routesCur, err := LoadCuratedRoutes(filepath.Join(filepath.Dir(professionsFile), RoutesFile))
+	if err != nil {
+		return manifest.Manifest{}, err
+	}
+	for _, r := range ApplyRouteLearnBounds(c.Recipes, routesCur) {
+		fmt.Printf("learn skill lowered to the first guide route step: %s spell %d %q now %d\n", r.SkillLineName, r.SpellID, deref(r.Name), *r.LearnSkill)
+	}
 	SyncCraftedLearnSkill(rows, c.Recipes)
 	fmt.Printf("learn skill: estimate k=%g fitted on %d recipes, error mean %.1f median %.0f p90 %.0f; %d above yellow\n", ls.K, ls.Known, ls.MeanErr, ls.MedianErr, ls.P90Err, len(ls.AboveYellow))
 	fmt.Print(ls.Report())
@@ -458,10 +465,6 @@ func BuildDatasetFrom(cacheBuildDir, everlootFile, talentsDir, instancesFile, pr
 		return m, err
 	}
 	if err := add(writeTable(outDir, "profession_notes.parquet", profNotes.Rows, Layout(nil, []string{"section"}, profSrc))); err != nil {
-		return m, err
-	}
-	routesCur, err := LoadCuratedRoutes(filepath.Join(filepath.Dir(professionsFile), RoutesFile))
-	if err != nil {
 		return m, err
 	}
 	routes, routeTiers, routeRep := BuildProfessionRoutes(routesCur, c.Recipes, c.Items, c.Npcs, trainers)

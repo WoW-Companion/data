@@ -1,6 +1,6 @@
 {
  "source": "wow-professions.com WoW Forever leveling guides",
- "fetched_at": "2026-11-26T00:53:02Z",
+ "fetched_at": "2026-11-26T04:51:45Z",
  "professions": {
   "Alchemy": {
    "source_url": "https://www.wow-professions.com/forever/alchemy-leveling-guide",
@@ -479,6 +479,37 @@
     {
      "option": 0,
      "tier": "Artisan",
+     "skill_from": 225,
+     "skill_to": 235,
+     "recipe": "Philosopher's Stone",
+     "crafts": 1,
+     "materials": [
+      {
+       "item": "Iron Bar",
+       "count": 4
+      },
+      {
+       "item": "Black Vitriol",
+       "count": 1
+      },
+      {
+       "item": "Purple Lotus",
+       "count": 4
+      },
+      {
+       "item": "Firebloom",
+       "count": 4
+      }
+     ],
+     "step": 12,
+     "kind": "craft",
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/alchemy-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
      "skill_from": 235,
      "skill_to": 250,
      "recipe": "Elixir of Greater Intellect",
@@ -497,7 +528,7 @@
        "count": 1
       }
      ],
-     "step": 12,
+     "step": 13,
      "kind": "craft",
      "learned_from": "trainer",
      "notes": "needs Artisan, level 35",
@@ -520,7 +551,7 @@
        "count": 1
       }
      ],
-     "step": 13,
+     "step": 14,
      "kind": "craft",
      "learned_from": "trainer",
      "notes": "needs Artisan, level 35",
@@ -547,7 +578,7 @@
        "count": 1
       }
      ],
-     "step": 14,
+     "step": 15,
      "kind": "craft",
      "learned_from": "trainer",
      "notes": "needs Artisan, level 35",
@@ -574,7 +605,7 @@
        "count": 1
       }
      ],
-     "step": 15,
+     "step": 16,
      "kind": "craft",
      "learned_from": "vendor",
      "learned_by": [
@@ -611,9 +642,9 @@
        "count": 1
       }
      ],
-     "step": 16,
+     "step": 17,
      "kind": "craft",
-     "alternative_of": 15,
+     "alternative_of": 16,
      "learned_from": "vendor",
      "learned_by": [
       {
@@ -716,18 +747,6 @@
      "trainer": "Rotgath Stonebeard",
      "place": "Ironforge",
      "faction": "Alliance"
-    },
-    {
-     "profession": "Blacksmithing",
-     "tier": "Journeyman",
-     "skill_required": 50,
-     "min_level": 10,
-     "how": "trainer",
-     "cost_copper": null,
-     "note": "",
-     "trainer": "Daeann Steelwind",
-     "place": "Zephras Isle",
-     "faction": "Both"
     },
     {
      "profession": "Blacksmithing",
@@ -3223,16 +3242,49 @@
      "option": 0,
      "tier": "Artisan",
      "skill_from": 280,
+     "skill_to": 286,
+     "recipe": "Thorium Widget",
+     "crafts": 8,
+     "materials": [
+      {
+       "item": "Thorium Bar",
+       "count": 3
+      },
+      {
+       "item": "Runecloth",
+       "count": 1
+      }
+     ],
+     "step": 26,
+     "kind": "craft",
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Sovik",
+       "place": "Orgrimmar"
+      },
+      {
+       "name": "Gearcutter Cogspinner",
+       "place": "Ironforge"
+      }
+     ],
+     "notes": "schematic; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
+    },
+    {
+     "option": 0,
+     "tier": "Artisan",
+     "skill_from": 286,
      "skill_to": 300,
      "recipe": "Thorium Tube",
-     "crafts": 21,
+     "crafts": 15,
      "materials": [
       {
        "item": "Thorium Bar",
        "count": 6
       }
      ],
-     "step": 26,
+     "step": 27,
      "kind": "craft",
      "learned_from": "vendor",
      "learned_by": [
@@ -3251,10 +3303,10 @@
     {
      "option": 3,
      "tier": "Artisan",
-     "skill_from": 280,
+     "skill_from": 286,
      "skill_to": 300,
      "recipe": "Thorium Shells",
-     "crafts": 15,
+     "crafts": 14,
      "materials": [
       {
        "item": "Thorium Bar",
@@ -3265,9 +3317,9 @@
        "count": 1
       }
      ],
-     "step": 27,
+     "step": 28,
      "kind": "craft",
-     "alternative_of": 26,
+     "alternative_of": 27,
      "learned_from": "drop",
      "notes": "schematic is a world drop; needs Artisan, level 35",
      "source_url": "https://www.wow-professions.com/forever/engineering-leveling-guide"
@@ -4659,6 +4711,40 @@
      "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
     },
     {
+     "option": 16,
+     "tier": "Artisan",
+     "skill_from": 265,
+     "skill_to": 280,
+     "recipe": "Runic Leather Headband",
+     "crafts": 15,
+     "materials": [
+      {
+       "item": "Rugged Leather",
+       "count": 14
+      },
+      {
+       "item": "Runecloth",
+       "count": 10
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 37,
+     "kind": "craft",
+     "alternative_of": 32,
+     "learned_from": "vendor",
+     "learned_by": [
+      {
+       "name": "Jase Farlane",
+       "place": "Eastern Plaguelands"
+      }
+     ],
+     "notes": "pattern; needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
      "option": 13,
      "tier": "Artisan",
      "skill_from": 270,
@@ -4679,7 +4765,7 @@
        "count": 1
       }
      ],
-     "step": 37,
+     "step": 38,
      "kind": "craft",
      "alternative_of": 32,
      "learned_from": "trainer",
@@ -4707,7 +4793,7 @@
        "count": 1
       }
      ],
-     "step": 38,
+     "step": 39,
      "kind": "craft",
      "alternative_of": 32,
      "learned_from": "vendor",
@@ -4741,7 +4827,35 @@
        "count": 1
       }
      ],
-     "step": 39,
+     "step": 40,
+     "kind": "craft",
+     "alternative_of": 32,
+     "learned_from": "trainer",
+     "notes": "needs Artisan, level 35",
+     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
+    },
+    {
+     "option": 16,
+     "tier": "Artisan",
+     "skill_from": 280,
+     "skill_to": 300,
+     "recipe": "Blue Suede Hat",
+     "crafts": 20,
+     "materials": [
+      {
+       "item": "Rugged Leather",
+       "count": 16
+      },
+      {
+       "item": "Blue Dye",
+       "count": 4
+      },
+      {
+       "item": "Rune Thread",
+       "count": 1
+      }
+     ],
+     "step": 41,
      "kind": "craft",
      "alternative_of": 32,
      "learned_from": "trainer",
@@ -4769,35 +4883,7 @@
        "count": 2
       }
      ],
-     "step": 40,
-     "kind": "craft",
-     "alternative_of": 32,
-     "learned_from": "trainer",
-     "notes": "needs Artisan, level 35",
-     "source_url": "https://www.wow-professions.com/forever/leatherworking-leveling-guide"
-    },
-    {
-     "option": 16,
-     "tier": "Artisan",
-     "skill_from": 295,
-     "skill_to": 300,
-     "recipe": "Blue Suede Hat",
-     "crafts": 20,
-     "materials": [
-      {
-       "item": "Rugged Leather",
-       "count": 16
-      },
-      {
-       "item": "Blue Dye",
-       "count": 4
-      },
-      {
-       "item": "Rune Thread",
-       "count": 1
-      }
-     ],
-     "step": 41,
+     "step": 42,
      "kind": "craft",
      "alternative_of": 32,
      "learned_from": "trainer",
@@ -5992,62 +6078,6 @@
     {
      "option": 5,
      "tier": "Artisan",
-     "skill_from": 280,
-     "skill_to": 290,
-     "recipe": "Runecloth Headband",
-     "crafts": 42,
-     "materials": [
-      {
-       "item": "Bolt of Runecloth",
-       "count": 4
-      },
-      {
-       "item": "Ironweb Spider Silk",
-       "count": 2
-      },
-      {
-       "item": "Rune Thread",
-       "count": 1
-      }
-     ],
-     "step": 25,
-     "kind": "craft",
-     "alternative_of": 23,
-     "learned_from": "trainer",
-     "notes": "needs Artisan, level 35",
-     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
-    },
-    {
-     "option": 6,
-     "tier": "Artisan",
-     "skill_from": 280,
-     "skill_to": 290,
-     "recipe": "Runecloth Cuffs",
-     "crafts": 42,
-     "materials": [
-      {
-       "item": "Bolt of Runecloth",
-       "count": 5
-      },
-      {
-       "item": "Ironweb Spider Silk",
-       "count": 1
-      },
-      {
-       "item": "Rune Thread",
-       "count": 1
-      }
-     ],
-     "step": 26,
-     "kind": "craft",
-     "alternative_of": 23,
-     "learned_from": "trainer",
-     "notes": "needs Artisan, level 35",
-     "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
-    },
-    {
-     "option": 7,
-     "tier": "Artisan",
      "skill_from": 285,
      "skill_to": 290,
      "recipe": "Swarmtender's Gloves",
@@ -6071,7 +6101,7 @@
        "count": 6
       }
      ],
-     "step": 27,
+     "step": 25,
      "kind": "craft",
      "alternative_of": 23,
      "learned_from": "trainer",
@@ -6079,7 +6109,7 @@
      "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
     },
     {
-     "option": 7,
+     "option": 5,
      "tier": "Artisan",
      "skill_from": 290,
      "skill_to": 295,
@@ -6104,7 +6134,7 @@
        "count": 6
       }
      ],
-     "step": 28,
+     "step": 26,
      "kind": "craft",
      "alternative_of": 23,
      "learned_from": "trainer",
@@ -6112,7 +6142,7 @@
      "source_url": "https://www.wow-professions.com/forever/tailoring-leveling-guide"
     },
     {
-     "option": 7,
+     "option": 5,
      "tier": "Artisan",
      "skill_from": 295,
      "skill_to": 300,
@@ -6137,7 +6167,7 @@
        "count": 6
       }
      ],
-     "step": 29,
+     "step": 27,
      "kind": "craft",
      "alternative_of": 23,
      "learned_from": "trainer",
@@ -7040,7 +7070,7 @@
      "skill_from": 260,
      "skill_to": 290,
      "recipe": "Runecloth Bandage",
-     "crafts": 44,
+     "crafts": 47,
      "materials": [
       {
        "item": "Runecloth",
