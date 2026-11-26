@@ -16,10 +16,10 @@ professions:
   - {name: Fishing, kind: secondary, text: "Catches fish, and sometimes other items, at any water; feeds Cooking."}
   - {name: First Aid, kind: secondary, text: "Makes bandages from cloth and heals with them; no slot needed."}
 ranks:
-  - {rank: Apprentice, skill_min: 1, skill_cap: 75, min_level: 5, text: "First tier; any character of the minimum level can learn it."}
-  - {rank: Journeyman, skill_min: 75, skill_cap: 150, min_level: 10, text: "Second tier, taught by trainers once the first is full."}
-  - {rank: Expert, skill_min: 150, skill_cap: 225, min_level: 20, text: "Third tier; many good recipes start here."}
-  - {rank: Artisan, skill_min: 225, skill_cap: 300, min_level: 35, text: "Fourth tier and the practical cap of the early game."}
+  - {rank: Apprentice, skill_min: 1, skill_cap: 75, min_level: 1, text: "First tier; no level requirement in Forever, so a fresh character can learn it."}
+  - {rank: Journeyman, skill_min: 75, skill_cap: 150, min_level: 10, text: "Second tier, learned from a trainer at level 10 once the skill reaches 50 (the first tier teaches recipes only up to 75)."}
+  - {rank: Expert, skill_min: 150, skill_cap: 225, min_level: 20, text: "Third tier; learned at level 20 once the skill reaches 125, for 50 silver with most crafts. Many good recipes start here."}
+  - {rank: Artisan, skill_min: 225, skill_cap: 300, min_level: 35, text: "Fourth tier and the practical cap of the early game; learned at level 35 once the skill reaches 200 (225 for Cooking, First Aid and Fishing)."}
 pairings:
   - {a: Mining, b: Blacksmithing, text: "Smelted bars are what Blacksmithing spends; one character can supply itself."}
   - {a: Mining, b: Engineering, text: "Engineering also consumes bars and stone, so Mining covers most of its needs."}
@@ -39,6 +39,6 @@ special_cases:
   - {profession: First Aid, text: "Needs cloth for bandages; the later ranks come from books, not only a trainer."}
   - {profession: Fishing, text: "Needs a fishing pole; what you catch depends on the water and its zone."}
 rules:
-  - {topic: skinning, text: "Rule of thumb: skill needed is about five times the creature's level once the creature is above level 10; below that, a low flat requirement applies."}
+  - {topic: skinning, text: "Skill needed is five times the creature's level from level 20 up (a level 30 creature needs 150); below level 20 it is less: 10 for level 11, then 10 more for every level (level 15 needs 50, level 19 needs 90)."}
   - {topic: slots, text: "A character holds two primary professions; the three secondary professions do not count against that."}
   - {topic: skill-ups, text: "Orange recipes always raise skill, yellow often, green seldom and grey never; plan each rank from the recipes' yellow and grey levels."}

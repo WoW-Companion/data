@@ -90,3 +90,34 @@ func TestApplyLearnSkillsFitsMultiplier(t *testing.T) {
 		t.Errorf("estimate: %d", *recipes[2].LearnSkill)
 	}
 }
+
+func TestApplyRouteLearnBounds(t *testing.T) {
+	est, trainer := LearnSrcEstimate, LearnSrcTrainer
+	name := func(s string) *string { return &s }
+	recipes := []Recipe{
+		{SpellID: 1, SkillLineName: "Alchemy", Name: name("Elixir A"), LearnSkill: i16(15), LearnSkillSource: &est},     // estimate above the route start: lowered
+		{SpellID: 2, SkillLineName: "Alchemy", Name: name("Elixir B"), LearnSkill: i16(5), LearnSkillSource: &est},      // estimate already below: kept
+		{SpellID: 3, SkillLineName: "Alchemy", Name: name("Elixir C"), LearnSkill: i16(40), LearnSkillSource: &trainer}, // measured: never changed
+		{SpellID: 4, SkillLineName: "Alchemy", Name: name("Elixir D"), LearnSkill: i16(30), LearnSkillSource: &est},     // lowest of two steps wins
+	}
+	step := func(recipe string, from, to int) CuratedStep {
+		return CuratedStep{Kind: "craft", Recipe: recipe, SkillFrom: from, SkillTo: to}
+	}
+	c := CuratedRoutes{professionKey: []string{"Alchemy"}, Professions: map[string]CuratedRouteProf{"Alchemy": {Steps: []CuratedStep{
+		step("Elixir A", 10, 55), step("Elixir B", 10, 55), step("Elixir C", 10, 55),
+		step("Elixir D", 50, 60), step("Elixir D", 20, 50),
+	}}}}
+	got := ApplyRouteLearnBounds(recipes, c)
+	want := []int16{10, 5, 40, 20}
+	for i, r := range recipes {
+		if *r.LearnSkill != want[i] {
+			t.Errorf("spell %d: learn skill %d, want %d", r.SpellID, *r.LearnSkill, want[i])
+		}
+		if r.LearnSkillSource == nil || (i != 2 && *r.LearnSkillSource != LearnSrcEstimate) {
+			t.Errorf("spell %d: source changed to %v", r.SpellID, r.LearnSkillSource)
+		}
+	}
+	if len(got) != 2 || got[0].SpellID != 1 || got[1].SpellID != 4 {
+		t.Errorf("lowered %v, want spells 1 and 4", got)
+	}
+}

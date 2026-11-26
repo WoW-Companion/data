@@ -457,7 +457,8 @@ def main():
                 base["min_level"] = 10 if prof in ("Fishing",) else None
             tr = list(ex.get("trainers", []))
             if tier == "Journeyman" and journey:
-                tr = [(n, c, "Both" if c.startswith("Zephras") else ("Horde" if c in HORDE_CITIES else "Alliance")) for n, c in journey]
+                # A trainer both factions share (Zephras Isle) is listed under each faction's heading on the page: keep one row.
+                tr = list(dict.fromkeys((n, c, "Both" if c.startswith("Zephras") else ("Horde" if c in HORDE_CITIES else "Alliance")) for n, c in journey))
             tiers.append((base, tr))
         for base, tr in tiers:
             if tr:

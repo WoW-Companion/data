@@ -136,3 +136,18 @@ func TestRouteTablesWriteParquet(t *testing.T) {
 		t.Fatalf("tiers: %+v %v (%d rows)", r, err, len(tiers))
 	}
 }
+
+// A trainer that two factions share is listed under both on the guide's page; the curated
+// file keeps one row per profession, tier, trainer and place.
+func TestCuratedRouteTiersHaveNoDuplicates(t *testing.T) {
+	for p, prof := range loadRealRoutes(t).Professions {
+		seen := map[[4]string]bool{}
+		for _, tr := range prof.Tiers {
+			k := [4]string{p, tr.Tier, tr.Trainer, tr.Place}
+			if seen[k] {
+				t.Errorf("%s: %s %s at %s is listed twice", p, tr.Tier, tr.Trainer, tr.Place)
+			}
+			seen[k] = true
+		}
+	}
+}
